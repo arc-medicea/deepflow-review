@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepFlow — Concept 01: Clean Canvas</title>
+<style>
+  :root {
+    --l1: #3BB8D6; --l2: #14B8A6; --l3: #F59E0B; --l4: #F97316; --l5: #E74C8A;
+    --bg: #F8FAFC; --surface: #FFFFFF; --text: #1E293B; --muted: #64748B;
+    --border: #E2E8F0; --accent: #3BB8D6;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Inter', -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); }
+  .app { width: 1200px; margin: 0 auto; min-height: 100vh; }
+
+  /* Tab Bar */
+  .tab-bar { display:flex; gap:2px; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; position: sticky; top:0; z-index:100; }
+  .tab-bar .tab { padding: 14px 24px; font-size: 13px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; color: var(--muted); transition: all .2s; letter-spacing: .3px; }
+  .tab-bar .tab:hover { color: var(--text); }
+  .tab-bar .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-bar .concept-label { margin-left: auto; align-self: center; font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* Header bar */
+  .header { display:flex; align-items:center; gap:12px; padding:16px 24px; background:var(--surface); border-bottom:1px solid var(--border); }
+  .header .back { width:28px; height:28px; border-radius:6px; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px; color:var(--muted); }
+  .header .title { font-size:16px; font-weight:700; }
+  .header .badge { padding:3px 10px; border-radius:99px; font-size:11px; font-weight:600; }
+  .breadcrumb { display:flex; gap:6px; align-items:center; padding:10px 24px; background:var(--surface); border-bottom:1px solid var(--border); font-size:12px; }
+  .breadcrumb .level-badge { padding:2px 8px; border-radius:4px; color:#fff; font-weight:700; font-size:10px; }
+
+  /* === GRAPH VIEW === */
+  .graph-container { position:relative; background: #F1F5F9; height: 620px; overflow:hidden; }
+  .graph-canvas { position:relative; width:100%; height:100%; }
+
+  /* Hexagonal node (AI) */
+  .node { position:absolute; display:flex; flex-direction:column; align-items:center; cursor:pointer; transition: transform .2s, filter .2s; }
+  .node:hover { transform: scale(1.06); filter: drop-shadow(0 4px 12px rgba(0,0,0,.12)); }
+  .node-hex { width:72px; height:72px; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; color:#fff; position:relative; }
+  .node-hex-border { width:80px; height:80px; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display:flex; align-items:center; justify-content:center; }
+
+  /* Circle node (Human) */
+  .node-circle { width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; color:#fff; }
+  .node-circle-border { width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+
+  .node-label { margin-top:8px; font-size:11px; font-weight:600; color:var(--text); text-align:center; max-width:120px; line-height:1.3; }
+  .node-sub { font-size:10px; color:var(--muted); margin-top:2px; }
+  .node-status { position:absolute; top:-4px; right:-4px; width:18px; height:18px; border-radius:50%; border:2px solid #fff; display:flex; align-items:center; justify-content:center; font-size:9px; color:#fff; }
+
+  /* Mini 3D navigator */
+  .mini-nav { position:absolute; bottom:16px; left:16px; background:var(--surface); border-radius:12px; padding:12px; box-shadow:0 2px 12px rgba(0,0,0,.08); border:1px solid var(--border); }
+  .mini-nav .nav-title { font-size:10px; font-weight:700; color:var(--muted); margin-bottom:8px; letter-spacing:.5px; text-transform:uppercase; }
+  .mini-nav .layer { display:flex; align-items:center; gap:6px; margin-bottom:4px; font-size:10px; font-weight:600; }
+  .mini-nav .layer-dot { width:10px; height:10px; border-radius:3px; }
+  .mini-nav .layer.current { font-weight:800; }
+
+  /* Toolbar */
+  .graph-toolbar { position:absolute; bottom:16px; left:50%; transform:translateX(-50%); display:flex; gap:4px; background:var(--surface); border-radius:10px; padding:6px; box-shadow:0 2px 12px rgba(0,0,0,.08); border:1px solid var(--border); }
+  .graph-toolbar button { width:32px; height:32px; border:none; background:none; border-radius:6px; cursor:pointer; font-size:14px; color:var(--muted); }
+  .graph-toolbar button:hover { background:#F1F5F9; color:var(--text); }
+
+  /* Filter bar */
+  .filter-bar { display:flex; gap:6px; padding:10px 24px; background:var(--surface); border-bottom:1px solid var(--border); align-items:center; }
+  .filter-pill { padding:4px 12px; border-radius:99px; font-size:11px; font-weight:600; border:1px solid var(--border); background:var(--surface); cursor:pointer; display:flex; align-items:center; gap:4px; }
+  .filter-pill.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .filter-pill .dot { width:6px; height:6px; border-radius:50%; }
+
+  /* === WORKSPACE VIEW === */
+  .workspace-layout { display:grid; grid-template-columns: 1fr 340px 280px; height: 620px; background: var(--surface); }
+  .ws-panel { border-right:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; }
+  .ws-panel:last-child { border-right:none; }
+  .ws-panel-header { display:flex; align-items:center; gap:8px; padding:10px 16px; border-bottom:1px solid var(--border); font-size:12px; font-weight:700; color:var(--muted); flex-shrink:0; }
+  .ws-panel-header .icon { font-size:14px; }
+  .ws-tab-bar { display:flex; gap:0; border-bottom:1px solid var(--border); flex-shrink:0; }
+  .ws-tab { padding:8px 14px; font-size:11px; font-weight:600; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; }
+  .ws-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+  .ws-content { flex:1; overflow-y:auto; padding:16px; }
+
+  /* Output panel */
+  .output-toolbar { display:flex; gap:4px; padding:8px 16px; border-bottom:1px solid var(--border); align-items:center; flex-shrink:0; }
+  .output-toolbar button { padding:2px 6px; border:none; background:none; font-size:12px; cursor:pointer; color:var(--muted); font-weight:600; }
+  .output-toolbar .preview-toggle { margin-left:auto; display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); }
+  .toggle-switch { width:32px; height:18px; background:#14B8A6; border-radius:99px; position:relative; cursor:pointer; }
+  .toggle-switch::after { content:''; width:14px; height:14px; border-radius:50%; background:#fff; position:absolute; top:2px; right:2px; }
+  .version-nav { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); font-weight:600; }
+  .version-nav button { width:20px; height:20px; border:1px solid var(--border); border-radius:4px; background:none; cursor:pointer; font-size:10px; }
+
+  /* Chat panel */
+  .chat-exec-btn { display:flex; align-items:center; justify-content:center; gap:6px; padding:10px; margin:12px 16px 8px; border-radius:8px; background: linear-gradient(135deg, var(--l5), var(--l4)); color:#fff; font-size:12px; font-weight:700; cursor:pointer; border:none; }
+  .chat-message { margin-bottom:16px; }
+  .chat-avatar { width:24px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; flex-shrink:0; }
+  .chat-msg-header { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .chat-sender { font-size:12px; font-weight:700; }
+  .chat-time { font-size:10px; color:var(--muted); }
+  .thought-process { background:#F8FAFC; border:1px solid var(--border); border-radius:8px; padding:10px 12px; margin:8px 0; font-size:11px; }
+  .thought-header { display:flex; align-items:center; gap:6px; font-weight:700; font-size:11px; cursor:pointer; }
+  .thought-badge { background:#14B8A6; color:#fff; padding:1px 6px; border-radius:4px; font-size:9px; }
+  .thought-step { margin-top:8px; padding-left:12px; border-left:2px solid var(--border); }
+  .thought-step-title { font-weight:700; font-size:11px; color:var(--text); display:flex; align-items:center; gap:6px; }
+  .thought-step-dot { width:6px; height:6px; border-radius:50%; background:var(--l5); }
+  .thought-step-body { font-size:11px; color:var(--muted); margin-top:4px; line-height:1.5; }
+  .chat-action { display:flex; align-items:center; gap:6px; font-size:11px; margin-top:6px; color:var(--muted); }
+  .chat-action .check { color:#14B8A6; }
+  .chat-input { display:flex; align-items:center; gap:8px; padding:12px 16px; border-top:1px solid var(--border); margin-top:auto; flex-shrink:0; }
+  .chat-input input { flex:1; border:1px solid var(--border); border-radius:8px; padding:8px 12px; font-size:12px; outline:none; }
+  .chat-input .send { width:32px; height:32px; border-radius:50%; background:#14B8A6; border:none; color:#fff; cursor:pointer; font-size:14px; }
+
+  /* History */
+  .history-entry { display:flex; gap:10px; margin-bottom:14px; position:relative; padding-left:4px; }
+  .history-entry::before { content:''; position:absolute; left:15px; top:28px; bottom:-14px; width:1px; background:var(--border); }
+  .history-entry:last-child::before { display:none; }
+  .history-avatar { width:28px; height:28px; border-radius:50%; background:#14B8A6; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; flex-shrink:0; }
+  .history-text { font-size:11px; line-height:1.5; }
+  .history-text strong { font-weight:700; }
+  .history-time { font-size:10px; color:var(--muted); }
+
+  /* === LIST VIEW === */
+  .list-container { background: var(--surface); }
+  .list-header-row { display:grid; grid-template-columns: 40px 1fr 100px 80px 60px 100px 90px; padding:8px 24px; border-bottom:2px solid var(--border); font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  .list-row { display:grid; grid-template-columns: 40px 1fr 100px 80px 60px 100px 90px; padding:10px 24px; border-bottom:1px solid var(--border); font-size:12px; align-items:center; transition: background .15s; }
+  .list-row:hover { background:#F8FAFC; }
+  .list-chevron { cursor:pointer; color:var(--muted); font-size:10px; }
+  .list-task { display:flex; align-items:center; gap:8px; }
+  .list-task-icon { width:22px; height:22px; display:flex; align-items:center; justify-content:center; font-size:8px; font-weight:800; color:#fff; flex-shrink:0; }
+  .list-task-icon.hex { clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
+  .list-task-icon.circle { border-radius:50%; }
+  .list-task-name { font-weight:600; }
+  .list-status { padding:3px 8px; border-radius:99px; font-size:10px; font-weight:700; display:inline-block; }
+  .list-status.done { background:#DCFCE7; color:#16A34A; }
+  .list-status.progress { background:#FEF3C7; color:#D97706; }
+  .list-status.pending { background:#F1F5F9; color:#64748B; }
+  .list-status.failed { background:#FEE2E2; color:#DC2626; }
+  .list-assignee { display:flex; align-items:center; gap:6px; font-size:11px; }
+  .list-assignee-avatar { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:8px; font-weight:800; color:#fff; }
+  .list-level { padding:2px 6px; border-radius:4px; font-size:10px; font-weight:800; color:#fff; }
+  .list-depends { font-size:10px; color:var(--muted); }
+  .list-due { font-size:11px; color:var(--muted); }
+  .indent-1 { padding-left: 44px; }
+  .indent-2 { padding-left: 68px; }
+  .indent-3 { padding-left: 92px; }
+
+  /* Utilities */
+  .bg-l1 { background:var(--l1); } .bg-l2 { background:var(--l2); } .bg-l3 { background:var(--l3); } .bg-l4 { background:var(--l4); } .bg-l5 { background:var(--l5); }
+  .border-l1 { border-color:var(--l1); } .border-l2 { border-color:var(--l2); }
+  .text-green { color:#16A34A; }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <div class="tab active" onclick="switchView('graph')">📐 Graph View</div>
+    <div class="tab" onclick="switchView('workspace')">🖥 Workspace View</div>
+    <div class="tab" onclick="switchView('list')">📋 List View</div>
+    <span class="concept-label">01 — Clean Canvas</span>
+  </div>
+
+  <!-- ==================== GRAPH VIEW ==================== -->
+  <div class="view active" id="view-graph">
+    <div class="header">
+      <div class="back">←</div>
+      <div class="title">ICAAP Submission 2026</div>
+      <span class="badge" style="background:#DCFCE7;color:#16A34A;">● In Progress</span>
+      <span style="font-size:11px;color:var(--muted);margin-left:auto;">8 tasks · 3 agents · 2 people</span>
+    </div>
+    <div class="breadcrumb">
+      <span class="level-badge bg-l1">L1</span> <span>ICAAP Programme</span>
+      <span style="color:var(--muted);">›</span>
+      <span class="level-badge bg-l2">L2</span> <span>Capital Assessment</span>
+      <span style="color:var(--muted);">›</span>
+      <span class="level-badge bg-l3" style="opacity:.5">L3</span>
+    </div>
+    <div class="filter-bar">
+      <div class="filter-pill"><span class="dot" style="background:#64748B;"></span> All</div>
+      <div class="filter-pill active"><span class="dot" style="background:#fff;"></span> Active</div>
+      <div class="filter-pill"><span class="dot" style="background:#16A34A;"></span> Done</div>
+      <div class="filter-pill"><span class="dot" style="background:#DC2626;"></span> Failed</div>
+      <span style="margin-left:auto;font-size:11px;color:var(--muted);">🔍 Search tasks…</span>
+    </div>
+    <div class="graph-container">
+      <svg width="1200" height="620" style="position:absolute;top:0;left:0;z-index:1;">
+        <!-- Edges -->
+        <defs>
+          <marker id="arrow-l1" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#3BB8D6" opacity=".7"/></marker>
+          <marker id="arrow-l2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#14B8A6" opacity=".7"/></marker>
+          <marker id="arrow-done" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#16A34A" opacity=".5"/></marker>
+        </defs>
+        <!-- L2 depth edges -->
+        <path d="M200,160 C280,160 280,100 360,100" stroke="#3BB8D6" stroke-width="2" fill="none" opacity=".4" marker-end="url(#arrow-l1)"/>
+        <path d="M200,160 C280,160 280,250 360,250" stroke="#3BB8D6" stroke-width="2" fill="none" opacity=".4" marker-end="url(#arrow-l1)"/>
+        <path d="M200,160 C280,160 280,400 360,400" stroke="#3BB8D6" stroke-width="2" fill="none" opacity=".4" marker-end="url(#arrow-l1)"/>
+        <path d="M440,100 C520,100 520,170 580,170" stroke="#14B8A6" stroke-width="2" fill="none" opacity=".4" marker-end="url(#arrow-l2)"/>
+        <path d="M440,250 C520,250 520,170 580,170" stroke="#14B8A6" stroke-width="2" fill="none" opacity=".4" marker-end="url(#arrow-l2)"/>
+        <path d="M440,400 C520,400 520,320 580,320" stroke="#14B8A6" stroke-width="2" fill="none" opacity=".4" marker-end="url(#arrow-l2)"/>
+        <path d="M660,170 C740,170 740,240 800,240" stroke="#16A34A" stroke-width="2" fill="none" opacity=".3" marker-end="url(#arrow-done)"/>
+        <path d="M660,320 C740,320 740,240 800,240" stroke="#16A34A" stroke-width="2" fill="none" opacity=".3" marker-end="url(#arrow-done)"/>
+        <path d="M880,240 C940,240 940,240 980,240" stroke="#14B8A6" stroke-width="2" fill="none" opacity=".4" marker-end="url(#arrow-l2)"/>
+      </svg>
+      <div class="graph-canvas" style="z-index:2;position:relative;">
+        <!-- Node 1: Gather Data — Human, L2 -->
+        <div class="node" style="left:120px;top:110px;">
+          <div class="node-circle-border" style="background:linear-gradient(135deg,#14B8A6,#0D9488);">
+            <div class="node-circle" style="background:#F0FDFA;color:#14B8A6;">AP</div>
+          </div>
+          <div class="node-status" style="background:#F59E0B;">⏳</div>
+          <div class="node-label">Gather Historical Data</div>
+          <div class="node-sub">Ali P.</div>
+        </div>
+        <!-- Node 2: Risk Assessment — Human, L2 -->
+        <div class="node" style="left:300px;top:50px;">
+          <div class="node-circle-border" style="background:linear-gradient(135deg,#14B8A6,#0D9488);">
+            <div class="node-circle" style="background:#F0FDFA;color:#14B8A6;">MB</div>
+          </div>
+          <div class="node-status" style="background:#F59E0B;">⏳</div>
+          <div class="node-label">Risk Assessment</div>
+          <div class="node-sub">Molly B.</div>
+        </div>
+        <!-- Node 3: Run Capital Model — AI, L2 -->
+        <div class="node" style="left:300px;top:200px;">
+          <div class="node-hex-border" style="background:linear-gradient(135deg,#14B8A6,#0D9488);">
+            <div class="node-hex" style="background:#F0FDFA;color:#14B8A6;">DF</div>
+          </div>
+          <div class="node-status" style="background:#3B82F6;">▶</div>
+          <div class="node-label">Run Capital Model</div>
+          <div class="node-sub">DeepFlow Agent</div>
+        </div>
+        <!-- Node 4: Stress Testing — AI, L2 -->
+        <div class="node" style="left:300px;top:350px;">
+          <div class="node-hex-border" style="background:linear-gradient(135deg,#14B8A6,#0D9488);">
+            <div class="node-hex" style="background:#F0FDFA;color:#14B8A6;">ST</div>
+          </div>
+          <div class="node-status" style="background:#64748B;">○</div>
+          <div class="node-label">Stress Testing</div>
+          <div class="node-sub">Stress Agent</div>
+        </div>
+        <!-- Node 5: Review Results — Human, L2 -->
+        <div class="node" style="left:520px;top:120px;">
+          <div class="node-circle-border" style="background:linear-gradient(135deg,#14B8A6,#0D9488);">
+            <div class="node-circle" style="background:#F0FDFA;color:#14B8A6;">JW</div>
+          </div>
+          <div class="node-status" style="background:#16A34A;">✓</div>
+          <div class="node-label">Review Results</div>
+          <div class="node-sub">James W.</div>
+        </div>
+        <!-- Node 6: Generate Scenarios — AI, L2 -->
+        <div class="node" style="left:520px;top:270px;">
+          <div class="node-hex-border" style="background:linear-gradient(135deg,#14B8A6,#0D9488);">
+            <div class="node-hex" style="background:#F0FDFA;color:#14B8A6;">DF</div>
+          </div>
+          <div class="node-status" style="background:#16A34A;">✓</div>
+          <div class="node-label">Generate Scenarios</div>
+          <div class="node-sub">DeepFlow Agent</div>
+        </div>
+        <!-- Node 7: Compile Report — AI, L2 -->
+        <div class="node" style="left:740px;top:190px;">
+          <div class="node-hex-border" style="background:linear-gradient(135deg,#14B8A6,#0D9488);">
+            <div class="node-hex" style="background:#F0FDFA;color:#14B8A6;">DF</div>
+          </div>
+          <div class="node-status" style="background:#F59E0B;">⏳</div>
+          <div class="node-label">Compile Report</div>
+          <div class="node-sub">DeepFlow Agent</div>
+        </div>
+        <!-- Node 8: Final Approval — Human, L2 -->
+        <div class="node" style="left:930px;top:190px;">
+          <div class="node-circle-border" style="background:linear-gradient(135deg,#14B8A6,#0D9488);">
+            <div class="node-circle" style="background:#F0FDFA;color:#14B8A6;">AP</div>
+          </div>
+          <div class="node-status" style="background:#64748B;">○</div>
+          <div class="node-label">Final Approval</div>
+          <div class="node-sub">Ali P.</div>
+        </div>
+      </div>
+
+      <!-- Mini 3D navigator -->
+      <div class="mini-nav">
+        <div class="nav-title">Depth Navigator</div>
+        <div class="layer current"><div class="layer-dot" style="background:var(--l1);"></div> L1 Programme ●</div>
+        <div class="layer" style="font-weight:800;"><div class="layer-dot" style="background:var(--l2);"></div> L2 Capital ← You are here</div>
+        <div class="layer"><div class="layer-dot" style="background:var(--l3);"></div> L3 Sub-tasks</div>
+        <div class="layer"><div class="layer-dot" style="background:var(--l4);"></div> L4 Atomic</div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="graph-toolbar">
+        <button title="Undo">↩</button>
+        <button title="Redo">↪</button>
+        <button title="Zoom In">+</button>
+        <button title="Zoom Out">−</button>
+        <button title="Fit">⊞</button>
+        <button title="Auto Layout">⬡</button>
+        <button title="Delegate">👤</button>
+        <button title="Share">↗</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== WORKSPACE VIEW ==================== -->
+  <div class="view" id="view-workspace">
+    <div class="header">
+      <div class="back">←</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:28px;height:28px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:var(--l2);display:flex;align-items:center;justify-content:center;"><span style="font-size:9px;font-weight:800;color:#fff;">DF</span></div>
+        <div class="title">Run Capital Model</div>
+      </div>
+      <span class="badge" style="background:#DBEAFE;color:#3B82F6;">▶ In Progress</span>
+      <div class="version-nav" style="margin-left:auto;">
+        <button>‹</button>
+        <span>V2/3</span>
+        <button>›</button>
+        <span style="font-size:10px;color:var(--muted);">11/03/2026</span>
+      </div>
+    </div>
+    <div class="workspace-layout">
+      <!-- Left: Workspace output -->
+      <div class="ws-panel">
+        <div class="ws-panel-header">
+          <span class="icon">📄</span> Workspace
+          <span style="margin-left:auto;font-size:14px;cursor:pointer;">⤢</span>
+        </div>
+        <div class="ws-tab-bar">
+          <div class="ws-tab active">Capital Model Output</div>
+          <div class="ws-tab" style="color:var(--muted);">+</div>
+        </div>
+        <div class="output-toolbar">
+          <button><b>B</b></button>
+          <button><i>I</i></button>
+          <button>🔗</button>
+          <button>&lt;/&gt;</button>
+          <button>☰</button>
+          <button>1.</button>
+          <div class="preview-toggle">
+            Preview <div class="toggle-switch"></div>
+          </div>
+        </div>
+        <div class="ws-content" style="font-size:13px;line-height:1.7;color:var(--text);">
+          <h3 style="font-size:15px;font-weight:700;margin-bottom:12px;">ICAAP Capital Model — Draft v2</h3>
+          <p style="margin-bottom:12px;">This document presents the internal capital adequacy assessment for Q1 2026, incorporating updated stress scenarios and revised risk weights.</p>
+          <h4 style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px;">1. Executive Summary</h4>
+          <p style="margin-bottom:12px;">Total capital requirement under base case: <strong>£42.3M</strong>. Under severe stress: <strong>£58.7M</strong>. Current capital buffer stands at £67.1M, providing a surplus of £8.4M under stress.</p>
+          <h4 style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px;">2. Risk Categories</h4>
+          <ul style="padding-left:20px;margin-bottom:12px;">
+            <li>Credit Risk: £18.2M (Pillar 1) + £4.1M (Pillar 2A)</li>
+            <li>Market Risk: £8.9M</li>
+            <li>Operational Risk: £6.4M</li>
+            <li>Concentration Risk: £4.7M (Pillar 2A add-on)</li>
+          </ul>
+          <div style="background:#F0FDFA;border:1px solid #14B8A6;border-radius:8px;padding:12px;font-size:11px;color:#0D9488;">
+            ✅ All capital ratios exceed minimum requirements. CET1 ratio: 14.2% (minimum: 4.5%)
+          </div>
+        </div>
+      </div>
+
+      <!-- Centre: Chat -->
+      <div class="ws-panel">
+        <div class="ws-panel-header">
+          <span class="icon">💬</span> Chat
+          <span style="margin-left:auto;font-size:11px;color:var(--muted);">Task Execution #2</span>
+        </div>
+        <button class="chat-exec-btn">⚡ Execute this task for me</button>
+        <div class="ws-content">
+          <div class="chat-message">
+            <div class="chat-msg-header">
+              <div class="chat-avatar" style="background:#14B8A6;">DF</div>
+              <span class="chat-sender">DeepFlow</span>
+              <span class="chat-time">14:32</span>
+            </div>
+            <div class="thought-process">
+              <div class="thought-header">
+                🧠 Thought process <span class="thought-badge">3 steps</span>
+              </div>
+              <div class="thought-step">
+                <div class="thought-step-title"><div class="thought-step-dot"></div> Step 1 — Gathering inputs</div>
+                <div class="thought-step-body">Pulling historical capital data from resources. Found 3 input documents: risk register, P&L summary, and prior ICAAP submission.</div>
+              </div>
+              <div class="thought-step">
+                <div class="thought-step-title"><div class="thought-step-dot"></div> Step 2 — Running calculations</div>
+                <div class="thought-step-body">Applying standardised approach for credit risk. Computing Pillar 2A add-ons for concentration and pension obligation risks.</div>
+              </div>
+              <div class="thought-step">
+                <div class="thought-step-title"><div class="thought-step-dot"></div> Step 3 — Drafting output</div>
+                <div class="thought-step-body">Generating capital model document with executive summary, risk breakdown, and stress test results.</div>
+              </div>
+            </div>
+            <div class="chat-action"><span class="check">✅</span> Creating artifact</div>
+            <div class="chat-action"><span class="check">✅</span> Request Completion</div>
+          </div>
+          <div class="chat-message">
+            <div class="chat-msg-header">
+              <div class="chat-avatar" style="background:#14B8A6;">DF</div>
+              <span class="chat-sender">DeepFlow</span>
+              <span class="chat-time">14:33</span>
+            </div>
+            <div style="font-size:12px;line-height:1.6;color:var(--text);background:#F8FAFC;border-radius:8px;padding:10px 12px;border:1px solid var(--border);">
+              I've completed the capital model draft (v2). Key findings: total requirement of £42.3M base / £58.7M stressed, with a healthy £8.4M surplus. All ratios exceed minimums. Ready for your review.
+            </div>
+          </div>
+        </div>
+        <div class="chat-input">
+          <input type="text" placeholder="Your message…">
+          <button class="send">▶</button>
+        </div>
+      </div>
+
+      <!-- Right: Details -->
+      <div class="ws-panel">
+        <div class="ws-panel-header">
+          <span class="icon">ℹ️</span> Details
+        </div>
+        <div class="ws-tab-bar">
+          <div class="ws-tab">Info</div>
+          <div class="ws-tab">Resources</div>
+          <div class="ws-tab">Comments</div>
+          <div class="ws-tab active">History</div>
+          <div class="ws-tab">Sub-tasks</div>
+        </div>
+        <div class="ws-content">
+          <div class="history-entry">
+            <div class="history-avatar">DF</div>
+            <div>
+              <div class="history-text"><strong>DeepFlow Agent</strong> completed execution</div>
+              <div class="history-time">14:33 today</div>
+            </div>
+          </div>
+          <div class="history-entry">
+            <div class="history-avatar">DF</div>
+            <div>
+              <div class="history-text"><strong>DeepFlow Agent</strong> started capital model calculation</div>
+              <div class="history-time">14:32 today</div>
+            </div>
+          </div>
+          <div class="history-entry">
+            <div class="history-avatar" style="background:#3B82F6;">AP</div>
+            <div>
+              <div class="history-text"><strong>Ali Panju</strong> triggered execution (attempt #2)</div>
+              <div class="history-time">14:31 today</div>
+            </div>
+          </div>
+          <div class="history-entry">
+            <div class="history-avatar" style="background:#3B82F6;">AP</div>
+            <div>
+              <div class="history-text"><strong>Ali Panju</strong> updated task description</div>
+              <div class="history-time">14:20 today</div>
+            </div>
+          </div>
+          <div class="history-entry">
+            <div class="history-avatar" style="background:#3B82F6;">AP</div>
+            <div>
+              <div class="history-text"><strong>Ali Panju</strong> assigned task to <strong>DeepFlow Agent</strong></div>
+              <div class="history-time">13:45 today</div>
+            </div>
+          </div>
+          <div class="history-entry">
+            <div class="history-avatar" style="background:#3B82F6;">AP</div>
+            <div>
+              <div class="history-text"><strong>Ali Panju</strong> created the task</div>
+              <div class="history-time">13:40 today</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== LIST VIEW ==================== -->
+  <div class="view" id="view-list">
+    <div class="header">
+      <div class="back">←</div>
+      <div class="title">ICAAP Submission 2026</div>
+      <span class="badge" style="background:#DBEAFE;color:#3B82F6;">● In Progress</span>
+      <span style="font-size:11px;color:var(--muted);margin-left:auto;">12 tasks</span>
+    </div>
+    <div class="list-container">
+      <div class="list-header-row">
+        <span></span><span>Task</span><span>Status</span><span>Assignee</span><span>Level</span><span>Depends On</span><span>Due Date</span>
+      </div>
+      <!-- L1 -->
+      <div class="list-row" style="background:#F8FAFC;">
+        <span class="list-chevron">▼</span>
+        <div class="list-task">
+          <div class="list-task-icon circle bg-l1">AP</div>
+          <span class="list-task-name">ICAAP Programme</span>
+        </div>
+        <span class="list-status progress">In Progress</span>
+        <div class="list-assignee"><div class="list-assignee-avatar bg-l1">AP</div> Ali P.</div>
+        <span class="list-level bg-l1">L1</span>
+        <span class="list-depends">—</span>
+        <span class="list-due">31 Mar</span>
+      </div>
+      <!-- L2 items -->
+      <div class="list-row">
+        <span class="list-chevron indent-1">▼</span>
+        <div class="list-task indent-1">
+          <div class="list-task-icon circle bg-l2">AP</div>
+          <span class="list-task-name">Gather Historical Data</span>
+        </div>
+        <span class="list-status progress">In Progress</span>
+        <div class="list-assignee"><div class="list-assignee-avatar" style="background:#6366F1;">AP</div> Ali P.</div>
+        <span class="list-level bg-l2">L2</span>
+        <span class="list-depends">—</span>
+        <span class="list-due">15 Mar</span>
+      </div>
+      <div class="list-row">
+        <span class="list-chevron indent-1">▶</span>
+        <div class="list-task indent-1">
+          <div class="list-task-icon circle bg-l2">MB</div>
+          <span class="list-task-name">Risk Assessment</span>
+        </div>
+        <span class="list-status progress">In Progress</span>
+        <div class="list-assignee"><div class="list-assignee-avatar" style="background:#EC4899;">MB</div> Molly B.</div>
+        <span class="list-level bg-l2">L2</span>
+        <span class="list-depends">Gather Data</span>
+        <span class="list-due">18 Mar</span>
+      </div>
+      <div class="list-row">
+        <span class="list-chevron indent-1">▼</span>
+        <div class="list-task indent-1">
+          <div class="list-task-icon hex bg-l2">DF</div>
+          <span class="list-task-name">Run Capital Model</span>
+        </div>
+        <span class="list-status progress">In Progress</span>
+        <div class="list-assignee"><div class="list-assignee-avatar bg-l2">DF</div> DeepFlow</div>
+        <span class="list-level bg-l2">L2</span>
+        <span class="list-depends">Gather Data</span>
+        <span class="list-due">20 Mar</span>
+      </div>
+      <!-- L3 sub-tasks of Run Capital Model -->
+      <div class="list-row" style="background:#FEFCE8;">
+        <span class="list-chevron indent-2">▶</span>
+        <div class="list-task indent-2">
+          <div class="list-task-icon hex bg-l3">DF</div>
+          <span class="list-task-name">Calculate Credit Risk</span>
+        </div>
+        <span class="list-status done">Done</span>
+        <div class="list-assignee"><div class="list-assignee-avatar bg-l3">DF</div> DeepFlow</div>
+        <span class="list-level bg-l3">L3</span>
+        <span class="list-depends">—</span>
+        <span class="list-due">18 Mar</span>
+      </div>
+      <div class="list-row" style="background:#FEFCE8;">
+        <span class="list-chevron indent-2">▶</span>
+        <div class="list-task indent-2">
+          <div class="list-task-icon hex bg-l3">DF</div>
+          <span class="list-task-name">Calculate Market Risk</span>
+        </div>
+        <span class="list-status done">Done</span>
+        <div class="list-assignee"><div class="list-assignee-avatar bg-l3">DF</div> DeepFlow</div>
+        <span class="list-level bg-l3">L3</span>
+        <span class="list-depends">—</span>
+        <span class="list-due">18 Mar</span>
+      </div>
+      <div class="list-row" style="background:#FEFCE8;">
+        <span class="list-chevron indent-2">▶</span>
+        <div class="list-task indent-2">
+          <div class="list-task-icon hex bg-l3">DF</div>
+          <span class="list-task-name">Run Stress Scenarios</span>
+        </div>
+        <span class="list-status progress">In Progress</span>
+        <div class="list-assignee"><div class="list-assignee-avatar bg-l3">DF</div> DeepFlow</div>
+        <span class="list-level bg-l3">L3</span>
+        <span class="list-depends">Credit, Market</span>
+        <span class="list-due">19 Mar</span>
+      </div>
+      <!-- Back to L2 -->
+      <div class="list-row">
+        <span class="list-chevron indent-1">▶</span>
+        <div class="list-task indent-1">
+          <div class="list-task-icon hex bg-l2">ST</div>
+          <span class="list-task-name">Stress Testing</span>
+        </div>
+        <span class="list-status pending">Pending</span>
+        <div class="list-assignee"><div class="list-assignee-avatar bg-l2">ST</div> Stress Agt</div>
+        <span class="list-level bg-l2">L2</span>
+        <span class="list-depends">Capital Model</span>
+        <span class="list-due">22 Mar</span>
+      </div>
+      <div class="list-row">
+        <span class="list-chevron indent-1">▶</span>
+        <div class="list-task indent-1">
+          <div class="list-task-icon circle bg-l2">JW</div>
+          <span class="list-task-name">Review Results</span>
+        </div>
+        <span class="list-status done">Done</span>
+        <div class="list-assignee"><div class="list-assignee-avatar" style="background:#8B5CF6;">JW</div> James W.</div>
+        <span class="list-level bg-l2">L2</span>
+        <span class="list-depends">Risk, Capital</span>
+        <span class="list-due">24 Mar</span>
+      </div>
+      <div class="list-row">
+        <span class="list-chevron indent-1">▶</span>
+        <div class="list-task indent-1">
+          <div class="list-task-icon hex bg-l2">DF</div>
+          <span class="list-task-name">Generate Scenarios</span>
+        </div>
+        <span class="list-status done">Done</span>
+        <div class="list-assignee"><div class="list-assignee-avatar bg-l2">DF</div> DeepFlow</div>
+        <span class="list-level bg-l2">L2</span>
+        <span class="list-depends">Stress Test</span>
+        <span class="list-due">25 Mar</span>
+      </div>
+      <div class="list-row">
+        <span class="list-chevron indent-1">▶</span>
+        <div class="list-task indent-1">
+          <div class="list-task-icon hex bg-l2">DF</div>
+          <span class="list-task-name">Compile Report</span>
+        </div>
+        <span class="list-status progress">In Progress</span>
+        <div class="list-assignee"><div class="list-assignee-avatar bg-l2">DF</div> DeepFlow</div>
+        <span class="list-level bg-l2">L2</span>
+        <span class="list-depends">Review, Scenarios</span>
+        <span class="list-due">28 Mar</span>
+      </div>
+      <div class="list-row">
+        <span class="list-chevron indent-1">▶</span>
+        <div class="list-task indent-1">
+          <div class="list-task-icon circle bg-l2">AP</div>
+          <span class="list-task-name">Final Approval</span>
+        </div>
+        <span class="list-status pending">Pending</span>
+        <div class="list-assignee"><div class="list-assignee-avatar" style="background:#6366F1;">AP</div> Ali P.</div>
+        <span class="list-level bg-l2">L2</span>
+        <span class="list-depends">Compile Report</span>
+        <span class="list-due">31 Mar</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchView(view) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-bar .tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+  const tabs = document.querySelectorAll('.tab-bar .tab');
+  const idx = {graph:0, workspace:1, list:2}[view];
+  tabs[idx].classList.add('active');
+}
+</script>
+</body>
+</html>

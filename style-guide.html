@@ -1,0 +1,2684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepFlow — Design System &amp; Style Guide</title>
+<style>
+/* ═══════════════════════════════════════════════════
+   FOUNDATIONS
+   ═══════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  /* Depth Gradient */
+  --depth-l1: #3BB8D6;
+  --depth-l2: #5B8FE6;
+  --depth-l3: #8B6CE0;
+  --depth-l4: #C24EBF;
+  --depth-l5: #E74C8A;
+  --depth-l6: #F04060;
+  --depth-l7: #F53838;
+
+  /* Status */
+  --status-done: #34D399;
+  --status-active: #3BB8D6;
+  --status-ready: #FBBF24;
+  --status-attention: #EF4444;
+  --status-pending: #6B7280;
+
+  /* Neutrals */
+  --n-950: #0A0C14;
+  --n-900: #111322;
+  --n-800: #1A1D30;
+  --n-700: #252940;
+  --n-600: #3A3F5A;
+  --n-500: #6B7280;
+  --n-400: #9CA3AF;
+  --n-300: #D1D5DB;
+  --n-200: #E5E7EB;
+  --n-100: #F3F4F6;
+  --n-50:  #F9FAFB;
+
+  /* Brand */
+  --brand-cyan: #3BB8D6;
+  --brand-pink: #E74C8A;
+
+  /* Surfaces */
+  --bg-sidebar: var(--n-900);
+  --bg-canvas: var(--n-50);
+  --bg-panel: #FFFFFF;
+  --bg-code: var(--n-800);
+
+  /* Type */
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: var(--font);
+  background: var(--n-950);
+  color: var(--n-300);
+  line-height: 1.6;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════════════════════════
+   SIDEBAR NAVIGATION
+   ═══════════════════════════════════════════════════ */
+.sidebar {
+  width: 260px;
+  min-width: 260px;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--n-800);
+  padding: 24px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-logo {
+  padding: 0 24px 24px;
+  border-bottom: 1px solid var(--n-800);
+  margin-bottom: 16px;
+}
+
+.sidebar-logo h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+
+.sidebar-logo h1 span {
+  background: linear-gradient(135deg, var(--depth-l1), var(--depth-l5));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sidebar-logo p {
+  font-size: 11px;
+  color: var(--n-500);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 500;
+}
+
+.sidebar nav { flex: 1; }
+
+.sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 24px;
+  color: var(--n-400);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
+}
+
+.sidebar nav a:hover {
+  color: #fff;
+  background: rgba(255,255,255,0.04);
+}
+
+.sidebar nav a.active {
+  color: var(--brand-cyan);
+  border-left-color: var(--brand-cyan);
+  background: rgba(59,184,214,0.06);
+}
+
+.sidebar nav a .nav-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.sidebar-section-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--n-600);
+  padding: 20px 24px 8px;
+  font-weight: 600;
+}
+
+.sidebar-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--n-800);
+  margin-top: auto;
+}
+
+.sidebar-footer p {
+  font-size: 11px;
+  color: var(--n-600);
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════
+   MAIN CONTENT
+   ═══════════════════════════════════════════════════ */
+.main {
+  margin-left: 260px;
+  flex: 1;
+  background: var(--bg-canvas);
+  min-height: 100vh;
+}
+
+/* Hero */
+.hero {
+  background: var(--n-900);
+  padding: 80px 60px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(59,184,214,0.12) 0%, rgba(231,76,138,0.06) 50%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--depth-l1), var(--depth-l2), var(--depth-l3), var(--depth-l4), var(--depth-l5));
+}
+
+.hero h1 {
+  font-size: 42px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  position: relative;
+}
+
+.hero h1 span {
+  background: linear-gradient(135deg, var(--depth-l1), var(--depth-l5));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero .subtitle {
+  font-size: 18px;
+  color: var(--n-400);
+  margin-top: 12px;
+  font-weight: 400;
+  position: relative;
+  max-width: 600px;
+}
+
+.hero .version-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(59,184,214,0.12);
+  border: 1px solid rgba(59,184,214,0.2);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 12px;
+  color: var(--brand-cyan);
+  font-weight: 500;
+  margin-top: 20px;
+  position: relative;
+}
+
+/* Content sections */
+.content {
+  max-width: 1100px;
+  padding: 0 60px 100px;
+}
+
+section {
+  padding-top: 60px;
+}
+
+section h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--n-900);
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+section h2 .section-num {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--brand-cyan);
+  background: rgba(59,184,214,0.08);
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+section > .section-desc {
+  color: var(--n-500);
+  font-size: 15px;
+  margin-bottom: 32px;
+  max-width: 680px;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--n-800);
+  margin: 32px 0 16px;
+}
+
+h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--n-700);
+  margin: 20px 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+p { margin-bottom: 12px; color: var(--n-600); font-size: 14px; }
+
+/* ═══════════════════════════════════════════════════
+   COLOUR SWATCHES
+   ═══════════════════════════════════════════════════ */
+.swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  margin: 16px 0 24px;
+}
+
+.swatch {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  border: 1px solid var(--n-200);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.swatch:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.swatch-color {
+  height: 80px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding: 8px;
+}
+
+.swatch-info {
+  padding: 10px 12px;
+}
+
+.swatch-info .hex {
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: var(--n-800);
+}
+
+.swatch-info .label {
+  font-size: 11px;
+  color: var(--n-500);
+  margin-top: 2px;
+}
+
+/* Large depth gradient band */
+.depth-gradient-band {
+  height: 80px;
+  border-radius: 16px;
+  background: linear-gradient(90deg,
+    var(--depth-l1) 0%,
+    var(--depth-l2) 17%,
+    var(--depth-l3) 33%,
+    var(--depth-l4) 50%,
+    var(--depth-l5) 67%,
+    var(--depth-l6) 83%,
+    var(--depth-l7) 100%
+  );
+  margin: 16px 0;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 8px 8px;
+  justify-content: space-between;
+  box-shadow: 0 4px 20px rgba(59,184,214,0.15), 0 4px 20px rgba(231,76,138,0.15);
+}
+
+.depth-gradient-band .marker {
+  text-align: center;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  padding: 4px 8px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+}
+
+/* Neutral ramp */
+.neutral-ramp {
+  display: flex;
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 16px 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.neutral-ramp .chip {
+  flex: 1;
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  gap: 4px;
+}
+
+/* Do / Don't */
+.do-dont {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.do-dont-card {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--n-200);
+}
+
+.do-dont-card .header {
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.do-dont-card.do .header { background: rgba(52,211,153,0.1); color: #059669; }
+.do-dont-card.dont .header { background: rgba(239,68,68,0.08); color: #DC2626; }
+
+.do-dont-card .body {
+  padding: 16px;
+  font-size: 13px;
+  color: var(--n-600);
+  background: #fff;
+}
+
+.do-dont-card .body .example {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.do-dont-card.do .body .example { background: rgba(52,211,153,0.06); }
+.do-dont-card.dont .body .example { background: rgba(239,68,68,0.04); }
+
+
+/* ═══════════════════════════════════════════════════
+   TYPOGRAPHY
+   ═══════════════════════════════════════════════════ */
+.type-specimen {
+  margin: 16px 0;
+  border: 1px solid var(--n-200);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.type-row {
+  display: flex;
+  align-items: baseline;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--n-100);
+  gap: 20px;
+}
+
+.type-row:last-child { border-bottom: none; }
+
+.type-row .meta {
+  min-width: 160px;
+  flex-shrink: 0;
+}
+
+.type-row .meta .name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--n-800);
+}
+
+.type-row .meta .spec {
+  font-size: 11px;
+  color: var(--n-400);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+
+.type-row .sample {
+  color: var(--n-800);
+}
+
+/* ═══════════════════════════════════════════════════
+   NODE DESIGN
+   ═══════════════════════════════════════════════════ */
+.node-showcase {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin: 20px 0;
+  padding: 32px;
+  background: var(--n-50);
+  border-radius: 16px;
+  border: 1px solid var(--n-200);
+  justify-content: center;
+  align-items: flex-end;
+}
+
+/* Circle nodes (Human) */
+.node-circle {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.node-circle .circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.node-circle .circle .avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.node-circle .node-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--n-700);
+  text-align: center;
+  max-width: 100px;
+}
+
+.node-circle .node-sublabel {
+  font-size: 10px;
+  color: var(--n-400);
+  margin-top: -4px;
+}
+
+/* Status badge on node */
+.status-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #fff;
+  z-index: 2;
+}
+
+/* Hexagon nodes (AI) */
+.node-hex {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.hex-wrapper {
+  width: 82px;
+  height: 72px;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.hex-outer {
+  position: absolute;
+  inset: 0;
+}
+
+.hex-outer svg { width: 100%; height: 100%; }
+
+.hex-inner {
+  position: absolute;
+  inset: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 800;
+  color: #fff;
+  z-index: 1;
+  letter-spacing: -0.5px;
+}
+
+.node-hex .node-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--n-700);
+  text-align: center;
+  max-width: 100px;
+}
+
+.node-hex .node-sublabel {
+  font-size: 10px;
+  color: var(--n-400);
+  margin-top: -4px;
+}
+
+/* Zoom level showcase */
+.zoom-showcase {
+  display: flex;
+  align-items: flex-end;
+  gap: 40px;
+  margin: 20px 0;
+  padding: 32px;
+  background: var(--n-50);
+  border-radius: 16px;
+  border: 1px solid var(--n-200);
+  justify-content: center;
+}
+
+.zoom-level {
+  text-align: center;
+}
+
+.zoom-level .zoom-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--n-500);
+  margin-top: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.zoom-level .zoom-desc {
+  font-size: 10px;
+  color: var(--n-400);
+  margin-top: 2px;
+}
+
+/* Tiny dot */
+.dot-node {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+/* Small circle */
+.small-node {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  border: 2px solid;
+}
+
+/* Small hex */
+.small-hex {
+  width: 42px;
+  height: 36px;
+  position: relative;
+  margin: 0 auto;
+}
+
+/* ═══════════════════════════════════════════════════
+   EDGES & CONNECTIONS
+   ═══════════════════════════════════════════════════ */
+.edge-demo {
+  margin: 20px 0;
+  padding: 0;
+  background: var(--n-50);
+  border-radius: 16px;
+  border: 1px solid var(--n-200);
+  overflow: hidden;
+}
+
+.edge-canvas {
+  width: 100%;
+  height: auto;
+}
+
+/* ═══════════════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════════════ */
+.anim-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.anim-card {
+  background: #fff;
+  border: 1px solid var(--n-200);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.anim-card.full-width {
+  grid-column: 1 / -1;
+}
+
+.anim-preview {
+  height: 200px;
+  background: var(--n-900);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.anim-card.full-width .anim-preview {
+  height: 260px;
+}
+
+.anim-info {
+  padding: 16px 20px;
+}
+
+.anim-info h4 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--n-800);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.anim-info p {
+  font-size: 12px;
+  color: var(--n-500);
+  margin: 0;
+}
+
+.anim-info .use-when {
+  font-size: 11px;
+  color: var(--brand-cyan);
+  font-weight: 500;
+  margin-top: 6px;
+}
+
+/* Animation: Edge Flow */
+@keyframes flowDots {
+  0% { stroke-dashoffset: 24; }
+  100% { stroke-dashoffset: 0; }
+}
+
+.flow-line {
+  stroke-dasharray: 6 6;
+  animation: flowDots 0.8s linear infinite;
+}
+
+/* Animation: Node Pulse */
+@keyframes nodePulse {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(59,184,214,0.3)); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 16px rgba(59,184,214,0.6)); transform: scale(1.04); }
+}
+
+@keyframes nodePulseAttention {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(239,68,68,0.3)); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 18px rgba(239,68,68,0.6)); transform: scale(1.05); }
+}
+
+.pulse-active { animation: nodePulse 2s ease-in-out infinite; }
+.pulse-attention { animation: nodePulseAttention 1.5s ease-in-out infinite; }
+
+/* Animation: Drill Down */
+@keyframes drillFadeOut {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.8); }
+}
+
+@keyframes drillFadeIn {
+  0% { opacity: 0; transform: scale(1.3); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Animation: Status Change */
+@keyframes statusTransition {
+  0% { background: var(--n-500); border-color: var(--n-500); }
+  25% { background: var(--status-ready); border-color: var(--status-ready); }
+  50% { background: var(--status-active); border-color: var(--status-active); }
+  75% { background: var(--status-done); border-color: var(--status-done); }
+  100% { background: var(--status-done); border-color: var(--status-done); }
+}
+
+.status-cycle {
+  animation: statusTransition 4s ease-in-out infinite;
+}
+
+/* Animation: Graph Build */
+@keyframes buildAppear {
+  0% { opacity: 0; transform: scale(0.3) translateY(10px); }
+  70% { opacity: 1; transform: scale(1.08) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Animation: Skeleton Shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--n-700) 25%, var(--n-600) 50%, var(--n-700) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+.skeleton-circle {
+  border-radius: 50%;
+  background: linear-gradient(90deg, var(--n-700) 25%, var(--n-600) 50%, var(--n-700) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.skeleton-hex {
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  background: linear-gradient(90deg, var(--n-700) 25%, var(--n-600) 50%, var(--n-700) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Drill animation stateful */
+.drill-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drill-container .level {
+  position: absolute;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.drill-container .level.hidden-up {
+  opacity: 0;
+  transform: scale(0.7);
+  pointer-events: none;
+}
+
+.drill-container .level.hidden-down {
+  opacity: 0;
+  transform: scale(1.4);
+  pointer-events: none;
+}
+
+.drill-container .level.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ═══════════════════════════════════════════════════
+   COMPONENT PATTERNS
+   ═══════════════════════════════════════════════════ */
+.component-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 12px 0;
+  align-items: center;
+}
+
+/* Breadcrumbs */
+.breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #fff;
+  border: 1px solid var(--n-200);
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.breadcrumb .crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--n-500);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.breadcrumb .crumb:hover { color: var(--n-800); }
+
+.breadcrumb .crumb.current { color: var(--n-800); font-weight: 600; }
+
+.breadcrumb .crumb .depth-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.breadcrumb .sep {
+  color: var(--n-300);
+  font-size: 11px;
+}
+
+/* Filter pills */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1.5px solid;
+}
+
+.pill.inactive {
+  background: transparent;
+  border-color: var(--n-300);
+  color: var(--n-500);
+}
+
+.pill.inactive:hover {
+  border-color: var(--n-400);
+  color: var(--n-700);
+}
+
+.pill.active-done {
+  background: rgba(52,211,153,0.1);
+  border-color: var(--status-done);
+  color: #059669;
+}
+
+.pill.active-active {
+  background: rgba(59,184,214,0.1);
+  border-color: var(--status-active);
+  color: #0891B2;
+}
+
+.pill.active-ready {
+  background: rgba(251,191,36,0.1);
+  border-color: var(--status-ready);
+  color: #D97706;
+}
+
+.pill.active-attention {
+  background: rgba(239,68,68,0.08);
+  border-color: var(--status-attention);
+  color: #DC2626;
+}
+
+.pill .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+/* Status badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge-done { background: rgba(52,211,153,0.12); color: #059669; }
+.badge-active { background: rgba(59,184,214,0.12); color: #0891B2; }
+.badge-ready { background: rgba(251,191,36,0.12); color: #D97706; }
+.badge-attention { background: rgba(239,68,68,0.1); color: #DC2626; }
+.badge-pending { background: var(--n-100); color: var(--n-500); }
+
+.badge .badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+/* Tab bar */
+.tab-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--n-200);
+  margin: 12px 0;
+}
+
+.tab-bar .tab {
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--n-500);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.15s;
+}
+
+.tab-bar .tab:hover { color: var(--n-700); }
+
+.tab-bar .tab.active {
+  color: var(--brand-cyan);
+  border-bottom-color: var(--brand-cyan);
+  font-weight: 600;
+}
+
+/* Panel layout demo */
+.panel-demo {
+  display: flex;
+  border: 1px solid var(--n-200);
+  border-radius: 12px;
+  overflow: hidden;
+  height: 240px;
+  margin: 16px 0;
+  background: #fff;
+}
+
+.panel-demo .panel {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--n-200);
+}
+
+.panel-demo .panel:last-child { border-right: none; }
+
+.panel-demo .panel-header {
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--n-700);
+  border-bottom: 1px solid var(--n-100);
+  background: var(--n-50);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-demo .panel-body {
+  flex: 1;
+  padding: 12px 14px;
+  overflow: hidden;
+}
+
+.panel-demo .panel-body .line {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--n-100);
+  margin-bottom: 8px;
+}
+
+.panel-demo .panel-body .line.short { width: 60%; }
+.panel-demo .panel-body .line.medium { width: 80%; }
+
+/* Collapse affordance */
+.collapse-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid var(--n-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: var(--n-400);
+  cursor: pointer;
+  background: #fff;
+}
+
+/* ═══════════════════════════════════════════════════
+   DARK MODE COMPARISON
+   ═══════════════════════════════════════════════════ */
+.mode-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.mode-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid;
+}
+
+.mode-card.light {
+  background: #fff;
+  border-color: var(--n-200);
+}
+
+.mode-card.dark {
+  background: var(--n-900);
+  border-color: var(--n-700);
+}
+
+.mode-card .mode-header {
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.mode-card.light .mode-header {
+  color: var(--n-800);
+  background: var(--n-50);
+  border-bottom: 1px solid var(--n-200);
+}
+
+.mode-card.dark .mode-header {
+  color: var(--n-300);
+  background: var(--n-800);
+  border-bottom: 1px solid var(--n-700);
+}
+
+.mode-card .mode-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ═══════════════════════════════════════════════════
+   PHILOSOPHY CARDS
+   ═══════════════════════════════════════════════════ */
+.philosophy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin: 32px 0;
+}
+
+.phil-card {
+  background: var(--n-800);
+  border: 1px solid var(--n-700);
+  border-radius: 16px;
+  padding: 24px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.phil-card:hover {
+  border-color: var(--n-600);
+  transform: translateY(-2px);
+}
+
+.phil-card .phil-icon {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.phil-card .phil-quote {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.phil-card .phil-desc {
+  font-size: 13px;
+  color: var(--n-400);
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════
+   UTILITY
+   ═══════════════════════════════════════════════════ */
+.card {
+  background: #fff;
+  border: 1px solid var(--n-200);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 12px 0;
+}
+
+.inline-code {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 12px;
+  background: var(--n-100);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--n-700);
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--n-200);
+  margin: 40px 0 0;
+}
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.rule-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin: 12px 0;
+}
+
+.rule-table th {
+  text-align: left;
+  padding: 10px 14px;
+  background: var(--n-50);
+  color: var(--n-700);
+  font-weight: 600;
+  border-bottom: 2px solid var(--n-200);
+}
+
+.rule-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--n-100);
+  color: var(--n-600);
+}
+
+.rule-table td:first-child { font-weight: 500; color: var(--n-700); }
+
+/* Footer */
+.footer {
+  padding: 60px;
+  text-align: center;
+  background: var(--n-900);
+  border-top: 1px solid var(--n-800);
+  margin-top: 60px;
+}
+
+.footer svg {
+  opacity: 0.4;
+  transition: opacity 0.3s;
+}
+
+.footer svg:hover { opacity: 0.7; }
+
+.footer p {
+  color: var(--n-600);
+  font-size: 12px;
+  margin-top: 16px;
+}
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .sidebar { width: 60px; min-width: 60px; }
+  .sidebar-logo h1, .sidebar-logo p, .sidebar nav a span, .sidebar-section-label,
+  .sidebar-footer { display: none; }
+  .sidebar-logo { padding: 12px; }
+  .sidebar nav a { justify-content: center; padding: 12px; }
+  .main { margin-left: 60px; }
+  .hero, .content { padding-left: 32px; padding-right: 32px; }
+  .anim-section { grid-template-columns: 1fr; }
+  .mode-comparison { grid-template-columns: 1fr; }
+  .do-dont { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     SIDEBAR
+     ═══════════════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1><span>DeepFlow</span></h1>
+    <p>Design System v1.0</p>
+  </div>
+  <nav>
+    <div class="sidebar-section-label">Foundations</div>
+    <a href="#philosophy" class="active"><span class="nav-dot" style="background:var(--brand-cyan)"></span> <span>Philosophy</span></a>
+    <a href="#colours"><span class="nav-dot" style="background:var(--depth-l3)"></span> <span>Colour System</span></a>
+    <a href="#typography"><span class="nav-dot" style="background:var(--depth-l2)"></span> <span>Typography</span></a>
+
+    <div class="sidebar-section-label">Graph Elements</div>
+    <a href="#nodes"><span class="nav-dot" style="background:var(--depth-l4)"></span> <span>Node Design</span></a>
+    <a href="#edges"><span class="nav-dot" style="background:var(--depth-l5)"></span> <span>Edges &amp; Connections</span></a>
+    <a href="#animations"><span class="nav-dot" style="background:var(--brand-pink)"></span> <span>Animation</span></a>
+
+    <div class="sidebar-section-label">Interface</div>
+    <a href="#components"><span class="nav-dot" style="background:var(--depth-l1)"></span> <span>Components</span></a>
+    <a href="#workspace"><span class="nav-dot" style="background:var(--depth-l2)"></span> <span>Workspace</span></a>
+    <a href="#themes"><span class="nav-dot" style="background:var(--depth-l3)"></span> <span>Themes</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <p>Prepared by<br>Enriched Solutions</p>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════════
+     MAIN CONTENT
+     ═══════════════════════════════════════════════════ -->
+<main class="main">
+
+  <!-- HERO -->
+  <header class="hero" id="philosophy">
+    <h1>Design System<br>&amp; <span>Style Guide</span></h1>
+    <p class="subtitle">A living design system proposal for DeepFlow's visual redesign — colour, type, nodes, edges, motion, and layout.</p>
+    <div class="version-badge">● Proposal v1.0 — March 2026</div>
+  </header>
+
+  <!-- PHILOSOPHY -->
+  <div style="background: var(--n-900); padding: 0 60px 60px;">
+    <div class="philosophy-grid" style="max-width:1100px;">
+      <div class="phil-card">
+        <div class="phil-icon">⚡</div>
+        <div class="phil-quote">"Powerful enough for enterprise, friendly enough for first day."</div>
+        <div class="phil-desc">Complexity exists to serve, never to impress. Every interaction should feel learnable within one session, while power users discover depth over months.</div>
+      </div>
+      <div class="phil-card">
+        <div class="phil-icon">🎨</div>
+        <div class="phil-quote">"Colour is data, not decoration."</div>
+        <div class="phil-desc">Every fill, border, and gradient encodes information — depth level, status, or type. Eliminate decorative colour that doesn't carry meaning.</div>
+      </div>
+      <div class="phil-card">
+        <div class="phil-icon">◇</div>
+        <div class="phil-quote">"The graph is the hero — everything else supports it."</div>
+        <div class="phil-desc">The workflow canvas is the flagship surface. It should be the most visually refined, most informative, and most engaging screen in the product.</div>
+      </div>
+      <div class="phil-card">
+        <div class="phil-icon">✦</div>
+        <div class="phil-quote">"Animation communicates life and progress."</div>
+        <div class="phil-desc">Flowing edges, pulsing nodes, and smooth transitions tell users "the system is alive and working." Static diagrams feel dead. Orchestration platforms should feel orchestrated.</div>
+      </div>
+      <div class="phil-card">
+        <div class="phil-icon">🔷</div>
+        <div class="phil-quote">"Depth is colour — your position is always visible."</div>
+        <div class="phil-desc">Blue is strategic. Pink is tactical. Your position in the hierarchy is encoded in every surface — nodes, badges, breadcrumbs, the sidebar. You always know where you are.</div>
+      </div>
+      <div class="phil-card">
+        <div class="phil-icon">⬡</div>
+        <div class="phil-quote">"Shape is identity — who does this is always clear."</div>
+        <div class="phil-desc">Circles are human. Hexagons are AI. Two independent visual dimensions — shape for WHO, colour for WHERE — let you scan a graph and instantly understand the human/AI balance at any depth.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══════════════════════════════════════════════
+         1. COLOUR SYSTEM
+         ═══════════════════════════════════════════════ -->
+    <section id="colours">
+      <h2><span class="section-num">01</span> Colour System</h2>
+      <p class="section-desc">Colour in DeepFlow is structural, not cosmetic. The depth gradient, status palette, and neutral ramp form three independent systems that layer without conflict.</p>
+
+      <h3>Depth Gradient</h3>
+      <p>The signature colour system. Hierarchical depth maps to a blue→red gradient. L1 (strategic) is cool cyan; L5+ (atomic tasks) is warm pink/red. Every node, badge, breadcrumb segment, and 3D overview layer reflects its depth.</p>
+
+      <div class="depth-gradient-band">
+        <div class="marker">L1</div>
+        <div class="marker">L2</div>
+        <div class="marker">L3</div>
+        <div class="marker">L4</div>
+        <div class="marker">L5</div>
+        <div class="marker">L6</div>
+        <div class="marker">L7</div>
+      </div>
+
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#3BB8D6"></div>
+          <div class="swatch-info">
+            <div class="hex">#3BB8D6</div>
+            <div class="label">L1 — Strategic</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#5B8FE6"></div>
+          <div class="swatch-info">
+            <div class="hex">#5B8FE6</div>
+            <div class="label">L2 — Tactical</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#8B6CE0"></div>
+          <div class="swatch-info">
+            <div class="hex">#8B6CE0</div>
+            <div class="label">L3 — Operational</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#C24EBF"></div>
+          <div class="swatch-info">
+            <div class="hex">#C24EBF</div>
+            <div class="label">L4 — Task</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#E74C8A"></div>
+          <div class="swatch-info">
+            <div class="hex">#E74C8A</div>
+            <div class="label">L5 — Sub-task</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#F04060"></div>
+          <div class="swatch-info">
+            <div class="hex">#F04060</div>
+            <div class="label">L6 — Detail</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#F53838"></div>
+          <div class="swatch-info">
+            <div class="hex">#F53838</div>
+            <div class="label">L7 — Atomic</div>
+          </div>
+        </div>
+      </div>
+
+      <h4>Depth colour usage rules</h4>
+      <table class="rule-table">
+        <thead><tr><th>Element</th><th>How depth colour applies</th></tr></thead>
+        <tbody>
+          <tr><td>Node border / fill tint</td><td>Primary depth indicator — always matches the node's level</td></tr>
+          <tr><td>Breadcrumb segment dot</td><td>Each crumb shows the depth colour of its level</td></tr>
+          <tr><td>Level badge (L1, L2…)</td><td>Background colour matches the level</td></tr>
+          <tr><td>3D overview planes</td><td>Each plane tinted with its level colour</td></tr>
+          <tr><td>Connection lines</td><td>Take the colour of the <em>source</em> node's depth level</td></tr>
+        </tbody>
+      </table>
+
+      <div class="do-dont">
+        <div class="do-dont-card do">
+          <div class="header">✓ Do</div>
+          <div class="body">
+            Use depth colour to reinforce hierarchy. When a user drills from L1→L3, the entire canvas should shift from cool blue to warm purple — an ambient signal of depth.
+            <div class="example" style="display:flex; gap:6px;">
+              <span style="width:20px;height:20px;border-radius:50%;background:var(--depth-l1)"></span>
+              <span style="width:20px;height:20px;border-radius:50%;background:var(--depth-l3)"></span>
+              <span style="width:20px;height:20px;border-radius:50%;background:var(--depth-l5)"></span>
+              <span style="font-size:12px;color:var(--n-500);align-self:center;margin-left:4px;">Consistent gradient progression</span>
+            </div>
+          </div>
+        </div>
+        <div class="do-dont-card dont">
+          <div class="header">✕ Don't</div>
+          <div class="body">
+            Never use depth colours for status or arbitrary decoration. A cyan node must mean L1 — not "active." Status has its own independent colour channel.
+            <div class="example">
+              <span style="font-size:12px;color:var(--n-500);">❌ Cyan border = "in progress" — conflicts with L1 depth meaning</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <h3>Status Colours</h3>
+      <p>Status colours communicate task state. They sit alongside depth colour without conflict — status appears as border glow, badge, or icon background; depth appears as fill tint.</p>
+
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#34D399"></div>
+          <div class="swatch-info">
+            <div class="hex">#34D399</div>
+            <div class="label">Done — Complete</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#3BB8D6"></div>
+          <div class="swatch-info">
+            <div class="hex">#3BB8D6</div>
+            <div class="label">Active — In progress</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#FBBF24"></div>
+          <div class="swatch-info">
+            <div class="hex">#FBBF24</div>
+            <div class="label">Ready — Awaiting start</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#EF4444"></div>
+          <div class="swatch-info">
+            <div class="hex">#EF4444</div>
+            <div class="label">Needs Attention — Failed / blocked</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#6B7280"></div>
+          <div class="swatch-info">
+            <div class="hex">#6B7280</div>
+            <div class="label">Pending — Not started</div>
+          </div>
+        </div>
+      </div>
+
+      <h4>Status encoding on nodes</h4>
+      <table class="rule-table">
+        <thead><tr><th>Encoding</th><th>Usage</th></tr></thead>
+        <tbody>
+          <tr><td>Border glow</td><td>Primary status signal — a soft coloured glow surrounds the node</td></tr>
+          <tr><td>Badge icon</td><td>Small ✓ / ▶ / ⚠ / ✕ badge at top-right of node</td></tr>
+          <tr><td>Progress ring (circle nodes)</td><td>For human tasks — a partial arc around the circle showing % complete</td></tr>
+          <tr><td>Edge colour</td><td>Downstream edges from a failed node turn red-dashed</td></tr>
+        </tbody>
+      </table>
+
+      <div class="do-dont">
+        <div class="do-dont-card do">
+          <div class="header">✓ Do</div>
+          <div class="body">
+            Double-encode status: colour + shape icon. This ensures accessibility for colour-blind users. A green checkmark, amber triangle, red cross.
+          </div>
+        </div>
+        <div class="do-dont-card dont">
+          <div class="header">✕ Don't</div>
+          <div class="body">
+            Never rely on colour alone for status. A red border without an icon or label is insufficient — ~8% of male users can't distinguish red from green.
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <h3>Neutral Palette</h3>
+      <p>A 10-step neutral ramp from near-black (sidebar) to near-white (canvas background). All greys are cool-toned with a subtle blue undertone to harmonise with the brand cyan.</p>
+
+      <div class="neutral-ramp">
+        <div class="chip" style="background:var(--n-950); color:var(--n-400)">
+          <span>950</span><span>#0A0C14</span>
+        </div>
+        <div class="chip" style="background:var(--n-900); color:var(--n-400)">
+          <span>900</span><span>#111322</span>
+        </div>
+        <div class="chip" style="background:var(--n-800); color:var(--n-400)">
+          <span>800</span><span>#1A1D30</span>
+        </div>
+        <div class="chip" style="background:var(--n-700); color:var(--n-300)">
+          <span>700</span><span>#252940</span>
+        </div>
+        <div class="chip" style="background:var(--n-600); color:var(--n-200)">
+          <span>600</span><span>#3A3F5A</span>
+        </div>
+        <div class="chip" style="background:var(--n-500); color:#fff">
+          <span>500</span><span>#6B7280</span>
+        </div>
+        <div class="chip" style="background:var(--n-400); color:#fff">
+          <span>400</span><span>#9CA3AF</span>
+        </div>
+        <div class="chip" style="background:var(--n-300); color:var(--n-700)">
+          <span>300</span><span>#D1D5DB</span>
+        </div>
+        <div class="chip" style="background:var(--n-200); color:var(--n-700)">
+          <span>200</span><span>#E5E7EB</span>
+        </div>
+        <div class="chip" style="background:var(--n-100); color:var(--n-600)">
+          <span>100</span><span>#F3F4F6</span>
+        </div>
+      </div>
+
+      <table class="rule-table">
+        <thead><tr><th>Token</th><th>Usage</th></tr></thead>
+        <tbody>
+          <tr><td>N-950, N-900</td><td>Sidebar background, 3D overview background, dark overlays</td></tr>
+          <tr><td>N-800</td><td>Sidebar borders, code block backgrounds, tooltip backgrounds</td></tr>
+          <tr><td>N-700</td><td>Inactive sidebar items, dark dividers</td></tr>
+          <tr><td>N-500</td><td>Secondary text, placeholder text, muted icons</td></tr>
+          <tr><td>N-300</td><td>Borders in light mode, dividers, disabled states</td></tr>
+          <tr><td>N-100, N-50</td><td>Canvas background, panel backgrounds, table header fills</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         2. TYPOGRAPHY
+         ═══════════════════════════════════════════════ -->
+    <section id="typography">
+      <h2><span class="section-num">02</span> Typography</h2>
+      <p class="section-desc">Inter is the primary typeface — geometric, highly legible, and designed for screens. The type scale uses 5 levels with strict weight rules to create clear visual hierarchy.</p>
+
+      <h3>Type Scale</h3>
+      <div class="type-specimen">
+        <div class="type-row">
+          <div class="meta">
+            <div class="name">Display</div>
+            <div class="spec">36px / 800 / -0.8px</div>
+          </div>
+          <div class="sample" style="font-size:36px; font-weight:800; letter-spacing:-0.8px; color:var(--n-900);">Build ICAAP Document</div>
+        </div>
+        <div class="type-row">
+          <div class="meta">
+            <div class="name">Heading 1</div>
+            <div class="spec">24px / 700 / -0.5px</div>
+          </div>
+          <div class="sample" style="font-size:24px; font-weight:700; letter-spacing:-0.5px; color:var(--n-900);">Project Overview</div>
+        </div>
+        <div class="type-row">
+          <div class="meta">
+            <div class="name">Heading 2</div>
+            <div class="spec">18px / 600 / -0.3px</div>
+          </div>
+          <div class="sample" style="font-size:18px; font-weight:600; letter-spacing:-0.3px; color:var(--n-800);">Workflow Configuration</div>
+        </div>
+        <div class="type-row">
+          <div class="meta">
+            <div class="name">Body</div>
+            <div class="spec">14px / 400 / 0</div>
+          </div>
+          <div class="sample" style="font-size:14px; font-weight:400; color:var(--n-600);">DeepFlow turned your idea into a structured task map. Tasks on the left happen first. Lines show which tasks depend on others.</div>
+        </div>
+        <div class="type-row">
+          <div class="meta">
+            <div class="name">Caption</div>
+            <div class="spec">12px / 500 / 0</div>
+          </div>
+          <div class="sample" style="font-size:12px; font-weight:500; color:var(--n-500);">Last updated 3 hours ago · 12 tasks · 4 agents</div>
+        </div>
+      </div>
+
+      <h3>Weight Rules</h3>
+      <table class="rule-table">
+        <thead><tr><th>Weight</th><th>Value</th><th>Usage</th></tr></thead>
+        <tbody>
+          <tr><td>Light</td><td>300</td><td>Large display text only (hero banners). Never for body or captions.</td></tr>
+          <tr><td>Regular</td><td>400</td><td>Body text, descriptions, chat messages, long-form content.</td></tr>
+          <tr><td>Medium</td><td>500</td><td>Captions, labels, sidebar items, table headers, button text.</td></tr>
+          <tr><td>Semibold</td><td>600</td><td>H2, H3, tab labels, badge text, emphasis in body.</td></tr>
+          <tr><td>Bold</td><td>700</td><td>H1, page titles, project names, primary identifiers.</td></tr>
+          <tr><td>Extra Bold</td><td>800</td><td>Display type and hero text only. Used sparingly for impact.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Font Stack</h3>
+      <div class="card">
+        <p style="font-family:monospace; font-size:13px; color:var(--n-700); margin:0;">
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        </p>
+        <p style="font-size:12px; color:var(--n-400); margin: 8px 0 0;">
+          Monospace for code/hex values: <span class="inline-code">'SF Mono', 'Fira Code', 'Cascadia Code', monospace</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         3. NODE DESIGN
+         ═══════════════════════════════════════════════ -->
+    <section id="nodes">
+      <h2><span class="section-num">03</span> Node Design</h2>
+      <p class="section-desc">Two shapes encode assignment type. <strong>Circles = Human tasks</strong> (person's avatar/initials). <strong>Hexagons = AI/Agent tasks</strong> (agent logo/letters). Shape tells you WHO — colour tells you WHERE in the hierarchy.</p>
+
+      <h3>Shape × Depth Matrix</h3>
+      <p>Every combination of assignment type and depth level. The border colour reflects depth; the interior carries the assignee identity.</p>
+
+      <div class="node-showcase">
+        <!-- L1 Human -->
+        <div class="node-circle">
+          <div class="circle" style="border-color:#3BB8D6; background: rgba(59,184,214,0.1);">
+            <div class="avatar" style="color:#3BB8D6;">AP</div>
+            <div class="status-badge" style="background:var(--status-done);">✓</div>
+          </div>
+          <div class="node-label">L1 Human</div>
+          <div class="node-sublabel">Circle · Cyan</div>
+        </div>
+
+        <!-- L1 AI -->
+        <div class="node-hex">
+          <div class="hex-wrapper">
+            <div class="hex-outer">
+              <svg viewBox="0 0 82 72" fill="none">
+                <path d="M41 2 L78 19 L78 53 L41 70 L4 53 L4 19 Z" stroke="#3BB8D6" stroke-width="3" fill="rgba(59,184,214,0.1)"/>
+              </svg>
+            </div>
+            <div class="hex-inner" style="color:#3BB8D6;">DF</div>
+            <div class="status-badge" style="background:var(--status-active); right:2px; top:0px;">▶</div>
+          </div>
+          <div class="node-label">L1 Agent</div>
+          <div class="node-sublabel">Hexagon · Cyan</div>
+        </div>
+
+        <!-- L2 Human -->
+        <div class="node-circle">
+          <div class="circle" style="border-color:#5B8FE6; background: rgba(91,143,230,0.1);">
+            <div class="avatar" style="color:#5B8FE6;">JR</div>
+          </div>
+          <div class="node-label">L2 Human</div>
+          <div class="node-sublabel">Circle · Blue</div>
+        </div>
+
+        <!-- L2 AI -->
+        <div class="node-hex">
+          <div class="hex-wrapper">
+            <div class="hex-outer">
+              <svg viewBox="0 0 82 72" fill="none">
+                <path d="M41 2 L78 19 L78 53 L41 70 L4 53 L4 19 Z" stroke="#5B8FE6" stroke-width="3" fill="rgba(91,143,230,0.1)"/>
+              </svg>
+            </div>
+            <div class="hex-inner" style="color:#5B8FE6;">OA</div>
+            <div class="status-badge" style="background:var(--status-done); right:2px; top:0px;">✓</div>
+          </div>
+          <div class="node-label">L2 Agent</div>
+          <div class="node-sublabel">Hexagon · Blue</div>
+        </div>
+
+        <!-- L3 Human -->
+        <div class="node-circle">
+          <div class="circle" style="border-color:#8B6CE0; background: rgba(139,108,224,0.1);">
+            <div class="avatar" style="color:#8B6CE0;">MK</div>
+            <div class="status-badge" style="background:var(--status-ready);">◆</div>
+          </div>
+          <div class="node-label">L3 Human</div>
+          <div class="node-sublabel">Circle · Purple</div>
+        </div>
+
+        <!-- L3 AI -->
+        <div class="node-hex">
+          <div class="hex-wrapper">
+            <div class="hex-outer">
+              <svg viewBox="0 0 82 72" fill="none">
+                <path d="M41 2 L78 19 L78 53 L41 70 L4 53 L4 19 Z" stroke="#8B6CE0" stroke-width="3" fill="rgba(139,108,224,0.1)"/>
+              </svg>
+            </div>
+            <div class="hex-inner" style="color:#8B6CE0;">RA</div>
+          </div>
+          <div class="node-label">L3 Agent</div>
+          <div class="node-sublabel">Hexagon · Purple</div>
+        </div>
+
+        <!-- L4 Human -->
+        <div class="node-circle">
+          <div class="circle" style="border-color:#C24EBF; background: rgba(194,78,191,0.1);">
+            <div class="avatar" style="color:#C24EBF;">SL</div>
+            <div class="status-badge" style="background:var(--status-attention);">✕</div>
+          </div>
+          <div class="node-label">L4 Human</div>
+          <div class="node-sublabel">Circle · Magenta</div>
+        </div>
+
+        <!-- L4 AI -->
+        <div class="node-hex">
+          <div class="hex-wrapper">
+            <div class="hex-outer">
+              <svg viewBox="0 0 82 72" fill="none">
+                <path d="M41 2 L78 19 L78 53 L41 70 L4 53 L4 19 Z" stroke="#C24EBF" stroke-width="3" fill="rgba(194,78,191,0.1)"/>
+              </svg>
+            </div>
+            <div class="hex-inner" style="color:#C24EBF;">WA</div>
+            <div class="status-badge" style="background:var(--status-pending); right:2px; top:0px;">◻</div>
+          </div>
+          <div class="node-label">L4 Agent</div>
+          <div class="node-sublabel">Hexagon · Magenta</div>
+        </div>
+
+        <!-- L5 Human -->
+        <div class="node-circle">
+          <div class="circle" style="border-color:#E74C8A; background: rgba(231,76,138,0.1);">
+            <div class="avatar" style="color:#E74C8A;">NW</div>
+          </div>
+          <div class="node-label">L5 Human</div>
+          <div class="node-sublabel">Circle · Pink</div>
+        </div>
+
+        <!-- L5 AI -->
+        <div class="node-hex">
+          <div class="hex-wrapper">
+            <div class="hex-outer">
+              <svg viewBox="0 0 82 72" fill="none">
+                <path d="M41 2 L78 19 L78 53 L41 70 L4 53 L4 19 Z" stroke="#E74C8A" stroke-width="3" fill="rgba(231,76,138,0.1)"/>
+              </svg>
+            </div>
+            <div class="hex-inner" style="color:#E74C8A;">CA</div>
+            <div class="status-badge" style="background:var(--status-active); right:2px; top:0px;">▶</div>
+          </div>
+          <div class="node-label">L5 Agent</div>
+          <div class="node-sublabel">Hexagon · Pink</div>
+        </div>
+      </div>
+
+      <h3>Encoding Rules</h3>
+      <table class="rule-table">
+        <thead><tr><th>Dimension</th><th>Visual Channel</th><th>Examples</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Who</strong> (Assignment)</td><td>Shape</td><td>Circle = human, Hexagon = AI agent</td></tr>
+          <tr><td><strong>Where</strong> (Depth)</td><td>Border colour + fill tint</td><td>Cyan = L1, Purple = L3, Pink = L5</td></tr>
+          <tr><td><strong>What state</strong> (Status)</td><td>Badge icon + glow</td><td>✓ green = done, ▶ cyan = active, ✕ red = failed</td></tr>
+          <tr><td><strong>Identity</strong></td><td>Interior content</td><td>Human: avatar/initials. Agent: agent logo/letters</td></tr>
+          <tr><td><strong>Has children</strong></td><td>Small depth badge</td><td>"▾ 8" on bottom edge = 8 sub-tasks drillable</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Zoom Levels — Progressive Detail</h3>
+      <p>Nodes render differently at each zoom level. Shape distinction (circle vs hexagon) survives at every zoom — this is critical for scanning the human/AI balance.</p>
+
+      <div class="zoom-showcase">
+        <!-- Far zoom -->
+        <div class="zoom-level">
+          <div style="display:flex; gap:16px; align-items:center; justify-content:center; min-height:80px;">
+            <div class="dot-node" style="background:var(--depth-l1);"></div>
+            <div style="width:14px;height:12px;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);background:var(--depth-l1);"></div>
+            <div class="dot-node" style="background:var(--depth-l3);"></div>
+            <div style="width:14px;height:12px;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);background:var(--depth-l5);"></div>
+          </div>
+          <div class="zoom-label">Far (< 0.3×)</div>
+          <div class="zoom-desc">Colour dot/hex only</div>
+        </div>
+
+        <!-- Medium zoom -->
+        <div class="zoom-level">
+          <div style="display:flex; gap:16px; align-items:center; justify-content:center; min-height:80px;">
+            <div style="text-align:center;">
+              <div class="small-node" style="border-color:var(--depth-l1); background:rgba(59,184,214,0.1); color:var(--depth-l1);">AP</div>
+              <div style="font-size:9px;color:var(--n-500);margin-top:4px;">Review</div>
+            </div>
+            <div style="text-align:center;">
+              <div class="small-hex">
+                <svg viewBox="0 0 42 36" style="width:42px;height:36px;"><path d="M21 1 L40 10 L40 26 L21 35 L2 26 L2 10 Z" stroke="var(--depth-l3)" stroke-width="2" fill="rgba(139,108,224,0.1)"/></svg>
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--depth-l3);">OA</div>
+              </div>
+              <div style="font-size:9px;color:var(--n-500);margin-top:4px;">Analyse</div>
+            </div>
+          </div>
+          <div class="zoom-label">Medium (0.3–0.7×)</div>
+          <div class="zoom-desc">Shape + initials + title</div>
+        </div>
+
+        <!-- Close zoom -->
+        <div class="zoom-level">
+          <div style="display:flex; gap:20px; align-items:center; justify-content:center; min-height:80px;">
+            <div class="node-circle" style="gap:4px;">
+              <div class="circle" style="border-color:#3BB8D6; background:rgba(59,184,214,0.1); width:56px; height:56px;">
+                <div class="avatar" style="color:#3BB8D6; font-size:17px;">AP</div>
+                <div class="status-badge" style="background:var(--status-done); width:16px; height:16px; font-size:8px;">✓</div>
+              </div>
+              <div style="font-size:10px;font-weight:600;color:var(--n-700);">Review Brief</div>
+              <div style="font-size:9px;color:var(--n-400);">Ali Panju</div>
+            </div>
+            <div class="node-hex" style="gap:4px;">
+              <div class="hex-wrapper" style="width:64px;height:56px;">
+                <svg viewBox="0 0 82 72" style="width:100%;height:100%;"><path d="M41 2 L78 19 L78 53 L41 70 L4 53 L4 19 Z" stroke="#E74C8A" stroke-width="3" fill="rgba(231,76,138,0.1)"/></svg>
+                <div style="position:absolute;inset:6px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#E74C8A;">CA</div>
+                <div class="status-badge" style="background:var(--status-active); right:2px; top:0px; width:16px; height:16px; font-size:8px;">▶</div>
+              </div>
+              <div style="font-size:10px;font-weight:600;color:var(--n-700);">Generate Report</div>
+              <div style="font-size:9px;color:var(--n-400);">Coding Agent</div>
+            </div>
+          </div>
+          <div class="zoom-label">Close (> 0.7×)</div>
+          <div class="zoom-desc">Full detail + name + assignee</div>
+        </div>
+      </div>
+
+      <h3>Status Glow Examples</h3>
+      <p>Status glow wraps the node regardless of shape. It's the primary "scan-level" status signal — visible even before reading badges.</p>
+      <div class="node-showcase" style="padding: 40px 32px;">
+        <!-- Done glow -->
+        <div class="node-circle">
+          <div class="circle" style="border-color:#3BB8D6; background:rgba(59,184,214,0.1); box-shadow: 0 0 0 3px rgba(52,211,153,0.25), 0 0 12px rgba(52,211,153,0.15);">
+            <div class="avatar" style="color:#3BB8D6; font-size:18px;">✓</div>
+          </div>
+          <div class="node-label">Done</div>
+          <div class="node-sublabel">Green glow</div>
+        </div>
+
+        <div class="node-hex">
+          <div class="hex-wrapper pulse-active">
+            <div class="hex-outer">
+              <svg viewBox="0 0 82 72" fill="none"><path d="M41 2 L78 19 L78 53 L41 70 L4 53 L4 19 Z" stroke="#5B8FE6" stroke-width="3" fill="rgba(91,143,230,0.1)"/></svg>
+            </div>
+            <div class="hex-inner" style="color:#5B8FE6;">▶</div>
+          </div>
+          <div class="node-label">Active</div>
+          <div class="node-sublabel">Cyan pulse</div>
+        </div>
+
+        <div class="node-circle">
+          <div class="circle" style="border-color:#8B6CE0; background:rgba(139,108,224,0.1); box-shadow: 0 0 0 3px rgba(251,191,36,0.25), 0 0 12px rgba(251,191,36,0.15);">
+            <div class="avatar" style="color:#8B6CE0; font-size:16px;">◆</div>
+          </div>
+          <div class="node-label">Ready</div>
+          <div class="node-sublabel">Amber glow</div>
+        </div>
+
+        <div class="node-hex">
+          <div class="hex-wrapper pulse-attention">
+            <div class="hex-outer">
+              <svg viewBox="0 0 82 72" fill="none"><path d="M41 2 L78 19 L78 53 L41 70 L4 53 L4 19 Z" stroke="#E74C8A" stroke-width="3" fill="rgba(231,76,138,0.1)"/></svg>
+            </div>
+            <div class="hex-inner" style="color:#E74C8A;">✕</div>
+          </div>
+          <div class="node-label">Needs Attention</div>
+          <div class="node-sublabel">Red pulse</div>
+        </div>
+
+        <div class="node-circle">
+          <div class="circle" style="border-color:var(--n-400); background:var(--n-100); border-style: dashed;">
+            <div class="avatar" style="color:var(--n-400); font-size:16px;">?</div>
+          </div>
+          <div class="node-label">Pending</div>
+          <div class="node-sublabel">Dashed border</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         4. EDGES & CONNECTIONS
+         ═══════════════════════════════════════════════ -->
+    <section id="edges">
+      <h2><span class="section-num">04</span> Edges &amp; Connections</h2>
+      <p class="section-desc">Connections are the graph's most important structural element. Line style, colour, and animation encode dependency type, status, and flow direction.</p>
+
+      <h3>Edge Types &amp; Animated Flow</h3>
+      <p>The animated dots below show flow direction — particles move from source to target. Each edge type has distinct visual treatment.</p>
+
+      <div class="edge-demo">
+        <svg class="edge-canvas" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg" style="background: var(--n-900);">
+          <defs>
+            <marker id="arrow-green" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6" fill="#34D399"/>
+            </marker>
+            <marker id="arrow-cyan" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6" fill="#3BB8D6"/>
+            </marker>
+            <marker id="arrow-amber" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6" fill="#FBBF24"/>
+            </marker>
+            <marker id="arrow-red" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6" fill="#EF4444"/>
+            </marker>
+            <marker id="arrow-grey" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6" fill="#6B7280"/>
+            </marker>
+          </defs>
+
+          <!-- Labels -->
+          <text x="40" y="50" fill="#9CA3AF" font-family="Inter, sans-serif" font-size="11" font-weight="600">SATISFIED</text>
+          <text x="40" y="130" fill="#9CA3AF" font-family="Inter, sans-serif" font-size="11" font-weight="600">IN PROGRESS</text>
+          <text x="40" y="210" fill="#9CA3AF" font-family="Inter, sans-serif" font-size="11" font-weight="600">BROKEN / FAILED</text>
+          <text x="40" y="290" fill="#9CA3AF" font-family="Inter, sans-serif" font-size="11" font-weight="600">PENDING</text>
+          <text x="40" y="370" fill="#9CA3AF" font-family="Inter, sans-serif" font-size="11" font-weight="600">CONDITIONAL</text>
+
+          <!-- Satisfied — solid green with flowing dots -->
+          <line x1="180" y1="46" x2="680" y2="46" stroke="#34D399" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+          <line x1="180" y1="46" x2="680" y2="46" stroke="#6EE7B7" stroke-width="2.5" stroke-dasharray="4 20" class="flow-line" opacity="0.8"/>
+
+          <!-- Source node (circle - human) -->
+          <circle cx="160" cy="46" r="14" fill="rgba(52,211,153,0.15)" stroke="#34D399" stroke-width="2"/>
+          <text x="160" y="50" fill="#34D399" font-family="Inter" font-size="10" font-weight="700" text-anchor="middle">✓</text>
+
+          <!-- Target node (hex - AI) -->
+          <polygon points="710,30 730,38 730,54 710,62 690,54 690,38" fill="rgba(52,211,153,0.1)" stroke="#34D399" stroke-width="2"/>
+          <text x="710" y="50" fill="#34D399" font-family="Inter" font-size="9" font-weight="700" text-anchor="middle">DF</text>
+
+          <!-- In Progress — solid cyan with animated dots -->
+          <line x1="180" y1="126" x2="680" y2="126" stroke="#3BB8D6" stroke-width="2.5" marker-end="url(#arrow-cyan)"/>
+          <line x1="180" y1="126" x2="680" y2="126" stroke="#67E8F9" stroke-width="2.5" stroke-dasharray="4 20" class="flow-line" opacity="0.8"/>
+
+          <polygon points="160,110 180,118 180,134 160,142 140,134 140,118" fill="rgba(59,184,214,0.15)" stroke="#3BB8D6" stroke-width="2"/>
+          <text x="160" y="130" fill="#3BB8D6" font-family="Inter" font-size="9" font-weight="700" text-anchor="middle">OA</text>
+
+          <circle cx="710" cy="126" r="14" fill="rgba(59,184,214,0.1)" stroke="#3BB8D6" stroke-width="2"/>
+          <text x="710" y="130" fill="#3BB8D6" font-family="Inter" font-size="10" font-weight="700" text-anchor="middle">JR</text>
+
+          <!-- Broken — dashed red, no flow animation -->
+          <line x1="180" y1="206" x2="680" y2="206" stroke="#EF4444" stroke-width="2.5" stroke-dasharray="8 5" marker-end="url(#arrow-red)" opacity="0.8"/>
+
+          <circle cx="160" cy="206" r="14" fill="rgba(239,68,68,0.15)" stroke="#EF4444" stroke-width="2"/>
+          <text x="160" y="210" fill="#EF4444" font-family="Inter" font-size="10" font-weight="700" text-anchor="middle">✕</text>
+
+          <polygon points="710,190 730,198 730,214 710,222 690,214 690,198" fill="rgba(239,68,68,0.08)" stroke="#EF4444" stroke-width="2" stroke-dasharray="4 3" opacity="0.5"/>
+          <text x="710" y="210" fill="#EF4444" font-family="Inter" font-size="9" font-weight="700" text-anchor="middle" opacity="0.5">WA</text>
+
+          <!-- Cascade label -->
+          <text x="720" y="234" fill="#EF4444" font-family="Inter" font-size="9" opacity="0.6" text-anchor="middle">blocked</text>
+
+          <!-- Pending — thin grey dashed -->
+          <line x1="180" y1="286" x2="680" y2="286" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow-grey)" opacity="0.5"/>
+
+          <circle cx="160" cy="286" r="14" fill="rgba(107,114,128,0.1)" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <text x="160" y="290" fill="#6B7280" font-family="Inter" font-size="10" font-weight="700" text-anchor="middle">?</text>
+
+          <circle cx="710" cy="286" r="14" fill="rgba(107,114,128,0.1)" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <text x="710" y="290" fill="#6B7280" font-family="Inter" font-size="10" font-weight="700" text-anchor="middle">?</text>
+
+          <!-- Conditional — dotted amber -->
+          <line x1="180" y1="366" x2="680" y2="366" stroke="#FBBF24" stroke-width="2" stroke-dasharray="3 6" marker-end="url(#arrow-amber)" opacity="0.7"/>
+          <line x1="180" y1="366" x2="680" y2="366" stroke="#FDE68A" stroke-width="2" stroke-dasharray="2 22" class="flow-line" opacity="0.5" style="animation-duration:1.2s"/>
+
+          <polygon points="160,350 180,358 180,374 160,382 140,374 140,358" fill="rgba(251,191,36,0.12)" stroke="#FBBF24" stroke-width="2"/>
+          <text x="160" y="370" fill="#FBBF24" font-family="Inter" font-size="9" font-weight="700" text-anchor="middle">RA</text>
+
+          <circle cx="710" cy="366" r="14" fill="rgba(251,191,36,0.08)" stroke="#FBBF24" stroke-width="2"/>
+          <text x="710" y="370" fill="#FBBF24" font-family="Inter" font-size="10" font-weight="700" text-anchor="middle">MK</text>
+
+          <!-- Conditional diamond marker -->
+          <polygon points="440,356 450,366 440,376 430,366" fill="none" stroke="#FBBF24" stroke-width="1.5" opacity="0.6"/>
+          <text x="440" y="352" fill="#FBBF24" font-family="Inter" font-size="8" text-anchor="middle" opacity="0.5">if approved</text>
+        </svg>
+      </div>
+
+      <h3>Edge Rules</h3>
+      <table class="rule-table">
+        <thead><tr><th>Style</th><th>Meaning</th><th>Animation</th></tr></thead>
+        <tbody>
+          <tr><td>Solid + flowing dots</td><td>Satisfied dependency — upstream complete</td><td>Dots flow source → target</td></tr>
+          <tr><td>Solid + flowing dots</td><td>In progress — upstream active</td><td>Dots flow with cyan glow</td></tr>
+          <tr><td>Dashed, no animation</td><td>Broken — upstream failed, downstream blocked</td><td>Static. Downstream nodes dim to 50%</td></tr>
+          <tr><td>Thin dashed, faint</td><td>Pending — neither end has started</td><td>None</td></tr>
+          <tr><td>Dotted + diamond</td><td>Conditional — depends on a decision/gate</td><td>Slow occasional dot pulse</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         5. ANIMATION & MICRO-INTERACTIONS
+         ═══════════════════════════════════════════════ -->
+    <section id="animations">
+      <h2><span class="section-num">05</span> Animation &amp; Micro-Interactions</h2>
+      <p class="section-desc">Animation in DeepFlow isn't decorative — it communicates life, progress, and state change. Every animation has a purpose. All examples below are live CSS.</p>
+
+      <div class="anim-section">
+        <!-- Edge Flow -->
+        <div class="anim-card">
+          <div class="anim-preview">
+            <svg width="260" height="60" viewBox="0 0 260 60">
+              <circle cx="30" cy="30" r="18" fill="rgba(59,184,214,0.15)" stroke="#3BB8D6" stroke-width="2"/>
+              <text x="30" y="34" fill="#3BB8D6" font-family="Inter" font-size="10" font-weight="700" text-anchor="middle">AP</text>
+              <line x1="52" y1="30" x2="210" y2="30" stroke="#34D399" stroke-width="2.5"/>
+              <line x1="52" y1="30" x2="210" y2="30" stroke="#6EE7B7" stroke-width="2.5" stroke-dasharray="4 20" class="flow-line"/>
+              <polygon points="230,18 250,26 250,34 230,42 210,34 210,26" fill="rgba(52,211,153,0.1)" stroke="#34D399" stroke-width="2"/>
+              <text x="230" y="34" fill="#34D399" font-family="Inter" font-size="9" font-weight="700" text-anchor="middle">DF</text>
+            </svg>
+          </div>
+          <div class="anim-info">
+            <h4>Edge Flow</h4>
+            <p>Animated dots move along edges to show dependency direction and that the system is actively processing.</p>
+            <div class="use-when">↻ Auto-loops · Use on all active/satisfied edges</div>
+          </div>
+        </div>
+
+        <!-- Node Pulse -->
+        <div class="anim-card">
+          <div class="anim-preview">
+            <div style="display:flex;gap:40px;align-items:center;">
+              <div style="text-align:center;">
+                <div class="pulse-active" style="width:52px;height:52px;border-radius:50%;border:3px solid #3BB8D6;background:rgba(59,184,214,0.1);display:flex;align-items:center;justify-content:center;color:#3BB8D6;font-weight:700;font-size:14px;">▶</div>
+                <div style="font-size:10px;color:var(--n-500);margin-top:8px;">Active</div>
+              </div>
+              <div style="text-align:center;">
+                <div class="pulse-attention" style="width:58px;height:50px;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);background:rgba(239,68,68,0.15);display:flex;align-items:center;justify-content:center;color:#EF4444;font-weight:700;font-size:14px;">✕</div>
+                <div style="font-size:10px;color:var(--n-500);margin-top:8px;">Attention</div>
+              </div>
+            </div>
+          </div>
+          <div class="anim-info">
+            <h4>Node Pulse</h4>
+            <p>Active nodes glow gently in cyan. Nodes needing attention pulse more urgently in red — drawing the eye to problems.</p>
+            <div class="use-when">↻ Auto-loops · Active: 2s ease. Attention: 1.5s ease</div>
+          </div>
+        </div>
+
+        <!-- Status Change -->
+        <div class="anim-card">
+          <div class="anim-preview">
+            <div style="text-align:center;">
+              <div class="status-cycle" style="width:56px;height:56px;border-radius:50%;border:3px solid;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;">⟳</div>
+              <div style="font-size:10px;color:var(--n-500);margin-top:10px;">Pending → Ready → Active → Done</div>
+            </div>
+          </div>
+          <div class="anim-info">
+            <h4>Status Transition</h4>
+            <p>When a task changes state, the node colour transitions smoothly (300ms ease) rather than snapping — confirming the change happened.</p>
+            <div class="use-when">↻ Demo loops · In production: fires once on status change, 300ms</div>
+          </div>
+        </div>
+
+        <!-- Loading Skeleton -->
+        <div class="anim-card">
+          <div class="anim-preview">
+            <div style="display:flex;gap:30px;align-items:center;">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                <div class="skeleton-circle" style="width:52px;height:52px;"></div>
+                <div class="skeleton" style="width:60px;height:8px;"></div>
+              </div>
+              <div class="skeleton" style="width:60px;height:2px;opacity:0.4;"></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                <div class="skeleton-hex" style="width:58px;height:50px;"></div>
+                <div class="skeleton" style="width:50px;height:8px;"></div>
+              </div>
+              <div class="skeleton" style="width:60px;height:2px;opacity:0.4;"></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                <div class="skeleton-circle" style="width:52px;height:52px;"></div>
+                <div class="skeleton" style="width:70px;height:8px;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="anim-info">
+            <h4>Skeleton Loading</h4>
+            <p>While graph data loads, skeleton placeholders shimmer to show expected layout. Note circle and hexagon skeleton shapes — shape distinction is preserved even during loading.</p>
+            <div class="use-when">↻ Auto-loops · Show during initial load and level transitions</div>
+          </div>
+        </div>
+
+        <!-- Graph Build — full width -->
+        <div class="anim-card full-width">
+          <div class="anim-preview" id="graphBuildPreview" style="cursor:pointer;">
+            <div style="position:absolute;top:12px;right:16px;font-size:10px;color:var(--n-500);background:var(--n-800);padding:4px 10px;border-radius:6px;">Click to replay</div>
+            <div id="buildNodes" style="display:flex;gap:24px;align-items:center;">
+              <!-- Node 1 -->
+              <div class="build-node" style="opacity:0; transform:scale(0.3) translateY(10px); display:flex;flex-direction:column;align-items:center;gap:6px;">
+                <div style="width:48px;height:48px;border-radius:50%;border:2.5px solid #3BB8D6;background:rgba(59,184,214,0.1);display:flex;align-items:center;justify-content:center;color:#3BB8D6;font-weight:700;font-size:12px;">AP</div>
+                <div style="font-size:9px;color:var(--n-400);">Review</div>
+              </div>
+
+              <!-- Edge 1 -->
+              <svg class="build-node" style="opacity:0; transform:scale(0.3);" width="60" height="20" viewBox="0 0 60 20">
+                <line x1="0" y1="10" x2="50" y2="10" stroke="#34D399" stroke-width="2"/>
+                <polygon points="50,5 60,10 50,15" fill="#34D399"/>
+              </svg>
+
+              <!-- Node 2 -->
+              <div class="build-node" style="opacity:0; transform:scale(0.3) translateY(10px); display:flex;flex-direction:column;align-items:center;gap:6px;">
+                <div style="width:54px;height:47px;position:relative;">
+                  <svg viewBox="0 0 82 72" style="width:100%;height:100%;"><path d="M41 2 L78 19 L78 53 L41 70 L4 53 L4 19 Z" stroke="#8B6CE0" stroke-width="3" fill="rgba(139,108,224,0.1)"/></svg>
+                  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#8B6CE0;">DF</div>
+                </div>
+                <div style="font-size:9px;color:var(--n-400);">Analyse</div>
+              </div>
+
+              <!-- Edge 2 -->
+              <svg class="build-node" style="opacity:0; transform:scale(0.3);" width="60" height="20" viewBox="0 0 60 20">
+                <line x1="0" y1="10" x2="50" y2="10" stroke="#3BB8D6" stroke-width="2"/>
+                <polygon points="50,5 60,10 50,15" fill="#3BB8D6"/>
+              </svg>
+
+              <!-- Node 3 -->
+              <div class="build-node" style="opacity:0; transform:scale(0.3) translateY(10px); display:flex;flex-direction:column;align-items:center;gap:6px;">
+                <div style="width:54px;height:47px;position:relative;">
+                  <svg viewBox="0 0 82 72" style="width:100%;height:100%;"><path d="M41 2 L78 19 L78 53 L41 70 L4 53 L4 19 Z" stroke="#E74C8A" stroke-width="3" fill="rgba(231,76,138,0.1)"/></svg>
+                  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#E74C8A;">WA</div>
+                </div>
+                <div style="font-size:9px;color:var(--n-400);">Execute</div>
+              </div>
+
+              <!-- Edge 3 -->
+              <svg class="build-node" style="opacity:0; transform:scale(0.3);" width="60" height="20" viewBox="0 0 60 20">
+                <line x1="0" y1="10" x2="50" y2="10" stroke="#FBBF24" stroke-width="2" stroke-dasharray="3 5"/>
+                <polygon points="50,5 60,10 50,15" fill="#FBBF24"/>
+              </svg>
+
+              <!-- Node 4 -->
+              <div class="build-node" style="opacity:0; transform:scale(0.3) translateY(10px); display:flex;flex-direction:column;align-items:center;gap:6px;">
+                <div style="width:48px;height:48px;border-radius:50%;border:2.5px solid #C24EBF;background:rgba(194,78,191,0.1);display:flex;align-items:center;justify-content:center;color:#C24EBF;font-weight:700;font-size:12px;">JR</div>
+                <div style="font-size:9px;color:var(--n-400);">Approve</div>
+              </div>
+            </div>
+          </div>
+          <div class="anim-info">
+            <h4>Graph Build — "The Plan Building Itself"</h4>
+            <p>When the AI generates a graph from a prompt, nodes and edges appear in staggered sequence (120ms apart) with a scale+fade entrance. This is the "wow moment" — the plan assembles before the user's eyes. Note the mix of circles (human tasks) and hexagons (AI tasks) appearing together.</p>
+            <div class="use-when">▶ Click to replay · Use when: AI generates a new graph or sub-level</div>
+          </div>
+        </div>
+
+        <!-- Level Transition -->
+        <div class="anim-card full-width">
+          <div class="anim-preview" id="drillPreview" style="cursor:pointer;">
+            <div style="position:absolute;top:12px;right:16px;font-size:10px;color:var(--n-500);background:var(--n-800);padding:4px 10px;border-radius:6px;">Click to toggle drill</div>
+            <div class="drill-container">
+              <!-- L1 Level -->
+              <div class="level active" id="drillL1">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                  <div style="width:56px;height:56px;border-radius:50%;border:3px solid #3BB8D6;background:rgba(59,184,214,0.12);display:flex;align-items:center;justify-content:center;color:#3BB8D6;font-size:14px;font-weight:700;">AP</div>
+                  <div style="font-size:10px;color:var(--n-400);">Strategy</div>
+                  <div style="font-size:9px;color:#3BB8D6;">L1</div>
+                </div>
+                <svg width="50" height="2"><line x1="0" y1="1" x2="50" y2="1" stroke="#3BB8D6" stroke-width="2"/></svg>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                  <div style="width:62px;height:54px;position:relative;">
+                    <svg viewBox="0 0 82 72" style="width:100%;height:100%;"><path d="M41 2 L78 19 L78 53 L41 70 L4 53 L4 19 Z" stroke="#3BB8D6" stroke-width="3" fill="rgba(59,184,214,0.12)"/></svg>
+                    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#3BB8D6;">DF</div>
+                  </div>
+                  <div style="font-size:10px;color:var(--n-400);">Planning</div>
+                  <div style="font-size:9px;color:#3BB8D6;">L1 · ▾ 4</div>
+                </div>
+                <svg width="50" height="2"><line x1="0" y1="1" x2="50" y2="1" stroke="#3BB8D6" stroke-width="2"/></svg>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                  <div style="width:56px;height:56px;border-radius:50%;border:3px solid #3BB8D6;background:rgba(59,184,214,0.12);display:flex;align-items:center;justify-content:center;color:#3BB8D6;font-size:14px;font-weight:700;">MK</div>
+                  <div style="font-size:10px;color:var(--n-400);">Review</div>
+                  <div style="font-size:9px;color:#3BB8D6;">L1</div>
+                </div>
+              </div>
+              <!-- L2 Level (hidden) -->
+              <div class="level hidden-down" id="drillL2">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                  <div style="width:48px;height:42px;position:relative;">
+                    <svg viewBox="0 0 82 72" style="width:100%;height:100%;"><path d="M41 2 L78 19 L78 53 L41 70 L4 53 L4 19 Z" stroke="#8B6CE0" stroke-width="2.5" fill="rgba(139,108,224,0.12)"/></svg>
+                    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#8B6CE0;">RA</div>
+                  </div>
+                  <div style="font-size:9px;color:var(--n-400);">Research</div>
+                  <div style="font-size:8px;color:#8B6CE0;">L3</div>
+                </div>
+                <svg width="40" height="2"><line x1="0" y1="1" x2="40" y2="1" stroke="#8B6CE0" stroke-width="2"/></svg>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                  <div style="width:42px;height:42px;border-radius:50%;border:2.5px solid #8B6CE0;background:rgba(139,108,224,0.12);display:flex;align-items:center;justify-content:center;color:#8B6CE0;font-size:12px;font-weight:700;">JR</div>
+                  <div style="font-size:9px;color:var(--n-400);">Draft</div>
+                  <div style="font-size:8px;color:#8B6CE0;">L3</div>
+                </div>
+                <svg width="40" height="2"><line x1="0" y1="1" x2="40" y2="1" stroke="#8B6CE0" stroke-width="2"/></svg>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                  <div style="width:48px;height:42px;position:relative;">
+                    <svg viewBox="0 0 82 72" style="width:100%;height:100%;"><path d="M41 2 L78 19 L78 53 L41 70 L4 53 L4 19 Z" stroke="#8B6CE0" stroke-width="2.5" fill="rgba(139,108,224,0.12)"/></svg>
+                    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#8B6CE0;">OA</div>
+                  </div>
+                  <div style="font-size:9px;color:var(--n-400);">Validate</div>
+                  <div style="font-size:8px;color:#8B6CE0;">L3</div>
+                </div>
+                <svg width="40" height="2"><line x1="0" y1="1" x2="40" y2="1" stroke="#8B6CE0" stroke-width="2"/></svg>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                  <div style="width:42px;height:42px;border-radius:50%;border:2.5px solid #8B6CE0;background:rgba(139,108,224,0.12);display:flex;align-items:center;justify-content:center;color:#8B6CE0;font-size:12px;font-weight:700;">SL</div>
+                  <div style="font-size:9px;color:var(--n-400);">Sign off</div>
+                  <div style="font-size:8px;color:#8B6CE0;">L3</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="anim-info">
+            <h4>Level Transition — Drill Down / Up</h4>
+            <p>Drilling into a node: current level scales down and fades, child level scales up and fades in. The colour shift (blue L1 → purple L3) reinforces the depth change. The reverse animation plays when zooming back up. Notice: both levels show a mix of circles and hexagons — the human/AI split exists at every depth.</p>
+            <div class="use-when">▶ Click to toggle · Duration: 500ms cubic-bezier(0.4, 0, 0.2, 1)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         6. COMPONENT PATTERNS
+         ═══════════════════════════════════════════════ -->
+    <section id="components">
+      <h2><span class="section-num">06</span> Component Patterns</h2>
+      <p class="section-desc">Reusable UI components with consistent styling, interaction states, and depth-colour integration.</p>
+
+      <h3>Breadcrumb Navigation</h3>
+      <p>Always visible when below L1. Each segment shows a depth-colour dot matching its level. Clickable to navigate up.</p>
+
+      <div class="component-row">
+        <div class="breadcrumb">
+          <span class="crumb"><span class="depth-dot" style="background:var(--depth-l1)"></span> ICAAP Programme</span>
+          <span class="sep">›</span>
+          <span class="crumb"><span class="depth-dot" style="background:var(--depth-l2)"></span> Governance</span>
+          <span class="sep">›</span>
+          <span class="crumb"><span class="depth-dot" style="background:var(--depth-l3)"></span> Risk Framework</span>
+          <span class="sep">›</span>
+          <span class="crumb current"><span class="depth-dot" style="background:var(--depth-l4)"></span> Run Model</span>
+        </div>
+      </div>
+
+      <div class="component-row" style="margin-top: 8px;">
+        <div class="breadcrumb">
+          <span class="crumb"><span class="depth-dot" style="background:var(--depth-l1)"></span> Product Launch</span>
+          <span class="sep">›</span>
+          <span class="crumb current"><span class="depth-dot" style="background:var(--depth-l2)"></span> Design Phase</span>
+        </div>
+      </div>
+
+      <h3>Filter Pills</h3>
+      <p>Active pills show filled backgrounds with status colours. Inactive pills are outlined only. The visual difference must be unmistakable.</p>
+
+      <div class="component-row">
+        <span class="pill active-done"><span class="dot" style="background:var(--status-done)"></span> Done</span>
+        <span class="pill active-active"><span class="dot" style="background:var(--status-active)"></span> Active</span>
+        <span class="pill active-ready"><span class="dot" style="background:var(--status-ready)"></span> Ready</span>
+        <span class="pill active-attention"><span class="dot" style="background:var(--status-attention)"></span> Needs Attention</span>
+        <span class="pill inactive"><span class="dot" style="background:var(--n-400)"></span> Pending</span>
+      </div>
+      <div class="component-row">
+        <span class="pill inactive">Hide Done</span>
+        <span class="pill inactive">Active</span>
+        <span class="pill inactive">Not Started</span>
+        <span class="pill inactive">Failed</span>
+        <span style="font-size:12px;color:var(--n-400);margin-left:4px;">← All inactive state</span>
+      </div>
+
+      <h3>Status Badges</h3>
+      <p>Used in list rows, kanban cards, node tooltips, and detail panels. Always combine colour + icon.</p>
+
+      <div class="component-row">
+        <span class="badge badge-done"><span class="badge-dot" style="background:var(--status-done)"></span> Done</span>
+        <span class="badge badge-active"><span class="badge-dot" style="background:var(--status-active)"></span> Active</span>
+        <span class="badge badge-ready"><span class="badge-dot" style="background:var(--status-ready)"></span> Ready</span>
+        <span class="badge badge-attention"><span class="badge-dot" style="background:var(--status-attention)"></span> Needs Attention</span>
+        <span class="badge badge-pending"><span class="badge-dot" style="background:var(--status-pending)"></span> Pending</span>
+      </div>
+
+      <h3>Level Badges</h3>
+      <p>Compact identifiers used in list views, sidebar, and node tooltips. Colour always matches the depth gradient.</p>
+
+      <div class="component-row">
+        <span class="badge" style="background:rgba(59,184,214,0.12);color:#0891B2;font-weight:700;font-size:10px;">L1</span>
+        <span class="badge" style="background:rgba(91,143,230,0.12);color:#3B82F6;font-weight:700;font-size:10px;">L2</span>
+        <span class="badge" style="background:rgba(139,108,224,0.12);color:#7C3AED;font-weight:700;font-size:10px;">L3</span>
+        <span class="badge" style="background:rgba(194,78,191,0.12);color:#C026D3;font-weight:700;font-size:10px;">L4</span>
+        <span class="badge" style="background:rgba(231,76,138,0.12);color:#DB2777;font-weight:700;font-size:10px;">L5</span>
+        <span class="badge" style="background:rgba(240,64,96,0.12);color:#E11D48;font-weight:700;font-size:10px;">L6</span>
+      </div>
+
+      <h3>Tab Bar</h3>
+      <p>Used in the Details panel. Active tab has a cyan underline. Tabs should never truncate — use scrollable overflow.</p>
+
+      <div class="tab-bar">
+        <div class="tab active">Info</div>
+        <div class="tab">Resources</div>
+        <div class="tab">Comments</div>
+        <div class="tab">History</div>
+        <div class="tab">Sub-tasks</div>
+        <div class="tab">Advanced</div>
+      </div>
+
+      <h3>Assignment Type Indicators</h3>
+      <p>In list views and kanban cards, a small shape indicator shows whether a task is human or AI-assigned.</p>
+
+      <div class="component-row">
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 14px;background:#fff;border:1px solid var(--n-200);border-radius:8px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:rgba(59,184,214,0.12);border:1.5px solid #3BB8D6;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#3BB8D6;">AP</div>
+          <span style="font-size:12px;color:var(--n-700);">Ali Panju</span>
+          <span style="font-size:10px;color:var(--n-400);">Human</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 14px;background:#fff;border:1px solid var(--n-200);border-radius:8px;">
+          <div style="width:28px;height:24px;position:relative;">
+            <svg viewBox="0 0 82 72" style="width:100%;height:100%;"><path d="M41 2 L78 19 L78 53 L41 70 L4 53 L4 19 Z" stroke="#8B6CE0" stroke-width="4" fill="rgba(139,108,224,0.12)"/></svg>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#8B6CE0;">OA</div>
+          </div>
+          <span style="font-size:12px;color:var(--n-700);">Operations Agent</span>
+          <span style="font-size:10px;color:var(--n-400);">AI</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         7. WORKSPACE LAYOUT
+         ═══════════════════════════════════════════════ -->
+    <section id="workspace">
+      <h2><span class="section-num">07</span> Workspace Layout</h2>
+      <p class="section-desc">The three-panel workspace is where human-AI collaboration happens. Proportions, panel headers, and collapse affordances create a cohesive collaboration surface.</p>
+
+      <h3>Three-Panel Proportions</h3>
+      <p>Default split: <strong>50% Workspace / 22% Chat / 28% Details</strong>. Panels are resizable with drag handles. Each panel is collapsible to a thin strip.</p>
+
+      <div class="panel-demo">
+        <div class="panel" style="flex:50;">
+          <div class="panel-header">
+            <span>📄 Workspace — Output Resource</span>
+            <span class="collapse-btn">‹</span>
+          </div>
+          <div class="panel-body">
+            <div class="line medium"></div>
+            <div class="line"></div>
+            <div class="line short"></div>
+            <div class="line medium"></div>
+            <div class="line"></div>
+            <div class="line short"></div>
+            <div class="line medium"></div>
+          </div>
+        </div>
+        <div class="panel" style="flex:22;">
+          <div class="panel-header">
+            <span>💬 Chat</span>
+            <span class="collapse-btn">‹</span>
+          </div>
+          <div class="panel-body">
+            <div style="background:rgba(59,184,214,0.08);border-radius:8px;padding:8px;margin-bottom:8px;">
+              <div class="line short" style="background:rgba(59,184,214,0.2);margin:0;height:6px;"></div>
+            </div>
+            <div style="background:var(--n-50);border-radius:8px;padding:8px;margin-bottom:8px;">
+              <div class="line" style="margin:0;height:6px;"></div>
+            </div>
+            <div style="background:rgba(59,184,214,0.08);border-radius:8px;padding:8px;">
+              <div class="line medium" style="background:rgba(59,184,214,0.2);margin:0;height:6px;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel" style="flex:28;">
+          <div class="panel-header">
+            <span>ℹ️ Details</span>
+            <span class="collapse-btn">‹</span>
+          </div>
+          <div class="panel-body">
+            <div style="display:flex;gap:4px;margin-bottom:12px;">
+              <div style="width:32px;height:3px;background:var(--brand-cyan);border-radius:2px;"></div>
+              <div style="width:32px;height:3px;background:var(--n-200);border-radius:2px;"></div>
+              <div style="width:32px;height:3px;background:var(--n-200);border-radius:2px;"></div>
+              <div style="width:32px;height:3px;background:var(--n-200);border-radius:2px;"></div>
+            </div>
+            <div class="line short"></div>
+            <div class="line"></div>
+            <div class="line short"></div>
+            <div class="line medium"></div>
+          </div>
+        </div>
+      </div>
+
+      <h4>Panel Design Rules</h4>
+      <table class="rule-table">
+        <thead><tr><th>Rule</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>Resize handles</td><td>4px vertical bar between panels. Grab cursor on hover, highlight on drag.</td></tr>
+          <tr><td>Collapse</td><td>Double-click handle or click chevron to collapse panel to a thin labelled strip (24px wide).</td></tr>
+          <tr><td>Persistence</td><td>Panel sizes saved to localStorage via <span class="inline-code">autoSaveId</span>. Survives page reloads.</td></tr>
+          <tr><td>Min widths</td><td>Workspace: 25%. Chat: 15%. Details: 20%. Prevents unusable panel widths.</td></tr>
+          <tr><td>Responsive (< 1024px)</td><td>Switch to two panels + bottom sheet. Below 768px: single panel with tab switcher.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Panel Header Pattern</h3>
+      <p>Every panel has a consistent header: icon + label left-aligned, collapse chevron right-aligned. Active panel header has a subtle depth-colour accent line.</p>
+
+      <div class="card" style="display:flex;gap:12px;flex-direction:column;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--n-50);border-radius:8px;border-left:3px solid var(--depth-l3);">
+          <span style="font-size:13px;font-weight:600;color:var(--n-700);">📄 Workspace — ICAAP Report Draft</span>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <span style="font-size:11px;color:var(--n-400);">V3/3</span>
+            <span class="collapse-btn">‹</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--n-50);border-radius:8px;">
+          <span style="font-size:13px;font-weight:600;color:var(--n-700);">💬 Chat — Task Execution #2</span>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <span style="font-size:11px;color:var(--n-400);">History</span>
+            <span class="collapse-btn">‹</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--n-50);border-radius:8px;">
+          <span style="font-size:13px;font-weight:600;color:var(--n-700);">ℹ️ Details — Run Model</span>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <span class="badge badge-active" style="font-size:10px;"><span class="badge-dot" style="background:var(--status-active);"></span> Active</span>
+            <span class="collapse-btn">‹</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         8. DARK MODE vs LIGHT MODE
+         ═══════════════════════════════════════════════ -->
+    <section id="themes">
+      <h2><span class="section-num">08</span> Dark Mode vs Light Mode</h2>
+      <p class="section-desc">DeepFlow's default is light canvas + dark sidebar. A full dark mode inverts the canvas for low-light and presentation contexts. The depth gradient and status colours remain consistent across both themes.</p>
+
+      <h3>Side-by-Side Comparison</h3>
+
+      <div class="mode-comparison">
+        <div class="mode-card light">
+          <div class="mode-header">☀️ Light Mode (Default)</div>
+          <div class="mode-body">
+            <!-- Breadcrumb light -->
+            <div class="breadcrumb" style="font-size:11px;">
+              <span class="crumb"><span class="depth-dot" style="background:var(--depth-l1)"></span> Project</span>
+              <span class="sep">›</span>
+              <span class="crumb current"><span class="depth-dot" style="background:var(--depth-l3)"></span> Task</span>
+            </div>
+            <!-- Nodes light -->
+            <div style="display:flex;gap:16px;align-items:center;justify-content:center;padding:16px;background:var(--n-50);border-radius:8px;">
+              <div style="width:44px;height:44px;border-radius:50%;border:2.5px solid #3BB8D6;background:rgba(59,184,214,0.08);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#3BB8D6;">AP</div>
+              <svg width="40" height="2"><line x1="0" y1="1" x2="40" y2="1" stroke="#34D399" stroke-width="2"/></svg>
+              <div style="width:50px;height:44px;position:relative;">
+                <svg viewBox="0 0 82 72" style="width:100%;height:100%;"><path d="M41 2 L78 19 L78 53 L41 70 L4 53 L4 19 Z" stroke="#8B6CE0" stroke-width="3" fill="rgba(139,108,224,0.08)"/></svg>
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#8B6CE0;">OA</div>
+              </div>
+            </div>
+            <!-- Badges light -->
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <span class="badge badge-done" style="font-size:10px;"><span class="badge-dot" style="background:var(--status-done)"></span> Done</span>
+              <span class="badge badge-active" style="font-size:10px;"><span class="badge-dot" style="background:var(--status-active)"></span> Active</span>
+              <span class="badge badge-attention" style="font-size:10px;"><span class="badge-dot" style="background:var(--status-attention)"></span> Failed</span>
+            </div>
+            <!-- Text light -->
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--n-800);">Review Brief</div>
+              <div style="font-size:12px;color:var(--n-500);">Assigned to Ali Panju · Due Mar 15</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mode-card dark">
+          <div class="mode-header">🌙 Dark Mode</div>
+          <div class="mode-body">
+            <!-- Breadcrumb dark -->
+            <div style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--n-800);border:1px solid var(--n-700);border-radius:10px;font-size:11px;">
+              <span style="display:flex;align-items:center;gap:6px;color:var(--n-400);"><span style="width:8px;height:8px;border-radius:50%;background:var(--depth-l1);"></span> Project</span>
+              <span style="color:var(--n-600);">›</span>
+              <span style="display:flex;align-items:center;gap:6px;color:#fff;font-weight:600;"><span style="width:8px;height:8px;border-radius:50%;background:var(--depth-l3);"></span> Task</span>
+            </div>
+            <!-- Nodes dark -->
+            <div style="display:flex;gap:16px;align-items:center;justify-content:center;padding:16px;background:var(--n-800);border-radius:8px;">
+              <div style="width:44px;height:44px;border-radius:50%;border:2.5px solid #3BB8D6;background:rgba(59,184,214,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#67E8F9;">AP</div>
+              <svg width="40" height="2"><line x1="0" y1="1" x2="40" y2="1" stroke="#34D399" stroke-width="2"/></svg>
+              <div style="width:50px;height:44px;position:relative;">
+                <svg viewBox="0 0 82 72" style="width:100%;height:100%;"><path d="M41 2 L78 19 L78 53 L41 70 L4 53 L4 19 Z" stroke="#A78BFA" stroke-width="3" fill="rgba(139,108,224,0.2)"/></svg>
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#C4B5FD;">OA</div>
+              </div>
+            </div>
+            <!-- Badges dark -->
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:600;background:rgba(52,211,153,0.15);color:#6EE7B7;"><span style="width:6px;height:6px;border-radius:50%;background:#34D399;"></span> Done</span>
+              <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:600;background:rgba(59,184,214,0.15);color:#67E8F9;"><span style="width:6px;height:6px;border-radius:50%;background:#3BB8D6;"></span> Active</span>
+              <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:600;background:rgba(239,68,68,0.15);color:#FCA5A5;"><span style="width:6px;height:6px;border-radius:50%;background:#EF4444;"></span> Failed</span>
+            </div>
+            <!-- Text dark -->
+            <div>
+              <div style="font-size:14px;font-weight:600;color:#fff;">Review Brief</div>
+              <div style="font-size:12px;color:var(--n-400);">Assigned to Ali Panju · Due Mar 15</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Theme Rules</h3>
+      <table class="rule-table">
+        <thead><tr><th>Context</th><th>Recommended Theme</th></tr></thead>
+        <tbody>
+          <tr><td>Daily workspace use</td><td>Light mode (default) — reduced eye strain for long sessions</td></tr>
+          <tr><td>Presentations / demos</td><td>Dark mode — higher contrast, more dramatic graph visuals</td></tr>
+          <tr><td>Low-light environments</td><td>Dark mode — auto-detect via <span class="inline-code">prefers-color-scheme</span></td></tr>
+          <tr><td>Sidebar &amp; 3D overview</td><td>Always dark — regardless of canvas theme</td></tr>
+        </tbody>
+      </table>
+
+      <h4>Key dark-mode adjustments</h4>
+      <table class="rule-table">
+        <thead><tr><th>Element</th><th>Light Mode</th><th>Dark Mode</th></tr></thead>
+        <tbody>
+          <tr><td>Canvas background</td><td>#F9FAFB (N-50)</td><td>#111322 (N-900)</td></tr>
+          <tr><td>Panel background</td><td>#FFFFFF</td><td>#1A1D30 (N-800)</td></tr>
+          <tr><td>Node fill opacity</td><td>8–10%</td><td>15–20% (boosted for contrast)</td></tr>
+          <tr><td>Node border</td><td>Standard depth colour</td><td>Lightened variant (+15% luminance)</td></tr>
+          <tr><td>Text primary</td><td>#1A1D30 (N-800)</td><td>#FFFFFF</td></tr>
+          <tr><td>Text secondary</td><td>#6B7280 (N-500)</td><td>#9CA3AF (N-400)</td></tr>
+          <tr><td>Edge lines</td><td>Standard status colour</td><td>Same, with slight glow/bloom added</td></tr>
+          <tr><td>Status badge background</td><td>10% opacity tint</td><td>15% opacity tint (boosted)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+  </div><!-- /content -->
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <svg width="80" height="80" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- Enriched Solutions Sailboat Logo -->
+      <!-- Hull -->
+      <path d="M40 145 Q100 170 160 145 L150 155 Q100 175 50 155 Z" fill="#3BB8D6" opacity="0.8"/>
+      <!-- Left sail (E) -->
+      <path d="M95 140 L75 50 L95 55 Z" fill="#FBBF24" opacity="0.7"/>
+      <text x="82" y="105" fill="#fff" font-family="Inter" font-size="24" font-weight="800" opacity="0.9">E</text>
+      <!-- Right sail (S) -->
+      <path d="M105 140 L125 45 L105 50 Z" fill="#34D399" opacity="0.7"/>
+      <text x="108" y="105" fill="#fff" font-family="Inter" font-size="24" font-weight="800" opacity="0.9">S</text>
+      <!-- Mast -->
+      <line x1="100" y1="40" x2="100" y2="155" stroke="#9CA3AF" stroke-width="2" opacity="0.4"/>
+      <!-- Waterline -->
+      <path d="M20 160 Q60 152 100 160 Q140 168 180 160" stroke="#3BB8D6" stroke-width="1.5" fill="none" opacity="0.3"/>
+      <path d="M10 170 Q50 162 90 170 Q130 178 170 170 Q190 166 200 170" stroke="#3BB8D6" stroke-width="1" fill="none" opacity="0.15"/>
+    </svg>
+    <p>Prepared by Enriched Solutions · "You cannot change the wind, but working together, we can adjust the sails"</p>
+    <p style="margin-top:4px; font-size:11px; color:var(--n-700);">DeepFlow Design System Proposal · March 2026</p>
+  </div>
+
+</main>
+
+<script>
+// ═══════════════════════════════════════════════════
+// INTERACTIVE ANIMATIONS
+// ═══════════════════════════════════════════════════
+
+// Graph Build Animation
+function playBuildAnimation() {
+  const nodes = document.querySelectorAll('#buildNodes .build-node');
+  nodes.forEach((node, i) => {
+    node.style.transition = 'none';
+    node.style.opacity = '0';
+    node.style.transform = 'scale(0.3) translateY(10px)';
+
+    setTimeout(() => {
+      node.style.transition = 'opacity 0.4s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      node.style.opacity = '1';
+      node.style.transform = 'scale(1) translateY(0)';
+    }, 150 + i * 120);
+  });
+}
+
+document.getElementById('graphBuildPreview')?.addEventListener('click', playBuildAnimation);
+
+// Auto-play on first view
+const buildObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      playBuildAnimation();
+      buildObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+document.getElementById('graphBuildPreview') && buildObserver.observe(document.getElementById('graphBuildPreview'));
+
+// Drill Down Toggle
+let drillState = 'l1';
+document.getElementById('drillPreview')?.addEventListener('click', () => {
+  const l1 = document.getElementById('drillL1');
+  const l2 = document.getElementById('drillL2');
+
+  if (drillState === 'l1') {
+    l1.className = 'level hidden-up';
+    l2.className = 'level active';
+    drillState = 'l2';
+  } else {
+    l1.className = 'level active';
+    l2.className = 'level hidden-down';
+    drillState = 'l1';
+  }
+});
+
+// Smooth scroll for sidebar nav
+document.querySelectorAll('.sidebar nav a').forEach(link => {
+  link.addEventListener('click', function(e) {
+    const href = this.getAttribute('href');
+    if (href && href.startsWith('#')) {
+      e.preventDefault();
+      const target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      // Update active state
+      document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+      this.classList.add('active');
+    }
+  });
+});
+
+// Update active sidebar link on scroll
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.sidebar nav a');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const top = section.offsetTop - 100;
+    if (window.scrollY >= top) {
+      current = section.getAttribute('id');
+    }
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) {
+      link.classList.add('active');
+    }
+  });
+});
+</script>
+
+</body>
+</html>

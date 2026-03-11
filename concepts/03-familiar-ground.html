@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepFlow — Concept 03: Familiar Ground</title>
+<style>
+  :root {
+    --l1:#3BB8D6; --l2:#14B8A6; --l3:#F59E0B; --l4:#F97316; --l5:#E74C8A;
+    --bg:#F5F5F5; --surface:#FFFFFF; --text:#333333; --muted:#888888;
+    --border:#E0E0E0; --accent:#6C5CE7; --accent2:#00B894;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',-apple-system,system-ui,sans-serif; background:var(--bg); color:var(--text); }
+  .app { width:1200px; margin:0 auto; min-height:100vh; }
+
+  .tab-bar { display:flex; gap:2px; background:var(--surface); border-bottom:2px solid var(--border); padding:0 24px; position:sticky; top:0; z-index:100; }
+  .tab-bar .tab { padding:14px 24px; font-size:13px; font-weight:600; cursor:pointer; border-bottom:3px solid transparent; color:var(--muted); transition:all .2s; margin-bottom:-2px; }
+  .tab-bar .tab:hover { color:var(--text); }
+  .tab-bar .tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+  .tab-bar .concept-label { margin-left:auto; align-self:center; font-size:11px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
+
+  .view { display:none; } .view.active { display:block; }
+
+  .header { display:flex; align-items:center; gap:12px; padding:16px 24px; background:var(--surface); border-bottom:1px solid var(--border); }
+  .header .back { width:28px; height:28px; border-radius:6px; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px; color:var(--muted); }
+  .header .title { font-size:16px; font-weight:700; }
+  .header .badge { padding:4px 12px; border-radius:99px; font-size:11px; font-weight:700; }
+  .breadcrumb { display:flex; gap:6px; align-items:center; padding:10px 24px; background:var(--surface); border-bottom:1px solid var(--border); font-size:12px; }
+  .breadcrumb .level-badge { padding:2px 8px; border-radius:4px; color:#fff; font-weight:700; font-size:10px; }
+
+  /* GRAPH — Split layout: graph left, mini table right */
+  .graph-split { display:grid; grid-template-columns:2fr 1fr; height:620px; }
+  .graph-container { position:relative; background:#FAFAFA; overflow:hidden; border-right:1px solid var(--border); }
+
+  .node { position:absolute; display:flex; flex-direction:column; align-items:center; cursor:pointer; transition:transform .15s; z-index:2; }
+  .node:hover { transform:scale(1.05); }
+  .node-hex { width:60px; height:60px; clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; color:#fff; }
+  .node-hex-border { width:68px; height:68px; clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); display:flex; align-items:center; justify-content:center; }
+  .node-circle { width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; color:#fff; }
+  .node-circle-border { width:68px; height:68px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .node-label { margin-top:6px; font-size:10px; font-weight:600; text-align:center; max-width:100px; line-height:1.3; }
+  .node-sub { font-size:9px; color:var(--muted); margin-top:1px; }
+  .node-status { position:absolute; top:-3px; right:-3px; width:16px; height:16px; border-radius:50%; border:2px solid #FAFAFA; display:flex; align-items:center; justify-content:center; font-size:8px; color:#fff; z-index:3; }
+
+  /* Right sidebar mini-table in graph view */
+  .graph-sidebar { background:var(--surface); padding:16px; overflow-y:auto; }
+  .graph-sidebar h3 { font-size:12px; font-weight:700; color:var(--muted); margin-bottom:12px; text-transform:uppercase; letter-spacing:.5px; }
+  .mini-table-row { display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid var(--border); font-size:11px; }
+  .mini-table-row .dot { width:8px; height:8px; border-radius:2px; flex-shrink:0; }
+  .mini-table-row .dot.hex-shape { clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); width:10px; height:10px; }
+  .mini-table-row .name { font-weight:600; flex:1; }
+  .mini-table-row .status-dot { width:8px; height:8px; border-radius:50%; }
+
+  .mini-nav { position:absolute; bottom:12px; left:12px; background:var(--surface); border-radius:10px; padding:10px; box-shadow:0 2px 8px rgba(0,0,0,.06); border:1px solid var(--border); }
+  .mini-nav .nav-title { font-size:9px; font-weight:700; color:var(--muted); margin-bottom:6px; text-transform:uppercase; }
+  .mini-nav .layer { display:flex; align-items:center; gap:5px; margin-bottom:3px; font-size:9px; font-weight:600; color:var(--muted); }
+  .mini-nav .layer-dot { width:8px; height:8px; border-radius:2px; }
+  .mini-nav .layer.current { color:var(--text); font-weight:800; }
+
+  .filter-bar { display:flex; gap:6px; padding:10px 24px; background:var(--surface); border-bottom:1px solid var(--border); }
+  .filter-pill { padding:4px 12px; border-radius:99px; font-size:11px; font-weight:600; border:1px solid var(--border); background:var(--surface); cursor:pointer; color:var(--muted); display:flex; align-items:center; gap:4px; }
+  .filter-pill.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .filter-pill .dot { width:6px; height:6px; border-radius:50%; }
+
+  /* WORKSPACE — wide output */
+  .workspace-layout { display:grid; grid-template-columns:1.4fr 1fr 260px; height:620px; background:var(--surface); }
+  .ws-panel { border-right:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; }
+  .ws-panel:last-child { border-right:none; }
+  .ws-panel-header { display:flex; align-items:center; gap:8px; padding:10px 16px; border-bottom:1px solid var(--border); font-size:12px; font-weight:700; color:var(--muted); }
+  .ws-tab-bar { display:flex; gap:0; border-bottom:1px solid var(--border); }
+  .ws-tab { padding:8px 12px; font-size:11px; font-weight:600; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; }
+  .ws-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+  .ws-content { flex:1; overflow-y:auto; padding:16px; }
+
+  .output-toolbar { display:flex; gap:4px; padding:8px 16px; border-bottom:1px solid var(--border); }
+  .output-toolbar button { padding:2px 6px; border:none; background:none; font-size:12px; cursor:pointer; color:var(--muted); font-weight:600; }
+  .preview-toggle { margin-left:auto; display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); }
+  .toggle-switch { width:32px; height:18px; background:var(--accent2); border-radius:99px; position:relative; cursor:pointer; }
+  .toggle-switch::after { content:''; width:14px; height:14px; border-radius:50%; background:#fff; position:absolute; top:2px; right:2px; }
+  .version-nav { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); font-weight:600; }
+  .version-nav button { width:20px; height:20px; border:1px solid var(--border); border-radius:4px; background:none; cursor:pointer; font-size:10px; color:var(--muted); }
+
+  .chat-exec-btn { display:flex; align-items:center; justify-content:center; gap:6px; padding:10px; margin:12px 14px 8px; border-radius:8px; background:var(--accent); color:#fff; font-size:12px; font-weight:700; cursor:pointer; border:none; }
+  .chat-avatar { width:24px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; flex-shrink:0; }
+  .chat-msg-header { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .chat-sender { font-size:12px; font-weight:700; }
+  .chat-time { font-size:10px; color:var(--muted); }
+  .chat-message { margin-bottom:16px; }
+  .thought-process { background:#F8F8F8; border:1px solid var(--border); border-radius:8px; padding:10px 12px; margin:8px 0; font-size:11px; }
+  .thought-header { display:flex; align-items:center; gap:6px; font-weight:700; font-size:11px; }
+  .thought-badge { background:var(--accent2); color:#fff; padding:1px 6px; border-radius:4px; font-size:9px; }
+  .thought-step { margin-top:8px; padding-left:12px; border-left:2px solid var(--border); }
+  .thought-step-title { font-weight:700; font-size:11px; display:flex; align-items:center; gap:6px; }
+  .thought-step-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); }
+  .thought-step-body { font-size:11px; color:var(--muted); margin-top:4px; line-height:1.5; }
+  .chat-action { display:flex; align-items:center; gap:6px; font-size:11px; margin-top:6px; color:var(--muted); }
+  .chat-action .check { color:var(--accent2); }
+  .chat-input { display:flex; align-items:center; gap:8px; padding:12px 14px; border-top:1px solid var(--border); margin-top:auto; }
+  .chat-input input { flex:1; border:1px solid var(--border); border-radius:8px; padding:8px 12px; font-size:12px; outline:none; }
+  .chat-input .send { width:32px; height:32px; border-radius:50%; background:var(--accent); border:none; color:#fff; cursor:pointer; font-size:14px; }
+
+  .history-entry { display:flex; gap:10px; margin-bottom:14px; position:relative; padding-left:4px; }
+  .history-entry::before { content:''; position:absolute; left:15px; top:28px; bottom:-14px; width:1px; background:var(--border); }
+  .history-entry:last-child::before { display:none; }
+  .history-avatar { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; flex-shrink:0; }
+  .history-text { font-size:11px; line-height:1.5; }
+  .history-text strong { font-weight:700; }
+  .history-time { font-size:10px; color:var(--muted); }
+
+  /* LIST — Monday.com style with colour bands */
+  .list-container { background:var(--surface); }
+  .list-header-row { display:grid; grid-template-columns:40px 1fr 100px 90px 60px 100px 90px; padding:10px 24px; border-bottom:2px solid var(--border); font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; background:#FAFAFA; }
+  .list-row { display:grid; grid-template-columns:40px 1fr 100px 90px 60px 100px 90px; padding:10px 24px; border-bottom:1px solid var(--border); font-size:12px; align-items:center; transition:background .15s; border-left:4px solid transparent; }
+  .list-row:hover { background:#F8F8FF; }
+  .list-row.row-l1 { border-left-color:var(--l1); background:#F0FCFF; }
+  .list-row.row-l2 { border-left-color:var(--l2); }
+  .list-row.row-l3 { border-left-color:var(--l3); background:#FFFBEB; }
+  .list-chevron { cursor:pointer; color:var(--muted); font-size:10px; }
+  .list-task { display:flex; align-items:center; gap:8px; }
+  .list-task-icon { width:22px; height:22px; display:flex; align-items:center; justify-content:center; font-size:8px; font-weight:800; color:#fff; flex-shrink:0; }
+  .list-task-icon.hex { clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); }
+  .list-task-icon.circle { border-radius:50%; }
+  .list-task-name { font-weight:600; }
+  .list-status { padding:3px 8px; border-radius:4px; font-size:10px; font-weight:700; display:inline-block; text-align:center; min-width:70px; }
+  .list-status.done { background:#00B894; color:#fff; }
+  .list-status.progress { background:#FDCB6E; color:#333; }
+  .list-status.pending { background:#DFE6E9; color:#636E72; }
+  .list-status.failed { background:#FF7675; color:#fff; }
+  .list-assignee { display:flex; align-items:center; gap:6px; font-size:11px; }
+  .list-assignee-avatar { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:8px; font-weight:800; color:#fff; }
+  .list-level { padding:2px 6px; border-radius:4px; font-size:10px; font-weight:800; color:#fff; }
+  .list-depends { font-size:10px; color:var(--muted); }
+  .list-due { font-size:11px; color:var(--muted); }
+  .indent-1 { padding-left:44px; } .indent-2 { padding-left:68px; }
+  .bg-l1{background:var(--l1);} .bg-l2{background:var(--l2);} .bg-l3{background:var(--l3);} .bg-l4{background:var(--l4);} .bg-l5{background:var(--l5);}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="tab-bar">
+    <div class="tab active" onclick="switchView('graph')">📐 Graph View</div>
+    <div class="tab" onclick="switchView('workspace')">🖥 Workspace View</div>
+    <div class="tab" onclick="switchView('list')">📋 List View</div>
+    <span class="concept-label">03 — Familiar Ground</span>
+  </div>
+
+  <!-- GRAPH VIEW — Split layout -->
+  <div class="view active" id="view-graph">
+    <div class="header">
+      <div class="back">←</div>
+      <div class="title">ICAAP Submission 2026</div>
+      <span class="badge" style="background:#FDCB6E;color:#333;">● In Progress</span>
+      <span style="font-size:11px;color:var(--muted);margin-left:auto;">8 tasks</span>
+    </div>
+    <div class="breadcrumb">
+      <span class="level-badge bg-l1">L1</span> <span>ICAAP Programme</span>
+      <span style="color:var(--muted);">›</span>
+      <span class="level-badge bg-l2">L2</span> <span>Capital Assessment</span>
+    </div>
+    <div class="graph-split">
+      <div class="graph-container">
+        <svg width="800" height="620" style="position:absolute;top:0;left:0;z-index:1;">
+          <defs>
+            <marker id="a1" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#14B8A6" opacity=".6"/></marker>
+            <marker id="a2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#00B894" opacity=".5"/></marker>
+          </defs>
+          <path d="M140,170 C200,170 200,110 260,110" stroke="#14B8A6" stroke-width="1.5" fill="none" opacity=".5" stroke-dasharray="4,3" marker-end="url(#a1)"/>
+          <path d="M140,170 C200,170 200,250 260,250" stroke="#14B8A6" stroke-width="1.5" fill="none" opacity=".5" stroke-dasharray="4,3" marker-end="url(#a1)"/>
+          <path d="M140,170 C200,170 200,400 260,400" stroke="#14B8A6" stroke-width="1.5" fill="none" opacity=".5" stroke-dasharray="4,3" marker-end="url(#a1)"/>
+          <path d="M328,110 C380,110 380,170 420,170" stroke="#14B8A6" stroke-width="1.5" fill="none" opacity=".4" stroke-dasharray="4,3" marker-end="url(#a1)"/>
+          <path d="M328,250 C380,250 380,170 420,170" stroke="#14B8A6" stroke-width="1.5" fill="none" opacity=".4" stroke-dasharray="4,3" marker-end="url(#a1)"/>
+          <path d="M328,400 C380,400 380,310 420,310" stroke="#14B8A6" stroke-width="1.5" fill="none" opacity=".4" stroke-dasharray="4,3" marker-end="url(#a1)"/>
+          <path d="M488,170 C530,170 530,240 560,240" stroke="#00B894" stroke-width="1.5" fill="none" opacity=".3" marker-end="url(#a2)"/>
+          <path d="M488,310 C530,310 530,240 560,240" stroke="#00B894" stroke-width="1.5" fill="none" opacity=".3" marker-end="url(#a2)"/>
+          <path d="M628,240 C660,240 660,240 690,240" stroke="#14B8A6" stroke-width="1.5" fill="none" opacity=".4" stroke-dasharray="4,3" marker-end="url(#a1)"/>
+        </svg>
+        <div style="z-index:2;position:relative;width:100%;height:100%;">
+          <!-- Human: Gather Data -->
+          <div class="node" style="left:75px;top:120px;">
+            <div class="node-circle-border" style="background:var(--l2);"><div class="node-circle" style="background:#E6FAF8;color:var(--l2);">AP</div></div>
+            <div class="node-status" style="background:#F59E0B;">⏳</div>
+            <div class="node-label">Gather Data</div><div class="node-sub">Ali P.</div>
+          </div>
+          <!-- Human: Risk Assessment -->
+          <div class="node" style="left:225px;top:60px;">
+            <div class="node-circle-border" style="background:var(--l2);"><div class="node-circle" style="background:#E6FAF8;color:var(--l2);">MB</div></div>
+            <div class="node-status" style="background:#F59E0B;">⏳</div>
+            <div class="node-label">Risk Assessment</div><div class="node-sub">Molly B.</div>
+          </div>
+          <!-- AI: Capital Model -->
+          <div class="node" style="left:225px;top:200px;">
+            <div class="node-hex-border" style="background:var(--l2);"><div class="node-hex" style="background:#E6FAF8;color:var(--l2);">DF</div></div>
+            <div class="node-status" style="background:#3B82F6;">▶</div>
+            <div class="node-label">Capital Model</div><div class="node-sub">DeepFlow</div>
+          </div>
+          <!-- AI: Stress Testing -->
+          <div class="node" style="left:225px;top:350px;">
+            <div class="node-hex-border" style="background:var(--l2);"><div class="node-hex" style="background:#E6FAF8;color:var(--l2);">ST</div></div>
+            <div class="node-status" style="background:#94A3B8;">○</div>
+            <div class="node-label">Stress Testing</div><div class="node-sub">Stress Agt</div>
+          </div>
+          <!-- Human: Review -->
+          <div class="node" style="left:385px;top:120px;">
+            <div class="node-circle-border" style="background:var(--l2);"><div class="node-circle" style="background:#E6FAF8;color:var(--l2);">JW</div></div>
+            <div class="node-status" style="background:#16A34A;">✓</div>
+            <div class="node-label">Review Results</div><div class="node-sub">James W.</div>
+          </div>
+          <!-- AI: Generate Scenarios -->
+          <div class="node" style="left:385px;top:260px;">
+            <div class="node-hex-border" style="background:var(--l2);"><div class="node-hex" style="background:#E6FAF8;color:var(--l2);">DF</div></div>
+            <div class="node-status" style="background:#16A34A;">✓</div>
+            <div class="node-label">Gen Scenarios</div><div class="node-sub">DeepFlow</div>
+          </div>
+          <!-- AI: Compile -->
+          <div class="node" style="left:525px;top:190px;">
+            <div class="node-hex-border" style="background:var(--l2);"><div class="node-hex" style="background:#E6FAF8;color:var(--l2);">DF</div></div>
+            <div class="node-status" style="background:#F59E0B;">⏳</div>
+            <div class="node-label">Compile Report</div><div class="node-sub">DeepFlow</div>
+          </div>
+          <!-- Human: Approve -->
+          <div class="node" style="left:660px;top:190px;">
+            <div class="node-circle-border" style="background:var(--l2);"><div class="node-circle" style="background:#E6FAF8;color:var(--l2);">AP</div></div>
+            <div class="node-status" style="background:#94A3B8;">○</div>
+            <div class="node-label">Final Approval</div><div class="node-sub">Ali P.</div>
+          </div>
+        </div>
+        <div class="mini-nav">
+          <div class="nav-title">Depth</div>
+          <div class="layer"><div class="layer-dot" style="background:var(--l1);"></div> L1</div>
+          <div class="layer current"><div class="layer-dot" style="background:var(--l2);"></div> L2 ←</div>
+          <div class="layer"><div class="layer-dot" style="background:var(--l3);"></div> L3</div>
+          <div class="layer"><div class="layer-dot" style="background:var(--l4);"></div> L4</div>
+        </div>
+      </div>
+      <!-- Right sidebar: task summary table -->
+      <div class="graph-sidebar">
+        <h3>Tasks at L2</h3>
+        <div class="mini-table-row"><div class="dot" style="background:var(--l2);border-radius:50%;"></div><span class="name">Gather Data</span><div class="status-dot" style="background:#F59E0B;"></div></div>
+        <div class="mini-table-row"><div class="dot" style="background:var(--l2);border-radius:50%;"></div><span class="name">Risk Assessment</span><div class="status-dot" style="background:#F59E0B;"></div></div>
+        <div class="mini-table-row"><div class="dot hex-shape" style="background:var(--l2);"></div><span class="name">Run Capital Model</span><div class="status-dot" style="background:#3B82F6;"></div></div>
+        <div class="mini-table-row"><div class="dot hex-shape" style="background:var(--l2);"></div><span class="name">Stress Testing</span><div class="status-dot" style="background:#94A3B8;"></div></div>
+        <div class="mini-table-row"><div class="dot" style="background:var(--l2);border-radius:50%;"></div><span class="name">Review Results</span><div class="status-dot" style="background:#16A34A;"></div></div>
+        <div class="mini-table-row"><div class="dot hex-shape" style="background:var(--l2);"></div><span class="name">Generate Scenarios</span><div class="status-dot" style="background:#16A34A;"></div></div>
+        <div class="mini-table-row"><div class="dot hex-shape" style="background:var(--l2);"></div><span class="name">Compile Report</span><div class="status-dot" style="background:#F59E0B;"></div></div>
+        <div class="mini-table-row"><div class="dot" style="background:var(--l2);border-radius:50%;"></div><span class="name">Final Approval</span><div class="status-dot" style="background:#94A3B8;"></div></div>
+        <div style="margin-top:20px;padding:12px;background:#F5F5FF;border-radius:8px;border:1px solid #E8E5FF;">
+          <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:6px;">Summary</div>
+          <div style="font-size:11px;color:var(--muted);">2 Done · 3 In Progress · 1 Active · 2 Pending</div>
+          <div style="display:flex;gap:2px;margin-top:8px;height:6px;border-radius:3px;overflow:hidden;">
+            <div style="flex:2;background:#00B894;"></div>
+            <div style="flex:3;background:#FDCB6E;"></div>
+            <div style="flex:1;background:#74B9FF;"></div>
+            <div style="flex:2;background:#DFE6E9;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORKSPACE VIEW — wide output -->
+  <div class="view" id="view-workspace">
+    <div class="header">
+      <div class="back">←</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:26px;height:26px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:var(--l2);display:flex;align-items:center;justify-content:center;"><span style="font-size:9px;font-weight:800;color:#fff;">DF</span></div>
+        <div class="title">Run Capital Model</div>
+      </div>
+      <span class="badge" style="background:#DBEAFE;color:#3B82F6;">▶ In Progress</span>
+      <div class="version-nav" style="margin-left:auto;">
+        <button>‹</button><span>V2/3</span><button>›</button>
+      </div>
+    </div>
+    <div class="workspace-layout">
+      <!-- Wide output panel -->
+      <div class="ws-panel">
+        <div class="ws-panel-header"><span>📄</span> Workspace <span style="margin-left:auto;cursor:pointer;">⤢</span></div>
+        <div class="ws-tab-bar"><div class="ws-tab active">Capital Model Output</div><div class="ws-tab">+</div></div>
+        <div class="output-toolbar">
+          <button><b>B</b></button><button><i>I</i></button><button>🔗</button><button>&lt;/&gt;</button>
+          <div class="preview-toggle">Preview <div class="toggle-switch"></div></div>
+        </div>
+        <div class="ws-content" style="font-size:13px;line-height:1.7;">
+          <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">ICAAP Capital Model — Draft v2</h3>
+          <p style="margin-bottom:12px;">Internal capital adequacy assessment for Q1 2026.</p>
+          <h4 style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px;">1. Executive Summary</h4>
+          <p style="margin-bottom:12px;">Total requirement: <strong>£42.3M</strong> base / <strong>£58.7M</strong> stressed. Buffer: £67.1M, surplus £8.4M under stress.</p>
+          <h4 style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px;">2. Risk Categories</h4>
+          <ul style="padding-left:20px;margin-bottom:12px;">
+            <li>Credit Risk: £18.2M + £4.1M P2A</li><li>Market Risk: £8.9M</li><li>Operational Risk: £6.4M</li><li>Concentration Risk: £4.7M</li>
+          </ul>
+          <div style="background:#E6FAF8;border:1px solid var(--accent2);border-radius:8px;padding:12px;font-size:11px;color:#00B894;">✅ All ratios exceed minimums. CET1: 14.2%</div>
+        </div>
+      </div>
+      <!-- Chat -->
+      <div class="ws-panel">
+        <div class="ws-panel-header"><span>💬</span> Chat <span style="margin-left:auto;font-size:11px;color:var(--muted);">Exec #2</span></div>
+        <button class="chat-exec-btn">⚡ Execute this task for me</button>
+        <div class="ws-content">
+          <div class="chat-message">
+            <div class="chat-msg-header"><div class="chat-avatar" style="background:var(--accent2);">DF</div><span class="chat-sender">DeepFlow</span><span class="chat-time">14:32</span></div>
+            <div class="thought-process">
+              <div class="thought-header">🧠 Thought process <span class="thought-badge">3 steps</span></div>
+              <div class="thought-step"><div class="thought-step-title"><div class="thought-step-dot"></div> Step 1 — Inputs</div><div class="thought-step-body">Pulled risk register, P&L, prior ICAAP.</div></div>
+              <div class="thought-step"><div class="thought-step-title"><div class="thought-step-dot"></div> Step 2 — Calculations</div><div class="thought-step-body">Standardised approach for credit; Pillar 2A add-ons.</div></div>
+              <div class="thought-step"><div class="thought-step-title"><div class="thought-step-dot"></div> Step 3 — Output</div><div class="thought-step-body">Document with exec summary and stress results.</div></div>
+            </div>
+            <div class="chat-action"><span class="check">✅</span> Creating artifact</div>
+            <div class="chat-action"><span class="check">✅</span> Request Completion</div>
+          </div>
+        </div>
+        <div class="chat-input"><input type="text" placeholder="Your message…"><button class="send">▶</button></div>
+      </div>
+      <!-- Details -->
+      <div class="ws-panel">
+        <div class="ws-panel-header"><span>ℹ️</span> Details</div>
+        <div class="ws-tab-bar">
+          <div class="ws-tab">Info</div><div class="ws-tab">Resources</div><div class="ws-tab">Comments</div>
+          <div class="ws-tab active">History</div><div class="ws-tab">Sub-tasks</div>
+        </div>
+        <div class="ws-content">
+          <div class="history-entry"><div class="history-avatar" style="background:var(--accent2);">DF</div><div><div class="history-text"><strong>DeepFlow</strong> completed execution</div><div class="history-time">14:33</div></div></div>
+          <div class="history-entry"><div class="history-avatar" style="background:var(--accent2);">DF</div><div><div class="history-text"><strong>DeepFlow</strong> started calculation</div><div class="history-time">14:32</div></div></div>
+          <div class="history-entry"><div class="history-avatar" style="background:var(--accent);">AP</div><div><div class="history-text"><strong>Ali Panju</strong> triggered execution</div><div class="history-time">14:31</div></div></div>
+          <div class="history-entry"><div class="history-avatar" style="background:var(--accent);">AP</div><div><div class="history-text"><strong>Ali Panju</strong> assigned to DeepFlow</div><div class="history-time">13:45</div></div></div>
+          <div class="history-entry"><div class="history-avatar" style="background:var(--accent);">AP</div><div><div class="history-text"><strong>Ali Panju</strong> created the task</div><div class="history-time">13:40</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIST VIEW — Monday.com style -->
+  <div class="view" id="view-list">
+    <div class="header">
+      <div class="back">←</div>
+      <div class="title">ICAAP Submission 2026</div>
+      <span class="badge" style="background:#FDCB6E;color:#333;">● In Progress</span>
+    </div>
+    <div class="list-container">
+      <div class="list-header-row"><span></span><span>Task</span><span>Status</span><span>Assignee</span><span>Level</span><span>Depends On</span><span>Due Date</span></div>
+      <div class="list-row row-l1">
+        <span class="list-chevron">▼</span>
+        <div class="list-task"><div class="list-task-icon circle bg-l1">AP</div><span class="list-task-name">ICAAP Programme</span></div>
+        <span class="list-status progress">In Progress</span>
+        <div class="list-assignee"><div class="list-assignee-avatar bg-l1">AP</div> Ali P.</div>
+        <span class="list-level bg-l1">L1</span><span class="list-depends">—</span><span class="list-due">31 Mar</span>
+      </div>
+      <div class="list-row row-l2">
+        <span class="list-chevron indent-1">▼</span>
+        <div class="list-task indent-1"><div class="list-task-icon circle bg-l2">AP</div><span class="list-task-name">Gather Historical Data</span></div>
+        <span class="list-status progress">In Progress</span>
+        <div class="list-assignee"><div class="list-assignee-avatar" style="background:#6C5CE7;">AP</div> Ali P.</div>
+        <span class="list-level bg-l2">L2</span><span class="list-depends">—</span><span class="list-due">15 Mar</span>
+      </div>
+      <div class="list-row row-l2">
+        <span class="list-chevron indent-1">▶</span>
+        <div class="list-task indent-1"><div class="list-task-icon circle bg-l2">MB</div><span class="list-task-name">Risk Assessment</span></div>
+        <span class="list-status progress">In Progress</span>
+        <div class="list-assignee"><div class="list-assignee-avatar" style="background:#E17055;">MB</div> Molly B.</div>
+        <span class="list-level bg-l2">L2</span><span class="list-depends">Gather Data</span><span class="list-due">18 Mar</span>
+      </div>
+      <div class="list-row row-l2">
+        <span class="list-chevron indent-1">▼</span>
+        <div class="list-task indent-1"><div class="list-task-icon hex bg-l2">DF</div><span class="list-task-name">Run Capital Model</span></div>
+        <span class="list-status progress">In Progress</span>
+        <div class="list-assignee"><div class="list-assignee-avatar bg-l2">DF</div> DeepFlow</div>
+        <span class="list-level bg-l2">L2</span><span class="list-depends">Gather Data</span><span class="list-due">20 Mar</span>
+      </div>
+      <div class="list-row row-l3">
+        <span class="list-chevron indent-2">▶</span>
+        <div class="list-task indent-2"><div class="list-task-icon hex bg-l3">DF</div><span class="list-task-name">Calculate Credit Risk</span></div>
+        <span class="list-status done">Done</span>
+        <div class="list-assignee"><div class="list-assignee-avatar bg-l3">DF</div> DeepFlow</div>
+        <span class="list-level bg-l3">L3</span><span class="list-depends">—</span><span class="list-due">18 Mar</span>
+      </div>
+      <div class="list-row row-l3">
+        <span class="list-chevron indent-2">▶</span>
+        <div class="list-task indent-2"><div class="list-task-icon hex bg-l3">DF</div><span class="list-task-name">Calculate Market Risk</span></div>
+        <span class="list-status done">Done</span>
+        <div class="list-assignee"><div class="list-assignee-avatar bg-l3">DF</div> DeepFlow</div>
+        <span class="list-level bg-l3">L3</span><span class="list-depends">—</span><span class="list-due">18 Mar</span>
+      </div>
+      <div class="list-row row-l3">
+        <span class="list-chevron indent-2">▶</span>
+        <div class="list-task indent-2"><div class="list-task-icon hex bg-l3">DF</div><span class="list-task-name">Run Stress Scenarios</span></div>
+        <span class="list-status progress">In Progress</span>
+        <div class="list-assignee"><div class="list-assignee-avatar bg-l3">DF</div> DeepFlow</div>
+        <span class="list-level bg-l3">L3</span><span class="list-depends">Credit, Market</span><span class="list-due">19 Mar</span>
+      </div>
+      <div class="list-row row-l2">
+        <span class="list-chevron indent-1">▶</span>
+        <div class="list-task indent-1"><div class="list-task-icon hex bg-l2">ST</div><span class="list-task-name">Stress Testing</span></div>
+        <span class="list-status pending">Pending</span>
+        <div class="list-assignee"><div class="list-assignee-avatar bg-l2">ST</div> Stress Agt</div>
+        <span class="list-level bg-l2">L2</span><span class="list-depends">Capital Model</span><span class="list-due">22 Mar</span>
+      </div>
+      <div class="list-row row-l2">
+        <span class="list-chevron indent-1">▶</span>
+        <div class="list-task indent-1"><div class="list-task-icon circle bg-l2">JW</div><span class="list-task-name">Review Results</span></div>
+        <span class="list-status done">Done</span>
+        <div class="list-assignee"><div class="list-assignee-avatar" style="background:#8B5CF6;">JW</div> James W.</div>
+        <span class="list-level bg-l2">L2</span><span class="list-depends">Risk, Capital</span><span class="list-due">24 Mar</span>
+      </div>
+      <div class="list-row row-l2">
+        <span class="list-chevron indent-1">▶</span>
+        <div class="list-task indent-1"><div class="list-task-icon hex bg-l2">DF</div><span class="list-task-name">Compile Report</span></div>
+        <span class="list-status progress">In Progress</span>
+        <div class="list-assignee"><div class="list-assignee-avatar bg-l2">DF</div> DeepFlow</div>
+        <span class="list-level bg-l2">L2</span><span class="list-depends">Review, Scenarios</span><span class="list-due">28 Mar</span>
+      </div>
+      <div class="list-row row-l2">
+        <span class="list-chevron indent-1">▶</span>
+        <div class="list-task indent-1"><div class="list-task-icon circle bg-l2">AP</div><span class="list-task-name">Final Approval</span></div>
+        <span class="list-status pending">Pending</span>
+        <div class="list-assignee"><div class="list-assignee-avatar" style="background:#6C5CE7;">AP</div> Ali P.</div>
+        <span class="list-level bg-l2">L2</span><span class="list-depends">Compile Report</span><span class="list-due">31 Mar</span>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function switchView(v){
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tab-bar .tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelectorAll('.tab-bar .tab')[{graph:0,workspace:1,list:2}[v]].classList.add('active');
+}
+</script>
+</body>
+</html>
