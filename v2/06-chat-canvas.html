@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+<title>Concept 6: Chat Canvas — DeepFlow</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', -apple-system, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px 0; }
+.app-wrapper { width: 1200px; height: 820px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.12); display: flex; flex-direction: column; }
+
+/* Title bar */
+.title-bar { height: 36px; background: #f7f8fa; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; padding: 0 16px; flex-shrink: 0; }
+.title-bar span { font-size: 12px; color: #94a3b8; font-weight: 500; letter-spacing: 0.5px; }
+.title-bar .dot { width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; }
+.title-bar .dot.r { background: #ef4444; } .title-bar .dot.y { background: #f59e0b; } .title-bar .dot.g { background: #22c55e; }
+.title-bar .dots { display: flex; align-items: center; gap: 0; margin-right: 12px; }
+
+/* Main layout */
+.main-layout { display: flex; flex: 1; overflow: hidden; }
+
+/* Sidebar */
+.sidebar { width: 220px; background: #f7f8fa; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; flex-shrink: 0; transition: width 0.2s ease; overflow: hidden; }
+.sidebar.collapsed { width: 52px; }
+.sidebar.collapsed .sidebar-label, .sidebar.collapsed .tree-item-text, .sidebar.collapsed .team-name,
+.sidebar.collapsed .section-title, .sidebar.collapsed .fav-text { display: none; }
+.sidebar.collapsed .tree-item { justify-content: center; padding: 6px 0; }
+.sidebar.collapsed .sidebar-header { justify-content: center; padding: 8px 0; }
+.sidebar.collapsed .team-member { justify-content: center; padding: 4px 0; }
+.sidebar.collapsed .team-member .status-dot { display: none; }
+
+.sidebar-header { padding: 12px 14px 8px; display: flex; align-items: center; justify-content: space-between; }
+.sidebar-logo { display: flex; align-items: center; gap: 8px; }
+.sidebar-logo svg { width: 22px; height: 22px; }
+.sidebar-label { font-size: 13px; font-weight: 700; color: #1e293b; }
+.collapse-btn { width: 24px; height: 24px; border: none; background: transparent; cursor: pointer; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #94a3b8; }
+.collapse-btn:hover { background: #e2e8f0; color: #64748b; }
+
+.sidebar-section { padding: 4px 10px; }
+.section-title { font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.8px; padding: 8px 4px 4px; }
+.tree-item { display: flex; align-items: center; gap: 6px; padding: 5px 8px; border-radius: 6px; cursor: pointer; font-size: 13px; color: #475569; transition: background 0.15s; }
+.tree-item:hover { background: #e8ecf1; }
+.tree-item.active { background: #e0eaff; color: #2563eb; font-weight: 500; }
+.tree-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+.tree-item-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tree-item.indent-1 { padding-left: 24px; }
+.tree-item.indent-2 { padding-left: 40px; }
+
+.fav-icon { font-size: 12px; }
+.fav-text { font-size: 13px; color: #475569; }
+
+.sidebar-spacer { flex: 1; }
+.team-section { padding: 4px 10px 12px; }
+.team-member { display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 6px; cursor: pointer; }
+.team-member:hover { background: #e8ecf1; }
+.team-avatar { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: #fff; flex-shrink: 0; }
+.team-name { font-size: 12px; color: #64748b; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.status-dot.online { background: #22c55e; }
+.status-dot.away { background: #f59e0b; }
+.status-dot.offline { background: #cbd5e1; }
+
+/* Content area (chat + canvas) */
+.content-area { display: flex; flex: 1; overflow: hidden; position: relative; }
+
+/* Chat pane */
+.chat-pane { width: 300px; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; flex-shrink: 0; background: #fff; }
+.chat-header { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; }
+.chat-header h3 { font-size: 14px; font-weight: 600; color: #1e293b; }
+.chat-context { font-size: 11px; color: #94a3b8; background: #f1f5f9; padding: 2px 8px; border-radius: 10px; }
+.chat-messages { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.chat-msg { display: flex; gap: 8px; animation: msgFadeIn 0.3s ease; }
+@keyframes msgFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.chat-msg.ai .msg-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #3BB8D6, #14B8A6); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.chat-msg.ai .msg-avatar svg { width: 14px; height: 14px; }
+.msg-bubble { padding: 10px 12px; border-radius: 10px; font-size: 13px; line-height: 1.5; color: #334155; max-width: 100%; }
+.chat-msg.ai .msg-bubble { background: #f7f8fa; border-radius: 10px 10px 10px 2px; }
+.chat-msg.user .msg-bubble { background: #2563eb; color: #fff; border-radius: 10px 10px 2px 10px; margin-left: auto; }
+.msg-bubble .task-card-inline { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 10px; margin-top: 8px; display: flex; align-items: center; gap: 8px; }
+.task-card-inline .tc-status { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.task-card-inline .tc-name { font-size: 12px; font-weight: 500; color: #1e293b; }
+.task-card-inline .tc-assignee { font-size: 11px; color: #94a3b8; }
+.msg-bubble .action-btns { display: flex; gap: 6px; margin-top: 8px; }
+.msg-bubble .action-btn { font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid #e2e8f0; background: #fff; color: #2563eb; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+.msg-bubble .action-btn:hover { background: #2563eb; color: #fff; border-color: #2563eb; }
+.msg-bubble .action-btn.primary { background: #2563eb; color: #fff; border-color: #2563eb; }
+.msg-bubble .action-btn.primary:hover { background: #1d4ed8; }
+.msg-bubble .progress-bar { height: 6px; background: #e2e8f0; border-radius: 3px; margin-top: 8px; overflow: hidden; }
+.msg-bubble .progress-fill { height: 100%; background: linear-gradient(90deg, #22c55e, #3BB8D6); border-radius: 3px; transition: width 0.5s; }
+
+/* Chat suggestions */
+.chat-suggestions { padding: 8px 12px 4px; }
+.suggestions-label { font-size: 11px; font-weight: 600; color: #94a3b8; margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+.suggestion-chip { display: flex; align-items: flex-start; gap: 8px; padding: 8px 10px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 6px; cursor: pointer; transition: all 0.15s; background: #fff; }
+.suggestion-chip:hover { border-color: #3BB8D6; background: #f0fafe; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(59,184,214,0.1); }
+.suggestion-chip .sc-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.suggestion-chip .sc-text { font-size: 12px; color: #475569; line-height: 1.4; }
+.suggestion-chip .sc-text strong { color: #1e293b; display: block; font-weight: 600; }
+.suggestion-chip .sc-arrow { font-size: 11px; color: #3BB8D6; margin-left: auto; margin-top: 2px; opacity: 0; transition: opacity 0.15s; }
+.suggestion-chip:hover .sc-arrow { opacity: 1; }
+
+/* Chat input */
+.chat-input-area { padding: 10px 12px; border-top: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px; }
+.chat-input { flex: 1; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; font-family: inherit; outline: none; background: #f7f8fa; transition: border-color 0.15s; }
+.chat-input:focus { border-color: #3BB8D6; background: #fff; }
+.chat-input::placeholder { color: #94a3b8; }
+.chat-send-btn { width: 32px; height: 32px; border-radius: 8px; border: none; background: #3BB8D6; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; flex-shrink: 0; }
+.chat-send-btn:hover { background: #2da8c6; }
+.attach-btn { background: none; border: none; color: #94a3b8; cursor: pointer; display: flex; align-items: center; }
+.attach-btn:hover { color: #64748b; }
+
+/* Canvas area */
+.canvas-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #fff; position: relative; }
+.canvas-tabs { display: flex; align-items: center; gap: 0; padding: 0 16px; border-bottom: 1px solid #e2e8f0; height: 40px; flex-shrink: 0; }
+.canvas-tab { padding: 8px 14px; font-size: 13px; font-weight: 500; color: #94a3b8; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; position: relative; top: 1px; }
+.canvas-tab:hover { color: #64748b; }
+.canvas-tab.active { color: #3BB8D6; border-bottom-color: #3BB8D6; }
+.canvas-breadcrumb { padding: 8px 16px; font-size: 12px; color: #94a3b8; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.canvas-breadcrumb span { color: #64748b; }
+
+/* Canvas views */
+.canvas-view { flex: 1; display: none; overflow: hidden; position: relative; }
+.canvas-view.active { display: flex; }
+
+/* Graph view */
+.graph-container { flex: 1; position: relative; overflow: hidden; }
+.graph-bg { position: absolute; inset: 0; background-image: radial-gradient(circle, #e2e8f0 1px, transparent 1px); background-size: 24px 24px; }
+.graph-svg { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+.graph-cards { position: absolute; inset: 0; z-index: 2; }
+
+/* Task cards on graph */
+.task-card { position: absolute; width: 172px; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; overflow: visible; }
+.task-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); z-index: 10; }
+.task-card .tc-status-bar { height: 6px; border-radius: 8px 8px 0 0; }
+.task-card .tc-depth-border { position: absolute; left: 0; top: 6px; bottom: 0; width: 4px; border-radius: 0 0 0 8px; }
+.task-card .tc-body { padding: 10px 10px 8px 14px; }
+.task-card .tc-title { font-size: 12px; font-weight: 600; color: #1e293b; line-height: 1.35; margin-bottom: 8px; min-height: 32px; }
+.task-card .tc-assignee-row { display: flex; align-items: center; gap: 6px; }
+.task-card .tc-avatar { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: #fff; flex-shrink: 0; }
+.tc-avatar.circle { border-radius: 50%; }
+.tc-avatar.hexagon { clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
+.task-card .tc-assignee-name { font-size: 11px; color: #64748b; }
+.task-card .tc-due { font-size: 10px; color: #94a3b8; position: absolute; bottom: 8px; right: 10px; }
+.task-card.unassigned { border: 2px dashed #93c5fd; }
+.task-card.unassigned .tc-avatar { border: 2px dashed #93c5fd; background: #f0f7ff; color: #93c5fd; border-radius: 50%; }
+.task-card.unassigned .tc-assignee-name { color: #93c5fd; font-style: italic; }
+
+/* Animated edges */
+@keyframes flowDots { from { stroke-dashoffset: 24; } to { stroke-dashoffset: 0; } }
+@keyframes flowDotsReverse { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 24; } }
+.edge-line { fill: none; stroke-width: 2; stroke-dasharray: 4 8; }
+.edge-line.green { stroke: #22c55e; animation: flowDots 1s linear infinite; }
+.edge-line.cyan { stroke: #3BB8D6; animation: flowDots 1.2s linear infinite; }
+.edge-line.amber { stroke: #f59e0b; animation: flowDots 1.5s linear infinite; }
+.edge-line.grey { stroke: #cbd5e1; animation: flowDots 2s linear infinite; }
+.edge-line.red { stroke: #ef4444; animation: flowDots 1.5s linear infinite; }
+
+/* Zoom controls */
+.zoom-controls { position: absolute; bottom: 12px; right: 12px; display: flex; flex-direction: column; gap: 4px; z-index: 5; }
+.zoom-btn { width: 32px; height: 32px; border: 1px solid #e2e8f0; background: #fff; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #64748b; transition: all 0.15s; }
+.zoom-btn:hover { background: #f7f8fa; border-color: #cbd5e1; }
+
+/* Minimap */
+.minimap { position: absolute; bottom: 12px; left: 12px; width: 140px; height: 80px; background: #1e293b; border-radius: 8px; z-index: 5; overflow: hidden; padding: 8px; opacity: 0.9; }
+.minimap-dot { position: absolute; width: 6px; height: 6px; border-radius: 2px; }
+.minimap-viewport { position: absolute; border: 1px solid rgba(59,184,214,0.6); border-radius: 2px; background: rgba(59,184,214,0.08); }
+
+/* List view */
+.list-view { flex-direction: column; overflow-y: auto; }
+.list-table { width: 100%; border-collapse: collapse; }
+.list-table th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; background: #fff; z-index: 2; }
+.list-table td { padding: 10px 12px; font-size: 13px; color: #334155; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+.list-table tr { cursor: pointer; transition: background 0.1s; position: relative; }
+.list-table tbody tr:hover { background: #f8fafc; }
+.list-row-depth { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+.list-status-pill { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; color: #fff; }
+.list-status-pill.done { background: #22c55e; }
+.list-status-pill.active { background: #3BB8D6; }
+.list-status-pill.ready { background: #f59e0b; }
+.list-status-pill.pending { background: #cbd5e1; color: #64748b; }
+.list-avatar { width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 600; color: #fff; vertical-align: middle; margin-right: 6px; }
+.list-avatar.circle { border-radius: 50%; }
+.list-avatar.hexagon { clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
+.list-avatar.unassigned { border: 2px dashed #93c5fd; background: #f0f7ff; color: #93c5fd; border-radius: 50%; }
+.depth-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 600; color: #fff; }
+
+/* Workspace view */
+.workspace-view { flex-direction: column; }
+.ws-tabs { display: flex; align-items: center; background: #f7f8fa; border-bottom: 1px solid #e2e8f0; padding: 0 8px; height: 36px; gap: 0; }
+.ws-tab { padding: 8px 14px; font-size: 12px; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; white-space: nowrap; position: relative; top: 1px; display: flex; align-items: center; gap: 6px; }
+.ws-tab:hover { color: #1e293b; }
+.ws-tab.active { color: #1e293b; border-bottom-color: #3BB8D6; background: #fff; font-weight: 500; }
+.ws-tab .close-tab { font-size: 10px; color: #94a3b8; margin-left: 4px; cursor: pointer; }
+.ws-tab .close-tab:hover { color: #ef4444; }
+.ws-toolbar { display: flex; align-items: center; gap: 2px; padding: 4px 12px; border-bottom: 1px solid #f1f5f9; }
+.ws-tool-btn { padding: 4px 8px; border: none; background: none; color: #94a3b8; cursor: pointer; font-size: 13px; border-radius: 4px; }
+.ws-tool-btn:hover { background: #f1f5f9; color: #475569; }
+.ws-tool-sep { width: 1px; height: 16px; background: #e2e8f0; margin: 0 4px; }
+.ws-content { flex: 1; padding: 24px 32px; overflow-y: auto; font-size: 14px; line-height: 1.7; color: #334155; }
+.ws-content h2 { font-size: 20px; color: #1e293b; margin-bottom: 12px; font-weight: 700; }
+.ws-content h3 { font-size: 16px; color: #1e293b; margin: 16px 0 8px; font-weight: 600; }
+.ws-content p { margin-bottom: 10px; }
+.ws-content ul { margin: 8px 0 12px 20px; }
+.ws-content li { margin-bottom: 4px; }
+.ws-version-nav { display: flex; align-items: center; gap: 6px; margin-left: auto; font-size: 12px; color: #64748b; }
+.ws-version-nav button { width: 22px; height: 22px; border: 1px solid #e2e8f0; background: #fff; border-radius: 4px; cursor: pointer; font-size: 11px; color: #64748b; display: flex; align-items: center; justify-content: center; }
+.ws-version-nav button:hover { background: #f1f5f9; }
+
+/* Drawer */
+.drawer-overlay { position: absolute; inset: 0; background: rgba(15,23,42,0.15); z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+.drawer-overlay.open { opacity: 1; pointer-events: all; }
+.drawer { position: absolute; top: 0; right: 0; bottom: 0; width: 320px; background: #fff; z-index: 51; transform: translateX(100%); transition: transform 0.2s ease; box-shadow: -4px 0 20px rgba(0,0,0,0.08); display: flex; flex-direction: column; }
+.drawer.open { transform: translateX(0); }
+.drawer-header { padding: 16px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: flex-start; justify-content: space-between; }
+.drawer-close { width: 28px; height: 28px; border: none; background: #f1f5f9; border-radius: 6px; cursor: pointer; font-size: 16px; color: #64748b; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.drawer-close:hover { background: #e2e8f0; }
+.drawer-title { font-size: 16px; font-weight: 700; color: #1e293b; line-height: 1.3; }
+.drawer-status { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; color: #fff; margin-top: 6px; }
+.drawer-assignee { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid #f1f5f9; }
+.drawer-assignee .da-avatar { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #fff; }
+.drawer-assignee .da-info { font-size: 13px; color: #475569; }
+.drawer-assignee .da-role { font-size: 11px; color: #94a3b8; }
+.drawer-tabs { display: flex; border-bottom: 1px solid #e2e8f0; padding: 0 16px; }
+.drawer-tab { padding: 8px 12px; font-size: 12px; font-weight: 500; color: #94a3b8; cursor: pointer; border-bottom: 2px solid transparent; }
+.drawer-tab:hover { color: #64748b; }
+.drawer-tab.active { color: #3BB8D6; border-bottom-color: #3BB8D6; }
+.drawer-content { flex: 1; overflow-y: auto; padding: 16px; }
+.drawer-section { margin-bottom: 16px; }
+.drawer-section-title { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.drawer-prop { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; }
+.drawer-prop .label { color: #94a3b8; }
+.drawer-prop .value { color: #1e293b; font-weight: 500; }
+.drawer-dep { display: flex; align-items: center; gap: 6px; padding: 4px 0; font-size: 12px; color: #475569; }
+.drawer-dep .dep-dot { width: 6px; height: 6px; border-radius: 50%; }
+.drawer-history-item { padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
+.drawer-history-item .dh-time { font-size: 10px; color: #94a3b8; }
+.drawer-history-item .dh-text { font-size: 12px; color: #475569; margin-top: 2px; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* Resize handle */
+.resize-handle { width: 3px; background: transparent; cursor: col-resize; position: relative; flex-shrink: 0; z-index: 5; }
+.resize-handle::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: transparent; transition: background 0.15s; }
+.resize-handle:hover::after { background: #3BB8D6; }
+</style>
+</head>
+<body>
+<div class="app-wrapper">
+  <!-- Title bar -->
+  <div class="title-bar">
+    <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+    <span>Concept 6: Chat Canvas — DeepFlow</span>
+  </div>
+
+  <div class="main-layout">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v12l8 4 8-4V6l-8-4z" fill="#3BB8D6" opacity="0.15"/><path d="M12 2L4 6v12l8 4 8-4V6l-8-4z" stroke="#3BB8D6" stroke-width="1.5"/><path d="M12 6v12M8 8l4 2 4-2M8 14l4 2 4-2" stroke="#3BB8D6" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span class="sidebar-label">DeepFlow</span>
+        </div>
+        <button class="collapse-btn" onclick="toggleSidebar()" title="Collapse sidebar">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="section-title">Favourites</div>
+        <div class="tree-item"><span class="fav-icon">⭐</span><span class="tree-item-text fav-text">My Tasks</span></div>
+        <div class="tree-item"><span class="fav-icon">📌</span><span class="tree-item-text fav-text">ICAAP Document</span></div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="section-title">Projects</div>
+        <div class="tree-item active">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M2 4l4-2h4l4 2v8l-4 2H6l-4-2V4z" stroke="currentColor" stroke-width="1.2"/></svg>
+          <span class="tree-item-text">ICAAP Document</span>
+        </div>
+        <div class="tree-item indent-1" style="color:#3BB8D6">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span class="tree-item-text">Phase 1: Data Gathering</span>
+        </div>
+        <div class="tree-item indent-2"><span class="tree-item-text" style="font-size:12px">Data Collection</span></div>
+        <div class="tree-item indent-2"><span class="tree-item-text" style="font-size:12px">Risk Assessment</span></div>
+        <div class="tree-item indent-1">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span class="tree-item-text">Phase 2: Modelling</span>
+        </div>
+        <div class="tree-item indent-1">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span class="tree-item-text">Phase 3: Review</span>
+        </div>
+        <div class="tree-item">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span class="tree-item-text">Basel III Compliance</span>
+        </div>
+        <div class="tree-item">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span class="tree-item-text">Q1 Regulatory Report</span>
+        </div>
+      </div>
+
+      <div class="sidebar-spacer"></div>
+
+      <div class="team-section">
+        <div class="section-title">Team</div>
+        <div class="team-member">
+          <div class="team-avatar" style="background:#6366f1">AP</div>
+          <span class="team-name">Ali Panju</span>
+          <span class="status-dot online"></span>
+        </div>
+        <div class="team-member">
+          <div class="team-avatar" style="background:#ec4899">MB</div>
+          <span class="team-name">Molly Baker</span>
+          <span class="status-dot online"></span>
+        </div>
+        <div class="team-member">
+          <div class="team-avatar" style="background:#f59e0b">JG</div>
+          <span class="team-name">Jonathan Grant</span>
+          <span class="status-dot away"></span>
+        </div>
+        <div class="team-member">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#3BB8D6,#14B8A6)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v12l8 4 8-4V6l-8-4z" stroke="#fff" stroke-width="2"/></svg>
+          </div>
+          <span class="team-name">DeepFlow Agent</span>
+          <span class="status-dot online"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content area -->
+    <div class="content-area" id="contentArea">
+      <!-- Chat pane -->
+      <div class="chat-pane" id="chatPane">
+        <div class="chat-header">
+          <h3>💬 DeepFlow Chat</h3>
+          <span class="chat-context">ICAAP</span>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-msg ai">
+            <div class="msg-avatar">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v12l8 4 8-4V6l-8-4z" stroke="#fff" stroke-width="2"/></svg>
+            </div>
+            <div class="msg-bubble">
+              <strong style="font-size:12px;color:#1e293b">Project Status — ICAAP Document</strong>
+              <div style="margin-top:6px;font-size:12px;color:#64748b">2 of 8 tasks completed · 2 active · 4 pending</div>
+              <div class="progress-bar"><div class="progress-fill" style="width:35%"></div></div>
+              <div class="task-card-inline">
+                <div class="tc-status" style="background:#3BB8D6"></div>
+                <div><div class="tc-name">Run Capital Model</div><div class="tc-assignee">DeepFlow Agent · Running 12m</div></div>
+              </div>
+              <div class="task-card-inline">
+                <div class="tc-status" style="background:#3BB8D6"></div>
+                <div><div class="tc-name">Gather Market Data</div><div class="tc-assignee">DataBot · 67% complete</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="chat-msg user">
+            <div class="msg-bubble">What's blocking the Draft Report?</div>
+          </div>
+          <div class="chat-msg ai">
+            <div class="msg-avatar">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v12l8 4 8-4V6l-8-4z" stroke="#fff" stroke-width="2"/></svg>
+            </div>
+            <div class="msg-bubble">
+              <strong style="font-size:12px;color:#1e293b">Draft Report</strong> is waiting on:
+              <div class="task-card-inline">
+                <div class="tc-status" style="background:#3BB8D6"></div>
+                <div><div class="tc-name">Run Capital Model</div><div class="tc-assignee">~18 min remaining</div></div>
+              </div>
+              <div class="task-card-inline">
+                <div class="tc-status" style="background:#3BB8D6"></div>
+                <div><div class="tc-name">Gather Market Data</div><div class="tc-assignee">~5 min remaining</div></div>
+              </div>
+              <div style="margin-top:8px;font-size:12px;color:#64748b">Once both finish, Draft Report will be ready. It's currently <strong style="color:#f59e0b">unassigned</strong>.</div>
+              <div class="action-btns">
+                <button class="action-btn primary">Assign to me</button>
+                <button class="action-btn">Auto-assign</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chat-suggestions" id="chatSuggestions">
+          <div class="suggestions-label">💡 Suggestions</div>
+          <div class="suggestion-chip" onclick="handleSuggestion('blocked')">
+            <span class="sc-icon">🔴</span>
+            <div class="sc-text"><strong>3 tasks need attention</strong>View blocked tasks →</div>
+            <span class="sc-arrow">›</span>
+          </div>
+          <div class="suggestion-chip" onclick="handleSuggestion('phase2')">
+            <span class="sc-icon">📋</span>
+            <div class="sc-text"><strong>Phase 2 ready to start</strong>Assign agents to modelling →</div>
+            <span class="sc-arrow">›</span>
+          </div>
+          <div class="suggestion-chip" onclick="handleSuggestion('review')">
+            <span class="sc-icon">🤖</span>
+            <div class="sc-text"><strong>Agent completed model run</strong>Review output →</div>
+            <span class="sc-arrow">›</span>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <button class="attach-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.5 7.5l-5.5 5.5a3.5 3.5 0 01-5-5l5.5-5.5a2 2 0 013 3L6 10.5a.5.5 0 01-.7-.7L10 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></button>
+          <input class="chat-input" id="chatInput" placeholder="Message DeepFlow..." onkeydown="if(event.key==='Enter')sendMessage()">
+          <button class="chat-send-btn" onclick="sendMessage()">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M14 2L7 9M14 2l-4.5 12L7 9 2 7.5 14 2z" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="resize-handle"></div>
+
+      <!-- Canvas area -->
+      <div class="canvas-area" id="canvasArea">
+        <div class="canvas-tabs">
+          <div class="canvas-tab active" data-view="graph" onclick="switchView('graph')">Graph</div>
+          <div class="canvas-tab" data-view="list" onclick="switchView('list')">List</div>
+          <div class="canvas-tab" data-view="workspace" onclick="switchView('workspace')">Workspace</div>
+        </div>
+        <div class="canvas-breadcrumb" id="canvasBreadcrumb">
+          📁 ICAAP Document <span style="margin:0 4px">›</span> <span>Phase 1: Data Gathering</span>
+        </div>
+
+        <!-- GRAPH VIEW -->
+        <div class="canvas-view active" id="graphView">
+          <div class="graph-container">
+            <div class="graph-bg"></div>
+            <svg class="graph-svg" id="graphSvg"></svg>
+            <div class="graph-cards" id="graphCards"></div>
+            <div class="minimap">
+              <div class="minimap-dot" style="left:10px;top:30px;width:8px;height:5px;background:#22c55e;border-radius:1px"></div>
+              <div class="minimap-dot" style="left:28px;top:22px;width:8px;height:5px;background:#22c55e;border-radius:1px"></div>
+              <div class="minimap-dot" style="left:48px;top:18px;width:8px;height:5px;background:#3BB8D6;border-radius:1px"></div>
+              <div class="minimap-dot" style="left:48px;top:38px;width:8px;height:5px;background:#3BB8D6;border-radius:1px"></div>
+              <div class="minimap-dot" style="left:70px;top:28px;width:8px;height:5px;background:#f59e0b;border-radius:1px"></div>
+              <div class="minimap-dot" style="left:90px;top:28px;width:8px;height:5px;background:#cbd5e1;border-radius:1px"></div>
+              <div class="minimap-dot" style="left:108px;top:28px;width:8px;height:5px;background:#cbd5e1;border-radius:1px"></div>
+              <div class="minimap-dot" style="left:124px;top:28px;width:8px;height:5px;background:#cbd5e1;border-radius:1px"></div>
+              <div class="minimap-viewport" style="left:4px;top:8px;width:50px;height:50px"></div>
+            </div>
+            <div class="zoom-controls">
+              <button class="zoom-btn">+</button>
+              <button class="zoom-btn">−</button>
+              <button class="zoom-btn" style="font-size:12px">⛶</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- LIST VIEW -->
+        <div class="canvas-view" id="listView">
+          <div class="list-view" style="display:flex;flex-direction:column;flex:1;overflow-y:auto">
+            <table class="list-table">
+              <thead>
+                <tr><th style="width:30%">Task</th><th>Status</th><th>Assignee</th><th>Level</th><th>Depends On</th><th>Due</th></tr>
+              </thead>
+              <tbody id="listBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- WORKSPACE VIEW -->
+        <div class="canvas-view" id="workspaceView">
+          <div class="workspace-view" style="display:flex;flex-direction:column;flex:1;overflow:hidden">
+            <div class="ws-tabs">
+              <div class="ws-tab active">📄 Risk Assessment Output <span class="close-tab">×</span></div>
+              <div class="ws-tab">📊 Capital Model Results <span class="close-tab">×</span></div>
+              <div class="ws-tab">📝 Draft Report <span class="close-tab">×</span></div>
+              <div class="ws-version-nav">
+                <button>‹</button>
+                <span>V2/3</span>
+                <button>›</button>
+              </div>
+            </div>
+            <div class="ws-toolbar">
+              <button class="ws-tool-btn"><strong>B</strong></button>
+              <button class="ws-tool-btn"><em>I</em></button>
+              <button class="ws-tool-btn" style="text-decoration:underline">U</button>
+              <div class="ws-tool-sep"></div>
+              <button class="ws-tool-btn">≡</button>
+              <button class="ws-tool-btn">⊞</button>
+              <div class="ws-tool-sep"></div>
+              <button class="ws-tool-btn">🔗</button>
+              <button class="ws-tool-btn">📷</button>
+              <div class="ws-tool-sep"></div>
+              <button class="ws-tool-btn" style="font-size:11px;color:#22c55e;font-weight:600">Preview</button>
+            </div>
+            <div class="ws-content">
+              <h2>Risk Assessment — ICAAP 2025</h2>
+              <p style="color:#94a3b8;font-size:12px;margin-bottom:16px">Generated by DeepFlow Agent · Reviewed by Molly Baker · v2 · 11 Mar 2025</p>
+              <h3>1. Executive Summary</h3>
+              <p>This risk assessment identifies and evaluates the material risks facing the institution as part of the Internal Capital Adequacy Assessment Process (ICAAP) for the 2025 reporting period. The assessment covers credit risk, market risk, operational risk, and concentration risk across all business units.</p>
+              <h3>2. Key Risk Findings</h3>
+              <ul>
+                <li><strong>Credit Risk:</strong> Portfolio quality remains stable with NPL ratio at 2.3%, within acceptable thresholds. Watchlist accounts increased by 12% QoQ — recommend enhanced monitoring.</li>
+                <li><strong>Market Risk:</strong> VaR increased to £4.2M (95th percentile) due to elevated interest rate volatility. Stress scenarios suggest potential losses of up to £18M under severe conditions.</li>
+                <li><strong>Operational Risk:</strong> Three material incidents logged in Q4, all resolved within SLA. Cyber risk assessment updated with new threat vectors identified.</li>
+                <li><strong>Concentration Risk:</strong> Top 10 exposures represent 34% of portfolio — above internal limit of 30%. Remediation plan in progress.</li>
+              </ul>
+              <h3>3. Capital Impact Assessment</h3>
+              <p>Based on the risk profile analysis, the recommended Pillar 2A capital add-on is <strong>£12.4M</strong>, representing a 2.1% increase over the previous period. This reflects the elevated market risk environment and concentration risk findings.</p>
+              <p>The capital model (pending completion) will provide granular stress-test results for the final Pillar 2B buffer calculation.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Drawer overlay -->
+        <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+        <div class="drawer" id="drawer">
+          <div class="drawer-header">
+            <div>
+              <div class="drawer-title" id="drawerTitle">Run Capital Model</div>
+              <div class="drawer-status" id="drawerStatus" style="background:#3BB8D6">Active</div>
+            </div>
+            <button class="drawer-close" onclick="closeDrawer()">×</button>
+          </div>
+          <div class="drawer-assignee" id="drawerAssignee">
+            <div class="da-avatar hexagon" style="background:linear-gradient(135deg,#3BB8D6,#14B8A6);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)">
+              <span style="color:#fff;font-size:10px;font-weight:600">DF</span>
+            </div>
+            <div>
+              <div class="da-info">DeepFlow Agent</div>
+              <div class="da-role">AI Agent · Running 12 minutes</div>
+            </div>
+          </div>
+          <div class="drawer-tabs">
+            <div class="drawer-tab active" onclick="switchDrawerTab(this,'details')">Details</div>
+            <div class="drawer-tab" onclick="switchDrawerTab(this,'chat')">Chat</div>
+            <div class="drawer-tab" onclick="switchDrawerTab(this,'history')">History</div>
+            <div class="drawer-tab" onclick="switchDrawerTab(this,'subtasks')">Sub-tasks</div>
+          </div>
+          <div class="drawer-content" id="drawerContent">
+            <div class="drawer-section">
+              <div class="drawer-section-title">Properties</div>
+              <div class="drawer-prop"><span class="label">Due Date</span><span class="value">14 Mar 2025</span></div>
+              <div class="drawer-prop"><span class="label">Priority</span><span class="value">High</span></div>
+              <div class="drawer-prop"><span class="label">Level</span><span class="value"><span class="depth-badge" style="background:#3BB8D6">L1</span></span></div>
+              <div class="drawer-prop"><span class="label">Created</span><span class="value">8 Mar 2025</span></div>
+            </div>
+            <div class="drawer-section">
+              <div class="drawer-section-title">Description</div>
+              <p style="font-size:13px;color:#475569;line-height:1.5">Execute the internal capital adequacy model using collected data and risk assessment outputs. Generate stress-test scenarios under baseline, adverse, and severe conditions per PRA guidelines.</p>
+            </div>
+            <div class="drawer-section">
+              <div class="drawer-section-title">Dependencies</div>
+              <div class="drawer-dep"><div class="dep-dot" style="background:#22c55e"></div> Data Collection <span style="color:#94a3b8;font-size:11px">— Done</span></div>
+              <div class="drawer-dep"><div class="dep-dot" style="background:#22c55e"></div> Risk Assessment <span style="color:#94a3b8;font-size:11px">— Done</span></div>
+            </div>
+            <div class="drawer-section">
+              <div class="drawer-section-title">Blocks</div>
+              <div class="drawer-dep"><div class="dep-dot" style="background:#f59e0b"></div> Draft Report <span style="color:#94a3b8;font-size:11px">— Ready</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Task data
+const tasks = [
+  { id:1, name:'Data Collection', status:'done', statusColor:'#22c55e', statusLabel:'Done', assignee:'Ali P.', avatarColor:'#6366f1', avatarType:'circle', initials:'AP', depth:1, depthColor:'#3BB8D6', depthLabel:'L1', dependsOn:[], blocks:[2], due:'8 Mar', x:20, y:80 },
+  { id:2, name:'Risk Assessment', status:'done', statusColor:'#22c55e', statusLabel:'Done', assignee:'Molly B.', avatarColor:'#ec4899', avatarType:'circle', initials:'MB', depth:1, depthColor:'#3BB8D6', depthLabel:'L1', dependsOn:[1], blocks:[3,4], due:'10 Mar', x:210, y:40 },
+  { id:3, name:'Run Capital Model', status:'active', statusColor:'#3BB8D6', statusLabel:'Active', assignee:'DeepFlow Agent', avatarColor:'linear-gradient(135deg,#3BB8D6,#14B8A6)', avatarType:'hexagon', initials:'DF', depth:2, depthColor:'#14B8A6', depthLabel:'L2', dependsOn:[2], blocks:[5], due:'14 Mar', x:400, y:10 },
+  { id:4, name:'Gather Market Data', status:'active', statusColor:'#3BB8D6', statusLabel:'Active', assignee:'DataBot', avatarColor:'linear-gradient(135deg,#8b5cf6,#6366f1)', avatarType:'hexagon', initials:'DB', depth:2, depthColor:'#14B8A6', depthLabel:'L2', dependsOn:[2], blocks:[5], due:'13 Mar', x:400, y:140 },
+  { id:5, name:'Draft Report', status:'ready', statusColor:'#f59e0b', statusLabel:'Ready', assignee:null, avatarColor:'', avatarType:'circle', initials:'?', depth:3, depthColor:'#F59E0B', depthLabel:'L3', dependsOn:[3,4], blocks:[6], due:'18 Mar', x:600, y:80 },
+  { id:6, name:'Internal Review', status:'pending', statusColor:'#cbd5e1', statusLabel:'Pending', assignee:'Jonathan G.', avatarColor:'#f59e0b', avatarType:'circle', initials:'JG', depth:3, depthColor:'#F59E0B', depthLabel:'L3', dependsOn:[5], blocks:[7], due:'22 Mar', x:790, y:80 },
+  { id:7, name:'Board Approval', status:'pending', statusColor:'#cbd5e1', statusLabel:'Pending', assignee:null, avatarColor:'', avatarType:'circle', initials:'?', depth:4, depthColor:'#E74C8A', depthLabel:'L4', dependsOn:[6], blocks:[8], due:'28 Mar', x:960, y:40 },
+  { id:8, name:'Final Submission', status:'pending', statusColor:'#cbd5e1', statusLabel:'Pending', assignee:null, avatarColor:'', avatarType:'circle', initials:'?', depth:4, depthColor:'#E74C8A', depthLabel:'L4', dependsOn:[7], blocks:[], due:'31 Mar', x:960, y:140 }
+];
+
+// Edge definitions (from → to, with colour class based on upstream status)
+const edges = [
+  { from:1, to:2, cls:'green' },
+  { from:2, to:3, cls:'green' },
+  { from:2, to:4, cls:'green' },
+  { from:3, to:5, cls:'cyan' },
+  { from:4, to:5, cls:'cyan' },
+  { from:5, to:6, cls:'amber' },
+  { from:6, to:7, cls:'grey' },
+  { from:7, to:8, cls:'grey' }
+];
+
+// Render graph cards
+function renderGraph() {
+  const container = document.getElementById('graphCards');
+  const svg = document.getElementById('graphSvg');
+  container.innerHTML = '';
+  
+  tasks.forEach(t => {
+    const isUnassigned = !t.assignee;
+    const card = document.createElement('div');
+    card.className = 'task-card' + (isUnassigned ? ' unassigned' : '');
+    card.style.left = t.x + 'px';
+    card.style.top = t.y + 'px';
+    card.onclick = () => openDrawer(t);
+    
+    const avatarStyle = t.avatarType === 'hexagon' 
+      ? `clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:${t.avatarColor}`
+      : isUnassigned 
+        ? '' 
+        : `border-radius:50%;background:${t.avatarColor}`;
+    
+    card.innerHTML = `
+      <div class="tc-status-bar" style="background:${t.statusColor}"></div>
+      <div class="tc-depth-border" style="background:${t.depthColor}"></div>
+      <div class="tc-body">
+        <div class="tc-title">${t.name}</div>
+        <div class="tc-assignee-row">
+          <div class="tc-avatar ${isUnassigned ? '' : t.avatarType}" style="${avatarStyle}">${t.initials}</div>
+          <span class="tc-assignee-name">${isUnassigned ? 'Assign →' : t.assignee}</span>
+        </div>
+        <div class="tc-due">${t.due}</div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  // Render SVG edges
+  let svgContent = '';
+  edges.forEach(e => {
+    const from = tasks.find(t => t.id === e.from);
+    const to = tasks.find(t => t.id === e.to);
+    const x1 = from.x + 172;
+    const y1 = from.y + 55;
+    const x2 = to.x;
+    const y2 = to.y + 55;
+    const mx = (x1 + x2) / 2;
+    svgContent += `<path class="edge-line ${e.cls}" d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}"/>`;
+  });
+  svg.innerHTML = svgContent;
+}
+
+// Render list view
+function renderList() {
+  const body = document.getElementById('listBody');
+  body.innerHTML = '';
+  tasks.forEach(t => {
+    const isUnassigned = !t.assignee;
+    const row = document.createElement('tr');
+    row.onclick = () => openDrawer(t);
+    const depNames = t.dependsOn.map(id => tasks.find(x=>x.id===id)?.name || '').join(', ');
+    const avatarCls = isUnassigned ? 'unassigned' : t.avatarType;
+    const avatarSty = isUnassigned ? '' : t.avatarType === 'hexagon' 
+      ? `clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:${t.avatarColor}` 
+      : `background:${t.avatarColor}`;
+    
+    row.innerHTML = `
+      <td style="position:relative;padding-left:16px"><div class="list-row-depth" style="background:${t.depthColor}"></div><strong style="font-weight:600">${t.name}</strong></td>
+      <td><span class="list-status-pill ${t.status}">${t.statusLabel}</span></td>
+      <td><span class="list-avatar ${avatarCls}" style="${avatarSty}">${t.initials}</span>${isUnassigned ? '<span style="color:#93c5fd;font-style:italic;font-size:12px">Assign</span>' : t.assignee}</td>
+      <td><span class="depth-badge" style="background:${t.depthColor}">${t.depthLabel}</span></td>
+      <td style="font-size:12px;color:#94a3b8">${depNames || '—'}</td>
+      <td style="font-size:12px;color:#94a3b8">${t.due}</td>
+    `;
+    body.appendChild(row);
+  });
+}
+
+// View switching
+function switchView(view) {
+  document.querySelectorAll('.canvas-tab').forEach(t => t.classList.toggle('active', t.dataset.view === view));
+  document.querySelectorAll('.canvas-view').forEach(v => v.classList.remove('active'));
+  document.getElementById(view + 'View').classList.add('active');
+  
+  const bc = document.getElementById('canvasBreadcrumb');
+  if (view === 'workspace') {
+    bc.innerHTML = '📁 ICAAP Document <span style="margin:0 4px">›</span> <span>Risk Assessment Output</span>';
+  } else {
+    bc.innerHTML = '📁 ICAAP Document <span style="margin:0 4px">›</span> <span>Phase 1: Data Gathering</span>';
+  }
+}
+
+// Drawer
+function openDrawer(task) {
+  document.getElementById('drawerTitle').textContent = task.name;
+  const statusEl = document.getElementById('drawerStatus');
+  statusEl.textContent = task.statusLabel;
+  statusEl.style.background = task.statusColor;
+  if (task.status === 'pending') statusEl.style.color = '#64748b';
+  else statusEl.style.color = '#fff';
+
+  const assigneeEl = document.getElementById('drawerAssignee');
+  if (task.assignee) {
+    const sty = task.avatarType === 'hexagon' 
+      ? `background:${task.avatarColor};clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)` 
+      : `background:${task.avatarColor};border-radius:50%`;
+    assigneeEl.innerHTML = `
+      <div class="da-avatar" style="${sty}"><span style="color:#fff;font-size:10px;font-weight:600">${task.initials}</span></div>
+      <div><div class="da-info">${task.assignee}</div><div class="da-role">${task.avatarType==='hexagon'?'AI Agent':'Team Member'}</div></div>
+    `;
+  } else {
+    assigneeEl.innerHTML = `
+      <div class="da-avatar" style="border:2px dashed #93c5fd;border-radius:50%;background:#f0f7ff"><span style="color:#93c5fd;font-size:11px;font-weight:600">?</span></div>
+      <div><div class="da-info" style="color:#93c5fd;font-style:italic">Unassigned</div><div class="da-role">Click to assign →</div></div>
+    `;
+  }
+
+  // Rebuild details
+  const deps = task.dependsOn.map(id => {
+    const d = tasks.find(x=>x.id===id);
+    return `<div class="drawer-dep"><div class="dep-dot" style="background:${d.statusColor}"></div> ${d.name} <span style="color:#94a3b8;font-size:11px">— ${d.statusLabel}</span></div>`;
+  }).join('') || '<div style="font-size:12px;color:#94a3b8">None</div>';
+  
+  const blocks = task.blocks.map(id => {
+    const b = tasks.find(x=>x.id===id);
+    return `<div class="drawer-dep"><div class="dep-dot" style="background:${b.statusColor}"></div> ${b.name} <span style="color:#94a3b8;font-size:11px">— ${b.statusLabel}</span></div>`;
+  }).join('') || '<div style="font-size:12px;color:#94a3b8">None</div>';
+
+  document.getElementById('drawerContent').innerHTML = `
+    <div class="drawer-section">
+      <div class="drawer-section-title">Properties</div>
+      <div class="drawer-prop"><span class="label">Due Date</span><span class="value">${task.due} 2025</span></div>
+      <div class="drawer-prop"><span class="label">Priority</span><span class="value">High</span></div>
+      <div class="drawer-prop"><span class="label">Level</span><span class="value"><span class="depth-badge" style="background:${task.depthColor}">${task.depthLabel}</span></span></div>
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-title">Description</div>
+      <p style="font-size:13px;color:#475569;line-height:1.5">Task details and execution instructions for ${task.name}.</p>
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-title">Dependencies</div>
+      ${deps}
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-title">Blocks</div>
+      ${blocks}
+    </div>
+  `;
+
+  // Reset drawer tabs
+  document.querySelectorAll('.drawer-tab').forEach((t,i) => t.classList.toggle('active', i===0));
+
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+
+function closeDrawer() {
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+
+function switchDrawerTab(el, tab) {
+  document.querySelectorAll('.drawer-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  
+  const content = document.getElementById('drawerContent');
+  if (tab === 'history') {
+    content.innerHTML = `
+      <div class="drawer-history-item"><div class="dh-time">12 Mar 2025, 09:15</div><div class="dh-text"><strong>DeepFlow Agent</strong> started executing task</div></div>
+      <div class="drawer-history-item"><div class="dh-time">11 Mar 2025, 16:42</div><div class="dh-text"><strong>Ali Panju</strong> assigned task to DeepFlow Agent</div></div>
+      <div class="drawer-history-item"><div class="dh-time">11 Mar 2025, 14:20</div><div class="dh-text"><strong>Ali Panju</strong> updated task description</div></div>
+      <div class="drawer-history-item"><div class="dh-time">8 Mar 2025, 10:00</div><div class="dh-text"><strong>Ali Panju</strong> created task</div></div>
+    `;
+  } else if (tab === 'chat') {
+    content.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="background:#f7f8fa;padding:10px;border-radius:8px;font-size:12px;color:#475569">
+          <strong style="color:#1e293b">DeepFlow Agent</strong><br>
+          Running capital model with 3 stress scenarios. Current progress: processing adverse scenario (2/3). ETA: ~18 minutes.
+        </div>
+        <div style="background:#f7f8fa;padding:10px;border-radius:8px;font-size:12px;color:#475569">
+          <strong style="color:#1e293b">DeepFlow Agent</strong><br>
+          Baseline scenario completed. Results within expected ranges. NPV impact: -£2.1M.
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:6px;align-items:center">
+        <input style="flex:1;padding:6px 10px;border:1px solid #e2e8f0;border-radius:6px;font-size:12px;font-family:inherit" placeholder="Message about this task...">
+        <button style="padding:4px 10px;background:#3BB8D6;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer">Send</button>
+      </div>
+    `;
+  } else if (tab === 'subtasks') {
+    content.innerHTML = `
+      <div style="font-size:12px;color:#475569">
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f1f5f9">
+          <div style="width:16px;height:16px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff">✓</div>
+          <span>Load input datasets</span>
+          <span style="margin-left:auto;color:#94a3b8;font-size:11px">Done</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f1f5f9">
+          <div style="width:16px;height:16px;border-radius:50%;background:#3BB8D6;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff">▶</div>
+          <span>Run stress scenarios</span>
+          <span style="margin-left:auto;color:#94a3b8;font-size:11px">2/3</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f1f5f9">
+          <div style="width:16px;height:16px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:9px;color:#94a3b8">○</div>
+          <span>Generate output report</span>
+          <span style="margin-left:auto;color:#94a3b8;font-size:11px">Pending</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 0">
+          <div style="width:16px;height:16px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:9px;color:#94a3b8">○</div>
+          <span>Validate results</span>
+          <span style="margin-left:auto;color:#94a3b8;font-size:11px">Pending</span>
+        </div>
+      </div>
+    `;
+  }
+}
+
+// Sidebar collapse
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('collapsed');
+}
+
+// Chat suggestion handler
+function handleSuggestion(type) {
+  const msgs = {
+    blocked: "Show me the 3 blocked tasks and what's causing the delays.",
+    phase2: "Start Phase 2 — assign agents to the modelling tasks.",
+    review: "Show me the capital model output for review."
+  };
+  const input = document.getElementById('chatInput');
+  input.value = msgs[type] || '';
+  input.focus();
+  sendMessage();
+}
+
+// Send message
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  
+  const msgs = document.getElementById('chatMessages');
+  
+  // User message
+  const userMsg = document.createElement('div');
+  userMsg.className = 'chat-msg user';
+  userMsg.innerHTML = `<div class="msg-bubble">${text}</div>`;
+  msgs.appendChild(userMsg);
+  
+  input.value = '';
+  
+  // AI response after short delay
+  setTimeout(() => {
+    const aiMsg = document.createElement('div');
+    aiMsg.className = 'chat-msg ai';
+    aiMsg.innerHTML = `
+      <div class="msg-avatar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v12l8 4 8-4V6l-8-4z" stroke="#fff" stroke-width="2"/></svg>
+      </div>
+      <div class="msg-bubble">I'm on it. Let me check the current status and get back to you with details.
+        <div class="action-btns">
+          <button class="action-btn primary">View Details</button>
+          <button class="action-btn">Dismiss</button>
+        </div>
+      </div>
+    `;
+    msgs.appendChild(aiMsg);
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 600);
+  
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// Workspace tab switching
+document.querySelectorAll('.ws-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.ws-tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Init
+renderGraph();
+renderList();
+</script>
+</body>
+</html>
