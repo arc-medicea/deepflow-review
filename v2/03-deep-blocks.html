@@ -1,0 +1,2479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Blocks — Concept 03</title>
+<style>
+  /* ══════════════════════════════════════════════════
+     DEEP BLOCKS — Notion meets AI Orchestration
+     ══════════════════════════════════════════════════ */
+
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&display=swap');
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --bg: #fafafa;
+    --bg-hover: #f0f0f0;
+    --bg-active: #e8e8e8;
+    --bg-sidebar: #fbfbfa;
+    --border: #e8e8e8;
+    --border-light: #f0f0f0;
+    --text: #1a1a1a;
+    --text-secondary: #8a8a8a;
+    --text-tertiary: #b0b0b0;
+    --accent: #2383e2;
+    --accent-light: #e8f0fe;
+    --green: #4daa57;
+    --green-bg: #edf8ef;
+    --orange: #d97706;
+    --orange-bg: #fef3cd;
+    --red: #e03e3e;
+    --red-bg: #fde8e8;
+    --blue: #2383e2;
+    --blue-bg: #e8f0fe;
+    --purple: #9065b0;
+    --purple-bg: #f3eef8;
+    --pink: #d44a7a;
+    --cyan: #0891b2;
+    --depth-l1: #0891b2;
+    --depth-l2: #2383e2;
+    --depth-l3: #d97706;
+    --depth-l4: #e03e3e;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-serif: 'Newsreader', Georgia, serif;
+    --radius: 6px;
+    --radius-lg: 10px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+    --transition: 150ms ease;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: #e8e8e8;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Shell ── */
+  .shell {
+    width: 1200px;
+    height: 820px;
+    margin: 30px auto;
+    background: var(--bg);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 240px;
+    min-width: 240px;
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    user-select: none;
+    overflow-y: auto;
+  }
+
+  .sidebar-header {
+    padding: 16px 14px 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sidebar-header .logo {
+    width: 22px; height: 22px;
+    background: linear-gradient(135deg, var(--cyan), var(--blue));
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 11px;
+  }
+
+  .sidebar-header .workspace-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .sidebar-section {
+    padding: 4px 8px;
+  }
+
+  .sidebar-section-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 8px 4px;
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background var(--transition);
+    color: var(--text-secondary);
+    position: relative;
+  }
+
+  .sidebar-item:hover { background: var(--bg-hover); color: var(--text); }
+  .sidebar-item.active { background: var(--bg-hover); color: var(--text); font-weight: 500; }
+
+  .sidebar-item .icon {
+    width: 18px; height: 18px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+  }
+
+  .sidebar-item .toggle-arrow {
+    width: 16px; height: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    transition: transform var(--transition);
+    cursor: pointer;
+    border-radius: 3px;
+    margin-left: -4px;
+  }
+
+  .sidebar-item .toggle-arrow:hover { background: var(--bg-active); }
+  .sidebar-item .toggle-arrow.open { transform: rotate(90deg); }
+
+  .sidebar-children {
+    padding-left: 22px;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 200ms ease;
+  }
+
+  .sidebar-children.open { max-height: 500px; }
+
+  .sidebar-item .badge {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    background: var(--bg-hover);
+    padding: 0 6px;
+    border-radius: 10px;
+    font-weight: 500;
+  }
+
+  .sidebar-divider {
+    height: 1px;
+    background: var(--border-light);
+    margin: 6px 12px;
+  }
+
+  .sidebar-quick-find {
+    margin: 4px 10px 8px;
+    padding: 5px 8px;
+    background: var(--bg-hover);
+    border: none;
+    border-radius: 5px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: calc(100% - 20px);
+  }
+
+  .sidebar-quick-find:hover { background: var(--bg-active); }
+
+  /* ── Main Content ── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  /* ── Tab Bar ── */
+  .tab-bar {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    padding: 0 24px;
+    gap: 0;
+    flex-shrink: 0;
+  }
+
+  .tab {
+    padding: 10px 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all var(--transition);
+    font-weight: 500;
+    user-select: none;
+  }
+
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--text); border-bottom-color: var(--text); }
+
+  /* ── Page Container ── */
+  .page-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .page-content {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    display: none;
+  }
+
+  .page-content.active { display: block; }
+
+  /* ── Breadcrumbs ── */
+  .breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: 8px;
+  }
+
+  .breadcrumbs span { cursor: pointer; }
+  .breadcrumbs span:hover { color: var(--text-secondary); }
+  .breadcrumbs .sep { color: var(--text-tertiary); cursor: default; }
+
+  /* ── Page Title ── */
+  .page-title {
+    font-family: var(--font-serif);
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 2px;
+    outline: none;
+    border: none;
+  }
+
+  .page-title:empty::before {
+    content: 'Untitled';
+    color: var(--text-tertiary);
+  }
+
+  .page-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 28px;
+  }
+
+  /* ── Block System ── */
+  .block {
+    position: relative;
+    margin-bottom: 2px;
+    border-radius: var(--radius);
+    transition: background var(--transition);
+  }
+
+  .block:hover > .block-handle {
+    opacity: 1;
+  }
+
+  .block-handle {
+    position: absolute;
+    left: -28px;
+    top: 4px;
+    width: 20px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    opacity: 0;
+    transition: opacity var(--transition);
+    color: var(--text-tertiary);
+    border-radius: 3px;
+    font-size: 12px;
+  }
+
+  .block-handle:hover { background: var(--bg-hover); color: var(--text-secondary); }
+
+  .block.dragging {
+    opacity: 0.5;
+    background: var(--accent-light);
+  }
+
+  .block.drag-over-top { border-top: 2px solid var(--accent); }
+  .block.drag-over-bottom { border-bottom: 2px solid var(--accent); }
+
+  /* ── Status Bar Block ── */
+  .status-bar-block {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+
+  .status-metrics {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .metric {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .metric-value {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+    font-family: var(--font-serif);
+  }
+
+  .metric-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .metric-divider {
+    width: 1px;
+    height: 32px;
+    background: var(--border);
+  }
+
+  .progress-bar-container {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .progress-bar {
+    height: 8px;
+    background: var(--bg-hover);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+  }
+
+  .progress-segment {
+    height: 100%;
+    transition: width 400ms ease;
+  }
+
+  .progress-legend {
+    display: flex;
+    gap: 12px;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 3px;
+    vertical-align: middle;
+  }
+
+  /* ── Toggle Block ── */
+  .toggle-block {
+    margin-bottom: 4px;
+  }
+
+  .toggle-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    cursor: pointer;
+    border-radius: var(--radius);
+    user-select: none;
+    font-weight: 500;
+  }
+
+  .toggle-header:hover { background: var(--bg-hover); }
+
+  .toggle-icon {
+    font-size: 10px;
+    transition: transform 200ms ease;
+    color: var(--text-tertiary);
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .toggle-icon.open { transform: rotate(90deg); }
+
+  .toggle-body {
+    padding-left: 32px;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 300ms ease;
+  }
+
+  .toggle-body.open { max-height: 2000px; }
+
+  /* ── Graph Block ── */
+  .graph-block {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .graph-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 12px;
+  }
+
+  .graph-block-header .block-type-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .graph-block-header .graph-controls {
+    display: flex;
+    gap: 4px;
+  }
+
+  .graph-block-header .graph-controls button {
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all var(--transition);
+  }
+
+  .graph-block-header .graph-controls button:hover {
+    background: var(--bg-hover);
+    color: var(--text);
+  }
+
+  .graph-block-header .graph-controls button.active {
+    background: var(--text);
+    color: white;
+    border-color: var(--text);
+  }
+
+  .graph-canvas {
+    height: 320px;
+    position: relative;
+    background: 
+      radial-gradient(circle at 1px 1px, var(--border-light) 1px, transparent 0);
+    background-size: 24px 24px;
+    overflow: hidden;
+  }
+
+  .graph-node {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 6px;
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+    box-shadow: var(--shadow-sm);
+    white-space: nowrap;
+  }
+
+  .graph-node:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--text-tertiary);
+    transform: translateY(-1px);
+  }
+
+  .graph-node .node-avatar {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .graph-node .node-avatar.hex {
+    border-radius: 4px;
+    transform: rotate(0deg);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    width: 26px; height: 26px;
+  }
+
+  .graph-node .node-status {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    position: absolute;
+    bottom: -2px;
+    left: 18px;
+    border: 2px solid white;
+  }
+
+  /* SVG edges */
+  .graph-edges {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .graph-edges path {
+    fill: none;
+    stroke: var(--border);
+    stroke-width: 1.5;
+    stroke-dasharray: 6,4;
+  }
+
+  .graph-minimap {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 80px;
+    height: 52px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    box-shadow: var(--shadow-sm);
+    padding: 4px;
+  }
+
+  .minimap-layer {
+    width: 100%;
+    height: 12px;
+    border-radius: 2px;
+    margin-bottom: 2px;
+    opacity: 0.6;
+  }
+
+  .minimap-layer.active { opacity: 1; box-shadow: 0 0 0 1px rgba(0,0,0,0.15); }
+
+  .graph-level-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 4px;
+  }
+
+  .level-btn {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid;
+    background: white;
+    transition: all var(--transition);
+  }
+
+  .level-btn.active { color: white; }
+
+  /* ── Task Database Block ── */
+  .task-db-block {
+    margin-bottom: 16px;
+  }
+
+  .task-db-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+    margin-bottom: 4px;
+  }
+
+  .task-db-header .db-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .task-db-header .db-title .db-icon {
+    font-size: 16px;
+  }
+
+  .view-switcher {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    font-size: 12px;
+  }
+
+  .view-switcher button {
+    padding: 4px 10px;
+    border: none;
+    background: white;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    transition: all var(--transition);
+    border-right: 1px solid var(--border);
+  }
+
+  .view-switcher button:last-child { border-right: none; }
+  .view-switcher button:hover { background: var(--bg-hover); }
+  .view-switcher button.active { background: var(--text); color: white; }
+
+  .task-db-filters {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+
+  .filter-pill {
+    padding: 3px 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    background: white;
+    font-size: 11px;
+    transition: all var(--transition);
+  }
+
+  .filter-pill:hover { background: var(--bg-hover); }
+  .filter-pill.active { background: var(--text); color: white; border-color: var(--text); }
+
+  .task-table {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: white;
+  }
+
+  .task-table-head {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--bg-hover);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .task-table-row {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 13px;
+    cursor: pointer;
+    transition: background var(--transition);
+  }
+
+  .task-table-row:last-child { border-bottom: none; }
+  .task-table-row:hover { background: var(--bg-hover); }
+
+  .col-check { width: 28px; flex-shrink: 0; }
+  .col-check input[type="checkbox"] {
+    width: 15px; height: 15px;
+    accent-color: var(--green);
+    cursor: pointer;
+  }
+
+  .col-title { flex: 1; display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .col-title .task-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .col-status { width: 100px; flex-shrink: 0; }
+  .col-assignee { width: 100px; flex-shrink: 0; display: flex; align-items: center; gap: 6px; }
+  .col-level { width: 50px; flex-shrink: 0; }
+  .col-priority { width: 70px; flex-shrink: 0; }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .status-badge.done { background: var(--green-bg); color: var(--green); }
+  .status-badge.in-progress { background: var(--orange-bg); color: var(--orange); }
+  .status-badge.ready { background: var(--blue-bg); color: var(--blue); }
+  .status-badge.blocked { background: var(--red-bg); color: var(--red); }
+  .status-badge.pending { background: var(--bg-hover); color: var(--text-secondary); }
+
+  .level-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: white;
+  }
+
+  .priority-badge {
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .priority-badge.high { color: var(--red); }
+  .priority-badge.medium { color: var(--orange); }
+  .priority-badge.low { color: var(--text-tertiary); }
+
+  .avatar-sm {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700; color: white;
+    flex-shrink: 0;
+  }
+
+  .avatar-sm.hex {
+    border-radius: 3px;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+
+  .task-table-add {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+
+  .task-table-add:hover { background: var(--bg-hover); color: var(--text-secondary); }
+
+  /* ── Chat Block ── */
+  .chat-block {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .chat-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .chat-messages {
+    padding: 12px 16px;
+    max-height: 220px;
+    overflow-y: auto;
+  }
+
+  .chat-msg {
+    margin-bottom: 12px;
+    display: flex;
+    gap: 10px;
+  }
+
+  .chat-msg .msg-avatar {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: white;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .chat-msg .msg-body {
+    flex: 1;
+  }
+
+  .chat-msg .msg-name {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .chat-msg .msg-text {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .chat-msg .msg-time {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-top: 2px;
+  }
+
+  .chat-input-area {
+    padding: 10px 16px;
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .chat-input {
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-family: var(--font-sans);
+    outline: none;
+    transition: border var(--transition);
+    background: var(--bg);
+  }
+
+  .chat-input:focus { border-color: var(--text-tertiary); }
+
+  .chat-input::placeholder { color: var(--text-tertiary); }
+
+  .chat-send {
+    width: 32px; height: 32px;
+    border: none;
+    background: var(--text);
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: opacity var(--transition);
+  }
+
+  .chat-send:hover { opacity: 0.8; }
+
+  /* ── Notes Block ── */
+  .notes-block {
+    margin-bottom: 16px;
+  }
+
+  .notes-block-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    padding: 4px 0;
+  }
+
+  .notes-content {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+    padding: 4px 0;
+  }
+
+  .notes-content p { margin-bottom: 8px; }
+  .notes-content strong { font-weight: 600; }
+  .notes-content em { font-style: italic; color: var(--text-secondary); }
+
+  /* ── Slash Command Popup ── */
+  .slash-popup {
+    position: fixed;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 6px;
+    width: 260px;
+    z-index: 1000;
+    display: none;
+    font-size: 13px;
+  }
+
+  .slash-popup.visible { display: block; }
+
+  .slash-popup-header {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    padding: 6px 10px 4px;
+    font-weight: 500;
+  }
+
+  .slash-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background var(--transition);
+  }
+
+  .slash-option:hover, .slash-option.highlighted { background: var(--bg-hover); }
+
+  .slash-option .slash-icon {
+    width: 28px; height: 28px;
+    border-radius: 5px;
+    background: var(--bg-hover);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .slash-option .slash-label {
+    font-weight: 500;
+  }
+
+  .slash-option .slash-desc {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  /* ── Add Block Button ── */
+  .add-block-area {
+    padding: 8px 0;
+    text-align: left;
+  }
+
+  .add-block-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    border: none;
+    background: none;
+    border-radius: 5px;
+    font-family: var(--font-sans);
+    transition: all var(--transition);
+  }
+
+  .add-block-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-secondary);
+  }
+
+  /* ── Task Expand (sub-page) ── */
+  .task-expand-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .task-expand-header .task-type-icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+  }
+
+  .task-expand-header .task-type-icon.hex {
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    border-radius: 0;
+    width: 38px; height: 38px;
+  }
+
+  .task-properties {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 8px 16px;
+    margin-bottom: 24px;
+    font-size: 13px;
+  }
+
+  .prop-label {
+    color: var(--text-secondary);
+    font-weight: 500;
+    padding: 4px 0;
+  }
+
+  .prop-value {
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border-light);
+    margin: 20px 0;
+  }
+
+  .section-heading {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dep-list {
+    list-style: none;
+    font-size: 13px;
+  }
+
+  .dep-list li {
+    padding: 5px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .dep-list li:last-child { border-bottom: none; }
+
+  .dep-arrow { color: var(--text-tertiary); font-size: 12px; }
+
+  .activity-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 13px;
+  }
+
+  .activity-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+
+  .activity-time {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-top: 2px;
+  }
+
+  /* ── Workspace View ── */
+  .workspace-view {
+    display: flex;
+    gap: 0;
+    height: 100%;
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  .workspace-doc {
+    flex: 1;
+    padding: 32px;
+    overflow-y: auto;
+    border-right: 1px solid var(--border);
+  }
+
+  .workspace-doc .doc-title {
+    font-family: var(--font-serif);
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .workspace-doc .doc-meta {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .workspace-doc .doc-body {
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .workspace-doc .doc-body h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 20px 0 8px;
+    font-family: var(--font-serif);
+  }
+
+  .workspace-doc .doc-body p { margin-bottom: 12px; }
+  .workspace-doc .doc-body ul { margin: 0 0 12px 20px; }
+  .workspace-doc .doc-body li { margin-bottom: 4px; }
+
+  .workspace-doc .doc-body .callout {
+    background: var(--blue-bg);
+    border-left: 3px solid var(--blue);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 12px 0;
+    font-size: 13px;
+  }
+
+  .workspace-chat {
+    width: 320px;
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    background: white;
+  }
+
+  .workspace-chat .chat-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .workspace-chat .chat-thread {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .workspace-chat .chat-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .workspace-chat .chat-footer input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-family: var(--font-sans);
+    outline: none;
+    background: var(--bg);
+  }
+
+  .workspace-chat .chat-footer input:focus { border-color: var(--text-tertiary); }
+
+  .thought-step {
+    background: var(--bg-hover);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin: 8px 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background var(--transition);
+  }
+
+  .thought-step:hover { background: var(--bg-active); }
+
+  .thought-step .step-label {
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .thought-step .step-detail {
+    margin-top: 4px;
+    display: none;
+    line-height: 1.5;
+  }
+
+  .thought-step.expanded .step-detail { display: block; }
+
+  .version-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: var(--bg-hover);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .version-nav button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 11px;
+    padding: 0 2px;
+  }
+
+  .version-nav button:hover { color: var(--text); }
+
+  /* ── Kanban Inline ── */
+  .kanban-view {
+    display: none;
+  }
+
+  .kanban-view.active { display: flex; gap: 12px; padding: 8px 0; overflow-x: auto; }
+
+  .kanban-col {
+    min-width: 160px;
+    flex: 1;
+    background: var(--bg-hover);
+    border-radius: var(--radius-lg);
+    padding: 8px;
+  }
+
+  .kanban-col-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: var(--text-secondary);
+    padding: 4px 6px 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .kanban-col-title .count {
+    background: white;
+    padding: 0 6px;
+    border-radius: 10px;
+    font-size: 10px;
+  }
+
+  .kanban-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+
+  .kanban-card:hover {
+    box-shadow: var(--shadow-sm);
+    border-color: var(--text-tertiary);
+  }
+
+  .kanban-card .card-title {
+    font-weight: 500;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .kanban-card .card-meta {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* ── Concept Label ── */
+  .concept-label {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--text);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 20px;
+    z-index: 999;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+
+  /* ── Workspace full-width override ── */
+  .page-content.workspace-page {
+    max-width: 100%;
+    padding: 0;
+    height: calc(100% - 42px);
+  }
+
+  .page-content.workspace-page .workspace-view { height: 100%; }
+
+  /* animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .block { animation: fadeIn 200ms ease; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <!-- ══════ SIDEBAR ══════ -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">D</div>
+      <span class="workspace-name">Enriched Solutions</span>
+    </div>
+
+    <button class="sidebar-quick-find">
+      <span>🔍</span> Quick Find…
+    </button>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Favourites</div>
+      <div class="sidebar-item active" onclick="switchSidebarPage('icaap')">
+        <span class="icon">📄</span> ICAAP Document
+      </div>
+      <div class="sidebar-item" onclick="switchSidebarPage('icaap')">
+        <span class="icon">📊</span> Q4 Risk Assessment
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Workspace</div>
+      <div class="sidebar-item">
+        <span class="toggle-arrow open" onclick="toggleSidebarTree(event, 'icaap-tree')">▶</span>
+        <span class="icon">📁</span> ICAAP Build
+        <span class="badge">23</span>
+      </div>
+      <div class="sidebar-children open" id="icaap-tree">
+        <div class="sidebar-item active">
+          <span class="icon" style="font-size:12px">📄</span> Project Page
+        </div>
+        <div class="sidebar-item">
+          <span class="toggle-arrow" onclick="toggleSidebarTree(event, 'phase1-tree')">▶</span>
+          <span class="icon" style="font-size:12px">📑</span> Phase 1: Data
+        </div>
+        <div class="sidebar-children" id="phase1-tree">
+          <div class="sidebar-item">
+            <span class="icon" style="font-size:11px">◻️</span> Risk Inventory Refresh
+          </div>
+          <div class="sidebar-item">
+            <span class="icon" style="font-size:11px">◻️</span> Model Calibration
+          </div>
+        </div>
+        <div class="sidebar-item">
+          <span class="icon" style="font-size:12px">📑</span> Phase 2: Analysis
+        </div>
+        <div class="sidebar-item">
+          <span class="icon" style="font-size:12px">📑</span> Phase 3: Document
+        </div>
+      </div>
+
+      <div class="sidebar-item">
+        <span class="toggle-arrow" onclick="toggleSidebarTree(event, 'paper-tree')">▶</span>
+        <span class="icon">📁</span> Paper Airplane
+        <span class="badge">4</span>
+      </div>
+      <div class="sidebar-children" id="paper-tree">
+        <div class="sidebar-item">
+          <span class="icon" style="font-size:12px">📄</span> Project Page
+        </div>
+      </div>
+
+      <div class="sidebar-item">
+        <span class="icon">📁</span> Very Deep
+        <span class="badge">90</span>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Shared</div>
+      <div class="sidebar-item">
+        <span class="icon">👥</span> Team Workspace
+      </div>
+    </div>
+
+    <div style="flex:1"></div>
+
+    <div class="sidebar-section" style="padding-bottom:12px">
+      <div class="sidebar-item">
+        <span class="icon">⚙️</span> Settings
+      </div>
+      <div class="sidebar-item">
+        <span class="icon">🤖</span> Agents
+        <span class="badge">3</span>
+      </div>
+      <div class="sidebar-item">
+        <span class="icon">📋</span> Templates
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ MAIN ══════ -->
+  <div class="main">
+    <!-- Tab Bar -->
+    <div class="tab-bar">
+      <div class="tab active" data-tab="project" onclick="switchTab('project')">Project Page</div>
+      <div class="tab" data-tab="task" onclick="switchTab('task')">Task Expand</div>
+      <div class="tab" data-tab="workspace" onclick="switchTab('workspace')">Workspace</div>
+    </div>
+
+    <div class="page-container">
+
+      <!-- ══════════════════════════════
+           TAB 1: PROJECT PAGE
+           ══════════════════════════════ -->
+      <div class="page-content active" id="page-project">
+        <div class="breadcrumbs">
+          <span>Enriched Solutions</span>
+          <span class="sep">/</span>
+          <span>ICAAP Build</span>
+          <span class="sep">/</span>
+          <span style="color:var(--text)">Project Page</span>
+        </div>
+
+        <h1 class="page-title" contenteditable="true">Build ICAAP Document</h1>
+        <div class="page-subtitle">Internal Capital Adequacy Assessment Process — FY 2025/26</div>
+
+        <!-- ── Status Bar Block ── -->
+        <div class="block" draggable="true">
+          <div class="block-handle">⠿</div>
+          <div class="status-bar-block">
+            <div class="status-metrics">
+              <div class="metric">
+                <div class="metric-value" style="color:var(--green)">8</div>
+                <div class="metric-label">Done</div>
+              </div>
+              <div class="metric">
+                <div class="metric-value" style="color:var(--orange)">5</div>
+                <div class="metric-label">Active</div>
+              </div>
+              <div class="metric">
+                <div class="metric-value" style="color:var(--red)">1</div>
+                <div class="metric-label">Blocked</div>
+              </div>
+              <div class="metric">
+                <div class="metric-value">9</div>
+                <div class="metric-label">Pending</div>
+              </div>
+              <div class="metric-divider"></div>
+              <div class="metric">
+                <div class="metric-value" style="color:var(--cyan)">3</div>
+                <div class="metric-label">Agents</div>
+              </div>
+              <div class="metric">
+                <div class="metric-value">2</div>
+                <div class="metric-label">Humans</div>
+              </div>
+              <div class="metric-divider"></div>
+              <div class="progress-bar-container">
+                <div class="progress-bar">
+                  <div class="progress-segment" style="width:35%; background:var(--green)"></div>
+                  <div class="progress-segment" style="width:22%; background:var(--orange)"></div>
+                  <div class="progress-segment" style="width:4%; background:var(--red)"></div>
+                  <div class="progress-segment" style="width:39%; background:var(--border)"></div>
+                </div>
+                <div class="progress-legend">
+                  <span><span class="legend-dot" style="background:var(--green)"></span>Done</span>
+                  <span><span class="legend-dot" style="background:var(--orange)"></span>Active</span>
+                  <span><span class="legend-dot" style="background:var(--red)"></span>Blocked</span>
+                  <span><span class="legend-dot" style="background:var(--border)"></span>Pending</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Graph Block ── -->
+        <div class="block" draggable="true">
+          <div class="block-handle">⠿</div>
+          <div class="graph-block">
+            <div class="graph-block-header">
+              <div class="block-type-label">
+                <span>🔗</span> Dependency Graph
+              </div>
+              <div class="graph-controls">
+                <button class="active">L1</button>
+                <button>L2</button>
+                <button>L3</button>
+                <button onclick="this.closest('.graph-block').querySelector('.graph-canvas').style.height = this.closest('.graph-block').querySelector('.graph-canvas').style.height === '0px' ? '320px' : '0px'; this.textContent = this.textContent === '−' ? '+' : '−'">−</button>
+              </div>
+            </div>
+            <div class="graph-canvas" id="graph-canvas">
+              <svg class="graph-edges" id="graph-edges"></svg>
+
+              <div class="graph-node" style="left:40px; top:130px" id="gn-prompt">
+                <div class="node-avatar" style="background:var(--depth-l1)">📝</div>
+                <span>Project Prompt</span>
+                <div class="node-status" style="background:var(--green)"></div>
+              </div>
+
+              <div class="graph-node" style="left:200px; top:50px" id="gn-risk">
+                <div class="node-avatar hex" style="background:var(--depth-l1)">DF</div>
+                <span>Risk Inventory</span>
+                <div class="node-status" style="background:var(--green)"></div>
+              </div>
+
+              <div class="graph-node" style="left:200px; top:130px" id="gn-model">
+                <div class="node-avatar hex" style="background:var(--depth-l1)">DF</div>
+                <span>Model Calibration</span>
+                <div class="node-status" style="background:var(--orange)"></div>
+              </div>
+
+              <div class="graph-node" style="left:200px; top:210px" id="gn-data">
+                <div class="node-avatar" style="background:var(--depth-l1)">AP</div>
+                <span>Data Collection</span>
+                <div class="node-status" style="background:var(--green)"></div>
+              </div>
+
+              <div class="graph-node" style="left:410px; top:50px" id="gn-scenario">
+                <div class="node-avatar hex" style="background:var(--depth-l1)">DF</div>
+                <span>Generate Scenarios</span>
+                <div class="node-status" style="background:var(--orange)"></div>
+              </div>
+
+              <div class="graph-node" style="left:410px; top:155px" id="gn-run">
+                <div class="node-avatar hex" style="background:var(--depth-l1)">DF</div>
+                <span>Run Model</span>
+                <div class="node-status" style="background:var(--border)"></div>
+              </div>
+
+              <div class="graph-node" style="left:580px; top:100px" id="gn-review">
+                <div class="node-avatar" style="background:var(--depth-l1)">AP</div>
+                <span>Review Results</span>
+                <div class="node-status" style="background:var(--border)"></div>
+              </div>
+
+              <div class="graph-node" style="left:580px; top:210px" id="gn-draft">
+                <div class="node-avatar hex" style="background:var(--depth-l1)">DF</div>
+                <span>Draft Document</span>
+                <div class="node-status" style="background:var(--border)"></div>
+              </div>
+
+              <div class="graph-node" style="left:740px; top:155px" id="gn-final">
+                <div class="node-avatar" style="background:var(--depth-l1)">AP</div>
+                <span>Final Sign-off</span>
+                <div class="node-status" style="background:var(--border)"></div>
+              </div>
+
+              <!-- Minimap -->
+              <div class="graph-minimap">
+                <div class="minimap-layer active" style="background:var(--depth-l1)"></div>
+                <div class="minimap-layer" style="background:var(--depth-l2)"></div>
+                <div class="minimap-layer" style="background:var(--depth-l3)"></div>
+              </div>
+
+              <!-- Level indicator -->
+              <div class="graph-level-badge">
+                <span class="level-btn active" style="border-color:var(--depth-l1); background:var(--depth-l1); color:white">L1</span>
+                <span class="level-btn" style="border-color:var(--depth-l2); color:var(--depth-l2)">L2</span>
+                <span class="level-btn" style="border-color:var(--depth-l3); color:var(--depth-l3)">L3</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Phase Toggle Block ── -->
+        <div class="block" draggable="true">
+          <div class="block-handle">⠿</div>
+          <div class="toggle-block">
+            <div class="toggle-header" onclick="toggleBlock(this)">
+              <span class="toggle-icon open">▶</span>
+              <span style="color:var(--depth-l1)">●</span>
+              <strong>Phase 1: Data Collection & Model Setup</strong>
+              <span class="status-badge done" style="margin-left:8px; font-size:10px">3/4 done</span>
+            </div>
+            <div class="toggle-body open">
+              <div style="font-size:13px; color:var(--text-secondary); margin-bottom:8px; line-height:1.5">
+                Gather risk data, refresh inventories, calibrate models. Most work assigned to DeepFlow agent with human review gates.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="block" draggable="true">
+          <div class="block-handle">⠿</div>
+          <div class="toggle-block">
+            <div class="toggle-header" onclick="toggleBlock(this)">
+              <span class="toggle-icon">▶</span>
+              <span style="color:var(--depth-l2)">●</span>
+              <strong>Phase 2: Scenario Analysis</strong>
+              <span class="status-badge in-progress" style="margin-left:8px; font-size:10px">2/5 active</span>
+            </div>
+            <div class="toggle-body">
+              <div style="font-size:13px; color:var(--text-secondary); margin-bottom:8px; line-height:1.5">
+                Generate stress scenarios, run capital adequacy models, review outputs. Parallel execution across 3 scenario types.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="block" draggable="true">
+          <div class="block-handle">⠿</div>
+          <div class="toggle-block">
+            <div class="toggle-header" onclick="toggleBlock(this)">
+              <span class="toggle-icon">▶</span>
+              <span style="color:var(--depth-l3)">●</span>
+              <strong>Phase 3: Document Assembly</strong>
+              <span class="status-badge pending" style="margin-left:8px; font-size:10px">Pending</span>
+            </div>
+            <div class="toggle-body">
+              <div style="font-size:13px; color:var(--text-secondary); margin-bottom:8px; line-height:1.5">
+                Compile analysis into final ICAAP document. AI drafts sections, human reviews and signs off.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Task Database Block ── -->
+        <div class="block" draggable="true">
+          <div class="block-handle">⠿</div>
+          <div class="task-db-block">
+            <div class="task-db-header">
+              <div class="db-title">
+                <span class="db-icon">📋</span>
+                Tasks
+              </div>
+              <div class="view-switcher">
+                <button class="active" onclick="switchDbView('table', this)">Table</button>
+                <button onclick="switchDbView('board', this)">Board</button>
+                <button onclick="switchDbView('timeline', this)">Timeline</button>
+              </div>
+            </div>
+
+            <div class="task-db-filters">
+              <span class="filter-pill active">All</span>
+              <span class="filter-pill">Active</span>
+              <span class="filter-pill">My Tasks</span>
+              <span class="filter-pill">Blocked</span>
+              <span style="margin-left:auto; cursor:pointer">⊞ Filter</span>
+              <span style="cursor:pointer">↕ Sort</span>
+            </div>
+
+            <!-- Table View -->
+            <div class="task-table" id="db-table-view">
+              <div class="task-table-head">
+                <span class="col-check"></span>
+                <span class="col-title">Task</span>
+                <span class="col-status">Status</span>
+                <span class="col-assignee">Assignee</span>
+                <span class="col-level">Level</span>
+                <span class="col-priority">Priority</span>
+              </div>
+
+              <div class="task-table-row" onclick="switchTab('task')">
+                <span class="col-check"><input type="checkbox" checked></span>
+                <span class="col-title">
+                  <span class="task-name">Risk Inventory Refresh</span>
+                </span>
+                <span class="col-status"><span class="status-badge done">✓ Done</span></span>
+                <span class="col-assignee">
+                  <span class="avatar-sm hex" style="background:var(--depth-l1)">DF</span>
+                  <span style="font-size:12px">DeepFlow</span>
+                </span>
+                <span class="col-level"><span class="level-badge" style="background:var(--depth-l1)">L1</span></span>
+                <span class="col-priority"><span class="priority-badge high">● High</span></span>
+              </div>
+
+              <div class="task-table-row" onclick="switchTab('task')">
+                <span class="col-check"><input type="checkbox"></span>
+                <span class="col-title">
+                  <span class="task-name">Model Calibration</span>
+                </span>
+                <span class="col-status"><span class="status-badge in-progress">◉ Active</span></span>
+                <span class="col-assignee">
+                  <span class="avatar-sm hex" style="background:var(--depth-l1)">DF</span>
+                  <span style="font-size:12px">DeepFlow</span>
+                </span>
+                <span class="col-level"><span class="level-badge" style="background:var(--depth-l1)">L1</span></span>
+                <span class="col-priority"><span class="priority-badge high">● High</span></span>
+              </div>
+
+              <div class="task-table-row" onclick="switchTab('task')">
+                <span class="col-check"><input type="checkbox" checked></span>
+                <span class="col-title">
+                  <span class="task-name">Data Collection</span>
+                </span>
+                <span class="col-status"><span class="status-badge done">✓ Done</span></span>
+                <span class="col-assignee">
+                  <span class="avatar-sm" style="background:#6b7280">AP</span>
+                  <span style="font-size:12px">Ali P.</span>
+                </span>
+                <span class="col-level"><span class="level-badge" style="background:var(--depth-l1)">L1</span></span>
+                <span class="col-priority"><span class="priority-badge medium">● Med</span></span>
+              </div>
+
+              <div class="task-table-row" onclick="switchTab('task')">
+                <span class="col-check"><input type="checkbox"></span>
+                <span class="col-title">
+                  <span class="task-name">Generate 3 Stress Scenarios</span>
+                </span>
+                <span class="col-status"><span class="status-badge in-progress">◉ Active</span></span>
+                <span class="col-assignee">
+                  <span class="avatar-sm hex" style="background:var(--depth-l2)">DF</span>
+                  <span style="font-size:12px">DeepFlow</span>
+                </span>
+                <span class="col-level"><span class="level-badge" style="background:var(--depth-l2)">L2</span></span>
+                <span class="col-priority"><span class="priority-badge high">● High</span></span>
+              </div>
+
+              <div class="task-table-row" onclick="switchTab('task')">
+                <span class="col-check"><input type="checkbox"></span>
+                <span class="col-title">
+                  <span class="task-name">Run Capital Adequacy Model</span>
+                </span>
+                <span class="col-status"><span class="status-badge blocked">✕ Blocked</span></span>
+                <span class="col-assignee">
+                  <span class="avatar-sm hex" style="background:var(--depth-l2)">DF</span>
+                  <span style="font-size:12px">DeepFlow</span>
+                </span>
+                <span class="col-level"><span class="level-badge" style="background:var(--depth-l2)">L2</span></span>
+                <span class="col-priority"><span class="priority-badge high">● High</span></span>
+              </div>
+
+              <div class="task-table-row" onclick="switchTab('task')">
+                <span class="col-check"><input type="checkbox"></span>
+                <span class="col-title">
+                  <span class="task-name">Review Scenario Results</span>
+                </span>
+                <span class="col-status"><span class="status-badge pending">○ Pending</span></span>
+                <span class="col-assignee">
+                  <span class="avatar-sm" style="background:#6b7280">AP</span>
+                  <span style="font-size:12px">Ali P.</span>
+                </span>
+                <span class="col-level"><span class="level-badge" style="background:var(--depth-l2)">L2</span></span>
+                <span class="col-priority"><span class="priority-badge medium">● Med</span></span>
+              </div>
+
+              <div class="task-table-row" onclick="switchTab('task')">
+                <span class="col-check"><input type="checkbox"></span>
+                <span class="col-title">
+                  <span class="task-name">Draft ICAAP Document</span>
+                </span>
+                <span class="col-status"><span class="status-badge pending">○ Pending</span></span>
+                <span class="col-assignee">
+                  <span class="avatar-sm hex" style="background:var(--depth-l3)">DF</span>
+                  <span style="font-size:12px">DeepFlow</span>
+                </span>
+                <span class="col-level"><span class="level-badge" style="background:var(--depth-l3)">L3</span></span>
+                <span class="col-priority"><span class="priority-badge medium">● Med</span></span>
+              </div>
+
+              <div class="task-table-row" onclick="switchTab('task')">
+                <span class="col-check"><input type="checkbox"></span>
+                <span class="col-title">
+                  <span class="task-name">Final Sign-off & Submission</span>
+                </span>
+                <span class="col-status"><span class="status-badge pending">○ Pending</span></span>
+                <span class="col-assignee">
+                  <span class="avatar-sm" style="background:#6b7280">AP</span>
+                  <span style="font-size:12px">Ali P.</span>
+                </span>
+                <span class="col-level"><span class="level-badge" style="background:var(--depth-l3)">L3</span></span>
+                <span class="col-priority"><span class="priority-badge high">● High</span></span>
+              </div>
+
+              <div class="task-table-add">
+                <span>+</span> New task…
+              </div>
+            </div>
+
+            <!-- Kanban View (hidden by default) -->
+            <div class="kanban-view" id="db-board-view">
+              <div class="kanban-col">
+                <div class="kanban-col-title"><span class="legend-dot" style="background:var(--border)"></span> Pending <span class="count">3</span></div>
+                <div class="kanban-card">
+                  <div class="card-title">Review Scenario Results</div>
+                  <div class="card-meta"><span class="avatar-sm" style="background:#6b7280; width:14px; height:14px; font-size:7px">AP</span> Ali P.</div>
+                </div>
+                <div class="kanban-card">
+                  <div class="card-title">Draft ICAAP Document</div>
+                  <div class="card-meta"><span class="avatar-sm hex" style="background:var(--depth-l3); width:14px; height:14px; font-size:7px">DF</span> DeepFlow</div>
+                </div>
+                <div class="kanban-card">
+                  <div class="card-title">Final Sign-off</div>
+                  <div class="card-meta"><span class="avatar-sm" style="background:#6b7280; width:14px; height:14px; font-size:7px">AP</span> Ali P.</div>
+                </div>
+              </div>
+              <div class="kanban-col">
+                <div class="kanban-col-title"><span class="legend-dot" style="background:var(--red)"></span> Blocked <span class="count">1</span></div>
+                <div class="kanban-card">
+                  <div class="card-title">Run Capital Model</div>
+                  <div class="card-meta"><span class="avatar-sm hex" style="background:var(--depth-l2); width:14px; height:14px; font-size:7px">DF</span> Waiting on scenarios</div>
+                </div>
+              </div>
+              <div class="kanban-col">
+                <div class="kanban-col-title"><span class="legend-dot" style="background:var(--orange)"></span> Active <span class="count">2</span></div>
+                <div class="kanban-card">
+                  <div class="card-title">Model Calibration</div>
+                  <div class="card-meta"><span class="avatar-sm hex" style="background:var(--depth-l1); width:14px; height:14px; font-size:7px">DF</span> 78% complete</div>
+                </div>
+                <div class="kanban-card">
+                  <div class="card-title">Generate Scenarios</div>
+                  <div class="card-meta"><span class="avatar-sm hex" style="background:var(--depth-l2); width:14px; height:14px; font-size:7px">DF</span> Running…</div>
+                </div>
+              </div>
+              <div class="kanban-col">
+                <div class="kanban-col-title"><span class="legend-dot" style="background:var(--green)"></span> Done <span class="count">3</span></div>
+                <div class="kanban-card">
+                  <div class="card-title">Risk Inventory Refresh</div>
+                  <div class="card-meta"><span class="avatar-sm hex" style="background:var(--depth-l1); width:14px; height:14px; font-size:7px">DF</span> Completed</div>
+                </div>
+                <div class="kanban-card">
+                  <div class="card-title">Data Collection</div>
+                  <div class="card-meta"><span class="avatar-sm" style="background:#6b7280; width:14px; height:14px; font-size:7px">AP</span> Completed</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Chat Block ── -->
+        <div class="block" draggable="true">
+          <div class="block-handle">⠿</div>
+          <div class="chat-block">
+            <div class="chat-block-header">
+              <span>💬 Project Chat</span>
+              <span style="font-size:11px; color:var(--text-tertiary)">3 messages</span>
+            </div>
+            <div class="chat-messages">
+              <div class="chat-msg">
+                <div class="msg-avatar" style="background:#6b7280">AP</div>
+                <div class="msg-body">
+                  <div class="msg-name">Ali P.</div>
+                  <div class="msg-text">Can we prioritise the scenario generation? The board meeting moved up to next Friday.</div>
+                  <div class="msg-time">2 hours ago</div>
+                </div>
+              </div>
+              <div class="chat-msg">
+                <div class="msg-avatar" style="background:var(--cyan)">DF</div>
+                <div class="msg-body">
+                  <div class="msg-name">DeepFlow</div>
+                  <div class="msg-text">I've reprioritised scenario generation and increased parallelism to 3 concurrent runs. Expected completion: Thursday 18:00. The model calibration is at 78% — should complete by tomorrow morning, which unblocks the capital adequacy run.</div>
+                  <div class="msg-time">2 hours ago</div>
+                </div>
+              </div>
+              <div class="chat-msg">
+                <div class="msg-avatar" style="background:#6b7280">AP</div>
+                <div class="msg-body">
+                  <div class="msg-name">Ali P.</div>
+                  <div class="msg-text">Perfect. Flag me when results are ready for review.</div>
+                  <div class="msg-time">1 hour ago</div>
+                </div>
+              </div>
+            </div>
+            <div class="chat-input-area">
+              <input class="chat-input" type="text" placeholder="Ask anything about this project, or give a command…">
+              <button class="chat-send">↑</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Notes Block ── -->
+        <div class="block" draggable="true">
+          <div class="block-handle">⠿</div>
+          <div class="notes-block">
+            <div class="notes-block-header">
+              <span>📝</span> Notes
+            </div>
+            <div class="notes-content" contenteditable="true">
+              <p><strong>Board meeting moved to 21 March</strong> — need final document by 19th for review pack.</p>
+              <p><em>Decision:</em> Using 3 stress scenarios this year (base, adverse, severe) instead of 5. Approved by Risk Committee 3 March.</p>
+              <p>Model vendor confirmed v2.4 calibration data available — DeepFlow pulling automatically.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Block -->
+        <div class="add-block-area">
+          <button class="add-block-btn" onclick="showSlashMenu(event)">
+            <span>+</span> Add a block, or type <kbd style="background:var(--bg-hover); padding:1px 5px; border-radius:3px; font-size:11px; border:1px solid var(--border)">/</kbd> for commands
+          </button>
+        </div>
+      </div>
+
+
+      <!-- ══════════════════════════════
+           TAB 2: TASK EXPAND
+           ══════════════════════════════ -->
+      <div class="page-content" id="page-task">
+        <div class="breadcrumbs">
+          <span onclick="switchTab('project')">ICAAP Build</span>
+          <span class="sep">/</span>
+          <span onclick="switchTab('project')">Project Page</span>
+          <span class="sep">/</span>
+          <span style="color:var(--text)">Model Calibration</span>
+        </div>
+
+        <div class="task-expand-header">
+          <div class="task-type-icon hex" style="background:var(--depth-l1)">DF</div>
+          <div>
+            <h1 class="page-title" style="font-size:28px" contenteditable="true">Model Calibration</h1>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:4px">
+              <span class="status-badge in-progress">◉ In Progress</span>
+              <span class="version-nav">
+                <button>‹</button>
+                V2/3
+                <button>›</button>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Properties -->
+        <div class="task-properties">
+          <span class="prop-label">Assignee</span>
+          <span class="prop-value">
+            <span class="avatar-sm hex" style="background:var(--depth-l1)">DF</span>
+            DeepFlow Agent
+          </span>
+
+          <span class="prop-label">Level</span>
+          <span class="prop-value">
+            <span class="level-badge" style="background:var(--depth-l1)">L1</span>
+            Phase 1: Data Collection
+          </span>
+
+          <span class="prop-label">Priority</span>
+          <span class="prop-value"><span class="priority-badge high">● High</span></span>
+
+          <span class="prop-label">Due Date</span>
+          <span class="prop-value">12 March 2026</span>
+
+          <span class="prop-label">Created</span>
+          <span class="prop-value" style="color:var(--text-secondary)">5 March 2026 by Ali P.</span>
+
+          <span class="prop-label">Execution</span>
+          <span class="prop-value">
+            <span style="background:var(--blue-bg); color:var(--blue); padding:2px 8px; border-radius:3px; font-size:11px; font-weight:500">AI Autonomous</span>
+          </span>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Description -->
+        <div class="section-heading">📄 Description</div>
+        <div class="notes-content" contenteditable="true" style="margin-bottom:20px">
+          <p>Calibrate the capital adequacy model using latest market data and vendor-provided v2.4 parameters. Ensure all risk factors are updated and validated against historical backtesting windows.</p>
+          <p><strong>Acceptance criteria:</strong></p>
+          <p>• Model produces results within 5% tolerance of last quarter<br>• All 12 risk categories covered<br>• Backtesting window: 2020–2025</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Dependencies -->
+        <div class="section-heading">🔗 Dependencies</div>
+        <ul class="dep-list" style="margin-bottom:20px">
+          <li>
+            <span class="dep-arrow">←</span>
+            <span class="status-badge done" style="font-size:10px">✓ Done</span>
+            <span>Risk Inventory Refresh</span>
+            <span style="color:var(--text-tertiary); font-size:11px; margin-left:auto">blocks this</span>
+          </li>
+          <li>
+            <span class="dep-arrow">←</span>
+            <span class="status-badge done" style="font-size:10px">✓ Done</span>
+            <span>Data Collection</span>
+            <span style="color:var(--text-tertiary); font-size:11px; margin-left:auto">blocks this</span>
+          </li>
+          <li>
+            <span class="dep-arrow">→</span>
+            <span class="status-badge blocked" style="font-size:10px">✕ Blocked</span>
+            <span>Run Capital Adequacy Model</span>
+            <span style="color:var(--text-tertiary); font-size:11px; margin-left:auto">blocked by this</span>
+          </li>
+          <li>
+            <span class="dep-arrow">→</span>
+            <span class="status-badge pending" style="font-size:10px">○ Pending</span>
+            <span>Generate 3 Stress Scenarios</span>
+            <span style="color:var(--text-tertiary); font-size:11px; margin-left:auto">blocked by this</span>
+          </li>
+        </ul>
+
+        <div class="divider"></div>
+
+        <!-- AI Chat inline -->
+        <div class="section-heading">💬 Task Chat</div>
+        <div class="chat-block" style="margin-bottom:20px">
+          <div class="chat-messages" style="max-height:180px">
+            <div class="chat-msg">
+              <div class="msg-avatar" style="background:var(--cyan)">DF</div>
+              <div class="msg-body">
+                <div class="msg-name">DeepFlow Agent</div>
+                <div class="msg-text">Starting model calibration. Pulling v2.4 parameters from vendor API…</div>
+                <div class="thought-step" onclick="this.classList.toggle('expanded')">
+                  <div class="step-label">▶ Step 1: Data retrieval</div>
+                  <div class="step-detail">Downloaded 12 risk factor datasets. Total: 2.4M rows. Validated checksums against vendor manifest. All clear.</div>
+                </div>
+                <div class="thought-step" onclick="this.classList.toggle('expanded')">
+                  <div class="step-label">▶ Step 2: Calibration run</div>
+                  <div class="step-detail">Running optimisation across 12 categories. Current progress: 78%. ETA: ~3 hours remaining. No anomalies detected in backtesting window.</div>
+                </div>
+                <div class="msg-time">3 hours ago</div>
+              </div>
+            </div>
+            <div class="chat-msg">
+              <div class="msg-avatar" style="background:#6b7280">AP</div>
+              <div class="msg-body">
+                <div class="msg-name">Ali P.</div>
+                <div class="msg-text">Are we on track for tomorrow morning?</div>
+                <div class="msg-time">1 hour ago</div>
+              </div>
+            </div>
+            <div class="chat-msg">
+              <div class="msg-avatar" style="background:var(--cyan)">DF</div>
+              <div class="msg-body">
+                <div class="msg-name">DeepFlow Agent</div>
+                <div class="msg-text">Yes — 78% complete, ETA 06:00 tomorrow. Will notify you when done and produce a validation summary artifact.</div>
+                <div class="msg-time">45 min ago</div>
+              </div>
+            </div>
+          </div>
+          <div class="chat-input-area">
+            <input class="chat-input" type="text" placeholder="Talk to the agent working on this task…">
+            <button class="chat-send">↑</button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Activity -->
+        <div class="section-heading">📋 Activity</div>
+        <div style="margin-bottom:20px">
+          <div class="activity-item">
+            <div class="activity-dot" style="background:var(--orange)"></div>
+            <div>
+              <div><strong>DeepFlow Agent</strong> started calibration run</div>
+              <div class="activity-time">11 Mar 2026, 14:22</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:var(--blue)"></div>
+            <div>
+              <div><strong>Ali P.</strong> assigned task to DeepFlow Agent</div>
+              <div class="activity-time">5 Mar 2026, 09:15</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:var(--text-tertiary)"></div>
+            <div>
+              <div><strong>Ali P.</strong> created this task</div>
+              <div class="activity-time">5 Mar 2026, 09:10</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center; padding:12px">
+          <button onclick="switchTab('workspace')" style="padding:8px 20px; background:var(--text); color:white; border:none; border-radius:6px; cursor:pointer; font-size:13px; font-weight:500; font-family:var(--font-sans)">Open Workspace →</button>
+        </div>
+      </div>
+
+
+      <!-- ══════════════════════════════
+           TAB 3: WORKSPACE
+           ══════════════════════════════ -->
+      <div class="page-content workspace-page" id="page-workspace">
+        <div class="workspace-view">
+          <!-- Doc side -->
+          <div class="workspace-doc">
+            <div class="breadcrumbs" style="margin-bottom:12px">
+              <span onclick="switchTab('project')">ICAAP Build</span>
+              <span class="sep">/</span>
+              <span onclick="switchTab('task')">Model Calibration</span>
+              <span class="sep">/</span>
+              <span style="color:var(--text)">Workspace</span>
+            </div>
+
+            <div class="doc-title">Model Calibration Report</div>
+            <div class="doc-meta">
+              <span class="status-badge in-progress" style="font-size:10px">◉ In Progress</span>
+              <span class="version-nav">
+                <button>‹</button>
+                V2/3
+                <button>›</button>
+              </span>
+              <span style="color:var(--text-tertiary)">Last updated 2h ago</span>
+            </div>
+
+            <div class="doc-body">
+              <h3>1. Executive Summary</h3>
+              <p>Capital adequacy model calibration for FY 2025/26, using vendor-supplied v2.4 parameter set and internal risk inventory data refreshed as of 10 March 2026.</p>
+
+              <div class="callout">
+                💡 <strong>AI Note:</strong> This document is being generated as calibration progresses. Sections 3–4 will populate once the optimisation completes (~06:00 tomorrow).
+              </div>
+
+              <h3>2. Data Sources</h3>
+              <ul>
+                <li><strong>Vendor parameters:</strong> v2.4 (released 1 March 2026) — 12 risk categories, 847 individual factors</li>
+                <li><strong>Internal data:</strong> Risk inventory refresh output (completed 10 March)</li>
+                <li><strong>Historical window:</strong> Jan 2020 – Dec 2025 (6 years, monthly frequency)</li>
+                <li><strong>Market data:</strong> Bloomberg feed, cross-validated with Reuters</li>
+              </ul>
+
+              <h3>3. Calibration Progress</h3>
+              <p>Optimisation running across 12 risk categories. Current completion: <strong>78%</strong>.</p>
+
+              <div style="background:var(--bg-hover); border-radius:6px; padding:12px 16px; margin:12px 0">
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px">
+                  <span>Progress</span>
+                  <span style="font-weight:600">78%</span>
+                </div>
+                <div class="progress-bar" style="height:6px">
+                  <div class="progress-segment" style="width:78%; background:var(--cyan)"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-tertiary); margin-top:6px">
+                  <span>9/12 categories processed</span>
+                  <span>ETA: 06:00 tomorrow</span>
+                </div>
+              </div>
+
+              <h3>4. Preliminary Results</h3>
+              <p><em>Awaiting completion of calibration run…</em></p>
+            </div>
+          </div>
+
+          <!-- Chat side -->
+          <div class="workspace-chat">
+            <div class="chat-header">
+              <span>💬 Agent Chat</span>
+              <span style="font-size:11px; color:var(--text-tertiary); font-weight:400">DeepFlow Agent</span>
+            </div>
+            <div class="chat-thread">
+              <div class="chat-msg">
+                <div class="msg-avatar" style="background:var(--cyan)">DF</div>
+                <div class="msg-body">
+                  <div class="msg-name">DeepFlow Agent</div>
+                  <div class="msg-text">Calibration initiated. I'll update the document as each category completes.</div>
+                  <div class="thought-step" onclick="this.classList.toggle('expanded')">
+                    <div class="step-label">▶ Step 1: Data validation</div>
+                    <div class="step-detail">Validated 847 risk factors against vendor manifest. 3 factors flagged for missing data points — applied interpolation per standard methodology.</div>
+                  </div>
+                  <div class="thought-step" onclick="this.classList.toggle('expanded')">
+                    <div class="step-label">▶ Step 2: Optimisation — Categories 1–9</div>
+                    <div class="step-detail">Credit risk, market risk, operational risk, liquidity risk, interest rate risk, concentration risk, business risk, insurance risk, and pension risk all calibrated. Results within 3.2% tolerance (target: 5%).</div>
+                  </div>
+                  <div class="thought-step" onclick="this.classList.toggle('expanded')">
+                    <div class="step-label">⏳ Step 3: Optimisation — Categories 10–12</div>
+                    <div class="step-detail">Strategic risk, reputational risk, and model risk — currently processing. These tend to take longer due to sparse historical data.</div>
+                  </div>
+                  <div class="msg-time">3 hours ago</div>
+                </div>
+              </div>
+
+              <div class="chat-msg">
+                <div class="msg-avatar" style="background:#6b7280">AP</div>
+                <div class="msg-body">
+                  <div class="msg-name">Ali P.</div>
+                  <div class="msg-text">What's the tolerance looking like so far?</div>
+                  <div class="msg-time">1 hour ago</div>
+                </div>
+              </div>
+
+              <div class="chat-msg">
+                <div class="msg-avatar" style="background:var(--cyan)">DF</div>
+                <div class="msg-body">
+                  <div class="msg-name">DeepFlow Agent</div>
+                  <div class="msg-text">Across the 9 completed categories, average deviation is <strong>3.2%</strong> from last quarter — well within the 5% threshold. No anomalies flagged. I'll produce a full comparison table once all 12 are done.</div>
+                  <div class="msg-time">45 min ago</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="chat-footer">
+              <input type="text" placeholder="Message the agent…">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /page-container -->
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- Slash Command Popup -->
+<div class="slash-popup" id="slash-popup">
+  <div class="slash-popup-header">Add a block</div>
+  <div class="slash-option" onclick="hideSlashMenu()">
+    <div class="slash-icon">🔗</div>
+    <div>
+      <div class="slash-label">/graph</div>
+      <div class="slash-desc">Dependency graph embed</div>
+    </div>
+  </div>
+  <div class="slash-option" onclick="hideSlashMenu()">
+    <div class="slash-icon">📋</div>
+    <div>
+      <div class="slash-label">/tasks</div>
+      <div class="slash-desc">Task database (table, board, timeline)</div>
+    </div>
+  </div>
+  <div class="slash-option" onclick="hideSlashMenu()">
+    <div class="slash-icon">💬</div>
+    <div>
+      <div class="slash-label">/chat</div>
+      <div class="slash-desc">AI chat thread</div>
+    </div>
+  </div>
+  <div class="slash-option" onclick="hideSlashMenu()">
+    <div class="slash-icon">📝</div>
+    <div>
+      <div class="slash-label">/note</div>
+      <div class="slash-desc">Free-form rich text notes</div>
+    </div>
+  </div>
+  <div class="slash-option" onclick="hideSlashMenu()">
+    <div class="slash-icon">📊</div>
+    <div>
+      <div class="slash-label">/dashboard</div>
+      <div class="slash-desc">Metrics & progress overview</div>
+    </div>
+  </div>
+  <div class="slash-option" onclick="hideSlashMenu()">
+    <div class="slash-icon">📅</div>
+    <div>
+      <div class="slash-label">/timeline</div>
+      <div class="slash-desc">Gantt-style timeline view</div>
+    </div>
+  </div>
+  <div class="slash-option" onclick="hideSlashMenu()">
+    <div class="slash-icon">🏛️</div>
+    <div>
+      <div class="slash-label">/kanban</div>
+      <div class="slash-desc">Kanban board view</div>
+    </div>
+  </div>
+</div>
+
+<!-- Concept Label -->
+<div class="concept-label">CONCEPT 03 — DEEP BLOCKS</div>
+
+<script>
+  // ── Tab switching ──
+  function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('active');
+    document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + tab).classList.add('active');
+  }
+
+  // ── Toggle blocks ──
+  function toggleBlock(header) {
+    const icon = header.querySelector('.toggle-icon');
+    const body = header.nextElementSibling;
+    icon.classList.toggle('open');
+    body.classList.toggle('open');
+  }
+
+  // ── Sidebar tree toggle ──
+  function toggleSidebarTree(event, id) {
+    event.stopPropagation();
+    const arrow = event.currentTarget;
+    const children = document.getElementById(id);
+    arrow.classList.toggle('open');
+    children.classList.toggle('open');
+  }
+
+  // ── DB view switcher ──
+  function switchDbView(view, btn) {
+    btn.closest('.view-switcher').querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    document.getElementById('db-table-view').style.display = view === 'table' ? 'block' : 'none';
+    const kanban = document.getElementById('db-board-view');
+    kanban.classList.toggle('active', view === 'board');
+    if (view === 'board') kanban.style.display = 'flex';
+    else kanban.style.display = 'none';
+    
+    if (view === 'timeline') {
+      document.getElementById('db-table-view').style.display = 'none';
+      kanban.style.display = 'none';
+      // Timeline placeholder
+    }
+  }
+
+  // ── Slash command menu ──
+  function showSlashMenu(event) {
+    const popup = document.getElementById('slash-popup');
+    const rect = event.currentTarget.getBoundingClientRect();
+    popup.style.left = rect.left + 'px';
+    popup.style.top = (rect.top - 320) + 'px';
+    popup.classList.add('visible');
+  }
+
+  function hideSlashMenu() {
+    document.getElementById('slash-popup').classList.remove('visible');
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.slash-popup') && !e.target.closest('.add-block-btn')) {
+      hideSlashMenu();
+    }
+  });
+
+  // ── Draw graph edges ──
+  function drawEdges() {
+    const svg = document.getElementById('graph-edges');
+    const canvas = document.getElementById('graph-canvas');
+    if (!canvas) return;
+    
+    const canvasRect = canvas.getBoundingClientRect();
+    svg.setAttribute('width', canvasRect.width);
+    svg.setAttribute('height', canvasRect.height);
+    
+    const connections = [
+      ['gn-prompt', 'gn-risk'],
+      ['gn-prompt', 'gn-model'],
+      ['gn-prompt', 'gn-data'],
+      ['gn-risk', 'gn-scenario'],
+      ['gn-model', 'gn-scenario'],
+      ['gn-model', 'gn-run'],
+      ['gn-data', 'gn-run'],
+      ['gn-scenario', 'gn-review'],
+      ['gn-run', 'gn-review'],
+      ['gn-run', 'gn-draft'],
+      ['gn-review', 'gn-final'],
+      ['gn-draft', 'gn-final'],
+    ];
+    
+    let paths = '';
+    connections.forEach(([fromId, toId]) => {
+      const fromEl = document.getElementById(fromId);
+      const toEl = document.getElementById(toId);
+      if (!fromEl || !toEl) return;
+      
+      const fromRect = fromEl.getBoundingClientRect();
+      const toRect = toEl.getBoundingClientRect();
+      
+      const x1 = fromRect.right - canvasRect.left;
+      const y1 = fromRect.top + fromRect.height/2 - canvasRect.top;
+      const x2 = toRect.left - canvasRect.left;
+      const y2 = toRect.top + toRect.height/2 - canvasRect.top;
+      
+      const cx1 = x1 + (x2 - x1) * 0.4;
+      const cx2 = x1 + (x2 - x1) * 0.6;
+      
+      paths += `<path d="M ${x1} ${y1} C ${cx1} ${y1}, ${cx2} ${y2}, ${x2} ${y2}" />`;
+    });
+    
+    svg.innerHTML = paths;
+  }
+
+  // ── Block drag and drop ──
+  let draggedBlock = null;
+
+  document.querySelectorAll('.block[draggable="true"]').forEach(block => {
+    block.addEventListener('dragstart', (e) => {
+      draggedBlock = block;
+      block.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+
+    block.addEventListener('dragend', () => {
+      block.classList.remove('dragging');
+      document.querySelectorAll('.block').forEach(b => {
+        b.classList.remove('drag-over-top', 'drag-over-bottom');
+      });
+      draggedBlock = null;
+    });
+
+    block.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      if (block === draggedBlock) return;
+      
+      const rect = block.getBoundingClientRect();
+      const mid = rect.top + rect.height / 2;
+      
+      block.classList.remove('drag-over-top', 'drag-over-bottom');
+      if (e.clientY < mid) {
+        block.classList.add('drag-over-top');
+      } else {
+        block.classList.add('drag-over-bottom');
+      }
+    });
+
+    block.addEventListener('dragleave', () => {
+      block.classList.remove('drag-over-top', 'drag-over-bottom');
+    });
+
+    block.addEventListener('drop', (e) => {
+      e.preventDefault();
+      if (block === draggedBlock || !draggedBlock) return;
+      
+      const rect = block.getBoundingClientRect();
+      const mid = rect.top + rect.height / 2;
+      
+      if (e.clientY < mid) {
+        block.parentNode.insertBefore(draggedBlock, block);
+      } else {
+        block.parentNode.insertBefore(draggedBlock, block.nextSibling);
+      }
+      
+      block.classList.remove('drag-over-top', 'drag-over-bottom');
+      
+      // Redraw edges after reorder
+      setTimeout(drawEdges, 100);
+    });
+  });
+
+  // ── Keyboard slash command ──
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && !e.target.closest('input') && !e.target.closest('[contenteditable]')) {
+      e.preventDefault();
+      const popup = document.getElementById('slash-popup');
+      popup.style.left = '50%';
+      popup.style.top = '50%';
+      popup.style.transform = 'translate(-50%, -50%)';
+      popup.classList.add('visible');
+    }
+    if (e.key === 'Escape') {
+      hideSlashMenu();
+    }
+  });
+
+  // ── Init ──
+  window.addEventListener('load', () => {
+    setTimeout(drawEdges, 100);
+  });
+  window.addEventListener('resize', drawEdges);
+</script>
+
+</body>
+</html>

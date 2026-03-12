@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepFlow — Boards &amp; Bliss Concept</title>
+<style>
+/* ═══════════════════════════════════════════
+   BOARDS & BLISS — Monday.com meets Notion meets Slack
+   A radical reimagining of DeepFlow
+   ═══════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  /* Warm, bright palette */
+  --bg: #F8F7F4;
+  --bg-white: #FFFFFF;
+  --text: #1A1A2E;
+  --text-muted: #6B7280;
+  --text-light: #9CA3AF;
+  
+  /* Status colours — BOLD and UNAPOLOGETIC */
+  --status-done: #22C55E;
+  --status-done-bg: #DCFCE7;
+  --status-done-light: #F0FDF4;
+  --status-progress: #F59E0B;
+  --status-progress-bg: #FEF3C7;
+  --status-progress-light: #FFFBEB;
+  --status-ready: #3B82F6;
+  --status-ready-bg: #DBEAFE;
+  --status-ready-light: #EFF6FF;
+  --status-blocked: #EF4444;
+  --status-blocked-bg: #FEE2E2;
+  --status-blocked-light: #FEF2F2;
+  --status-pending: #9CA3AF;
+  --status-pending-bg: #F3F4F6;
+  
+  /* Accent */
+  --accent: #7C3AED;
+  --accent-light: #EDE9FE;
+  --accent-hover: #6D28D9;
+  
+  /* Misc */
+  --border: #E5E7EB;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+  --radius: 16px;
+  --radius-sm: 12px;
+  --radius-xs: 8px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════════
+   CONCEPT HEADER
+   ═══════════════════════════════════════════ */
+
+.concept-header {
+  background: linear-gradient(135deg, #7C3AED 0%, #EC4899 50%, #F59E0B 100%);
+  padding: 32px 40px;
+  color: white;
+  text-align: center;
+}
+
+.concept-header h1 {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+
+.concept-header p {
+  font-size: 14px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════
+   VIEWPORT — fixed 1200px
+   ═══════════════════════════════════════════ */
+
+.viewport {
+  width: 1200px;
+  margin: 0 auto;
+  background: var(--bg);
+  min-height: 820px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 0 0 20px 20px;
+  box-shadow: var(--shadow-xl);
+}
+
+/* ═══════════════════════════════════════════
+   TOP NAV — NO LEFT SIDEBAR!
+   ═══════════════════════════════════════════ */
+
+.topnav {
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topnav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 32px;
+  flex-shrink: 0;
+}
+
+.topnav-logo svg {
+  width: 28px;
+  height: 28px;
+}
+
+.topnav-logo span {
+  font-weight: 800;
+  font-size: 18px;
+  background: linear-gradient(135deg, #7C3AED, #EC4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.topnav-project {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+  margin-right: 24px;
+  padding: 6px 14px;
+  background: var(--bg);
+  border-radius: var(--radius-xs);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.topnav-project .chevron {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* View tabs */
+.topnav-tabs {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+
+.topnav-tab {
+  padding: 8px 16px;
+  border-radius: var(--radius-xs);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: none;
+  position: relative;
+}
+
+.topnav-tab:hover {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.topnav-tab.active {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.topnav-tab .tab-icon {
+  font-size: 16px;
+}
+
+/* Right side */
+.topnav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.topnav-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.topnav-progress-ring {
+  width: 32px;
+  height: 32px;
+}
+
+.avatar-stack {
+  display: flex;
+  margin-left: 8px;
+}
+
+.avatar-stack .avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid white;
+  margin-left: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+}
+
+.avatar-stack .avatar:first-child { margin-left: 0; }
+
+.topnav-btn {
+  padding: 7px 14px;
+  border-radius: var(--radius-xs);
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.topnav-btn-primary {
+  background: var(--accent);
+  color: white;
+}
+
+.topnav-btn-primary:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+/* ═══════════════════════════════════════════
+   VIEW PANELS
+   ═══════════════════════════════════════════ */
+
+.view-panel {
+  display: none;
+  height: calc(820px - 56px - 52px); /* viewport - topnav - chat bar */
+  overflow-y: auto;
+}
+
+.view-panel.active {
+  display: block;
+}
+
+/* ═══════════════════════════════════════════
+   BOARD VIEW — THE STAR
+   ═══════════════════════════════════════════ */
+
+.board {
+  padding: 20px 24px;
+}
+
+/* Phase swim lane */
+.phase-lane {
+  margin-bottom: 20px;
+}
+
+.phase-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+  padding: 0 4px;
+}
+
+.phase-ring-container {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.phase-ring-container svg {
+  width: 44px;
+  height: 44px;
+  transform: rotate(-90deg);
+}
+
+.phase-ring-container .ring-bg {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 4;
+}
+
+.phase-ring-container .ring-fill {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.8s ease;
+}
+
+.phase-ring-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.phase-info {
+  flex: 1;
+}
+
+.phase-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+
+.phase-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 2px;
+}
+
+.phase-meta .count {
+  font-weight: 600;
+}
+
+/* Phase progress bar */
+.phase-progress-bar {
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  display: flex;
+  gap: 2px;
+  width: 180px;
+}
+
+.phase-progress-bar .seg {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+/* Cards container */
+.cards-row {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 4px 0 8px;
+  scroll-behavior: smooth;
+}
+
+.cards-row::-webkit-scrollbar {
+  height: 6px;
+}
+
+.cards-row::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+/* ═══════════════════════════════════════════
+   TASK CARD — big, bold, colourful
+   ═══════════════════════════════════════════ */
+
+.task-card {
+  background: var(--bg-white);
+  border-radius: var(--radius);
+  width: 260px;
+  min-width: 260px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.task-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+  border-color: transparent;
+}
+
+.task-card:active {
+  transform: translateY(-1px);
+}
+
+/* Status stripe — MASSIVE, full-width, the dominant visual */
+.card-status-stripe {
+  height: 8px;
+  width: 100%;
+}
+
+.card-status-stripe.done { background: var(--status-done); }
+.card-status-stripe.progress { background: var(--status-progress); }
+.card-status-stripe.ready { background: var(--status-ready); }
+.card-status-stripe.blocked { background: var(--status-blocked); }
+.card-status-stripe.pending { background: var(--status-pending); }
+
+.card-body {
+  padding: 14px 16px 16px;
+}
+
+/* Status label — colourful and prominent */
+.card-status-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.card-status-label.done { background: var(--status-done-bg); color: #15803D; }
+.card-status-label.progress { background: var(--status-progress-bg); color: #B45309; }
+.card-status-label.ready { background: var(--status-ready-bg); color: #1D4ED8; }
+.card-status-label.blocked { background: var(--status-blocked-bg); color: #DC2626; }
+.card-status-label.pending { background: var(--status-pending-bg); color: #6B7280; }
+
+.card-status-label .status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.card-status-label.done .status-dot { background: var(--status-done); }
+.card-status-label.progress .status-dot { background: var(--status-progress); }
+.card-status-label.ready .status-dot { background: var(--status-ready); }
+.card-status-label.blocked .status-dot { background: var(--status-blocked); }
+.card-status-label.pending .status-dot { background: var(--status-pending); }
+
+/* Task name — BIG, FULL, no truncation! */
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text);
+  margin-bottom: 12px;
+  /* NO text-overflow: ellipsis! Full names! */
+}
+
+/* Card footer */
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-assignee {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-assignee .mini-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: white;
+}
+
+.card-assignee .assignee-name {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.card-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.badge-type {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.card-due {
+  font-size: 11px;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+/* Completed card — celebration state */
+.task-card.celebrated {
+  border-color: var(--status-done);
+}
+
+.task-card.celebrated .card-title {
+  text-decoration: line-through;
+  text-decoration-color: var(--status-done);
+  opacity: 0.7;
+}
+
+/* Drag handle */
+.card-drag {
+  position: absolute;
+  top: 14px;
+  right: 10px;
+  color: var(--text-light);
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  cursor: grab;
+}
+
+.task-card:hover .card-drag {
+  opacity: 1;
+}
+
+/* Progress bar on card */
+.card-progress {
+  margin-top: 10px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.card-progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+/* ═══════════════════════════════════════════
+   CONFETTI / CELEBRATION ANIMATION
+   ═══════════════════════════════════════════ */
+
+@keyframes confetti-fall {
+  0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(40px) rotate(720deg); opacity: 0; }
+}
+
+@keyframes sparkle {
+  0% { transform: scale(0) rotate(0deg); opacity: 1; }
+  50% { transform: scale(1.2) rotate(180deg); opacity: 0.8; }
+  100% { transform: scale(0) rotate(360deg); opacity: 0; }
+}
+
+.confetti-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  animation: confetti-fall 1.2s ease-out forwards;
+}
+
+.sparkle-burst {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: sparkle 0.6s ease-out forwards;
+}
+
+/* ═══════════════════════════════════════════
+   TASK DETAIL MODAL / SLIDE-OVER
+   ═══════════════════════════════════════════ */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal {
+  background: var(--bg-white);
+  border-radius: 20px;
+  width: 900px;
+  max-height: 700px;
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  animation: modal-in 0.3s ease;
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.modal-header-left {
+  flex: 1;
+}
+
+.modal-task-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.modal-task-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.4px;
+  margin-bottom: 4px;
+}
+
+.modal-task-meta {
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.modal-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg);
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.modal-close:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+/* Modal content — three sections */
+.modal-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr 260px;
+  height: 540px;
+}
+
+.modal-section {
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-section:last-child {
+  border-right: none;
+}
+
+.modal-section-header {
+  padding: 14px 18px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.modal-section-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 18px;
+}
+
+/* Chat in modal */
+.modal-chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-msg {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.chat-msg-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+.chat-msg-bubble {
+  background: var(--bg);
+  border-radius: 12px 12px 12px 4px;
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  max-width: 280px;
+}
+
+.chat-msg.ai .chat-msg-bubble {
+  background: var(--accent-light);
+}
+
+.chat-msg-time {
+  font-size: 10px;
+  color: var(--text-light);
+  margin-top: 4px;
+}
+
+.modal-chat-input {
+  padding: 12px 18px;
+  border-top: 1px solid var(--border);
+}
+
+.modal-chat-input input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  font-size: 13px;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+
+.modal-chat-input input:focus {
+  border-color: var(--accent);
+}
+
+/* Mini dependency map */
+.mini-dep-map {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.mini-dep-map svg {
+  width: 100%;
+  max-width: 200px;
+}
+
+.dep-node {
+  cursor: default;
+}
+
+.dep-node rect {
+  rx: 8;
+  ry: 8;
+}
+
+/* Detail items */
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.detail-value {
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ═══════════════════════════════════════════
+   CHAT VIEW — full screen chat-first
+   ═══════════════════════════════════════════ */
+
+.chat-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-messages-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.chat-full-msg {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  max-width: 700px;
+}
+
+.chat-full-msg.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.chat-full-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+.chat-full-bubble {
+  border-radius: 18px;
+  padding: 14px 18px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.chat-full-msg.ai .chat-full-bubble {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: 18px 18px 18px 6px;
+}
+
+.chat-full-msg.user .chat-full-bubble {
+  background: var(--accent);
+  color: white;
+  border-radius: 18px 18px 6px 18px;
+}
+
+/* Rich card inside chat */
+.chat-rich-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.chat-rich-card-header {
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chat-task-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  gap: 10px;
+  border-bottom: 1px solid #F3F4F6;
+  font-size: 13px;
+  transition: background 0.1s;
+}
+
+.chat-task-row:hover {
+  background: #F9FAFB;
+}
+
+.chat-task-row:last-child {
+  border-bottom: none;
+}
+
+.chat-task-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.chat-task-name {
+  flex: 1;
+  font-weight: 600;
+}
+
+.chat-task-reason {
+  font-size: 11px;
+  color: var(--text-muted);
+  max-width: 200px;
+}
+
+/* Chat input area */
+.chat-input-area {
+  padding: 16px 100px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-white);
+}
+
+.chat-input-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 6px 8px 6px 20px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.chat-input-box:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+
+.chat-input-box input {
+  flex: 1;
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text);
+}
+
+.chat-input-box input::placeholder {
+  color: var(--text-light);
+}
+
+.chat-send-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.chat-send-btn:hover {
+  background: var(--accent-hover);
+  transform: scale(1.05);
+}
+
+/* ═══════════════════════════════════════════
+   GRAPH VIEW — the "nerd view"
+   ═══════════════════════════════════════════ */
+
+.graph-view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: var(--bg);
+  position: relative;
+}
+
+.graph-placeholder {
+  text-align: center;
+  padding: 40px;
+}
+
+.graph-placeholder svg {
+  width: 500px;
+  height: 350px;
+}
+
+.graph-label {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════
+   TIMELINE VIEW
+   ═══════════════════════════════════════════ */
+
+.timeline-view {
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.timeline-placeholder {
+  text-align: center;
+}
+
+.timeline-placeholder-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.timeline-placeholder h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.timeline-placeholder p {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* ═══════════════════════════════════════════
+   PERSISTENT CHAT BAR (bottom)
+   ═══════════════════════════════════════════ */
+
+.persistent-chat-bar {
+  height: 52px;
+  background: var(--bg-white);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 12px;
+}
+
+.persistent-chat-bar .pcb-icon {
+  font-size: 20px;
+  color: var(--accent);
+}
+
+.persistent-chat-bar input {
+  flex: 1;
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--text);
+}
+
+.persistent-chat-bar input::placeholder {
+  color: var(--text-light);
+}
+
+.pcb-hint {
+  font-size: 11px;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pcb-kbd {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════
+   ADD TASK CARD
+   ═══════════════════════════════════════════ */
+
+.add-task-card {
+  background: transparent;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  width: 260px;
+  min-width: 260px;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--text-muted);
+}
+
+.add-task-card:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+
+.add-task-card .plus-icon {
+  font-size: 24px;
+  font-weight: 300;
+}
+
+.add-task-card span {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════
+   SCROLLBAR
+   ═══════════════════════════════════════════ */
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #CBD5E1; }
+
+/* ═══════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════ */
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.task-card {
+  animation: slideUp 0.4s ease backwards;
+}
+
+.phase-lane:nth-child(1) .task-card:nth-child(1) { animation-delay: 0.05s; }
+.phase-lane:nth-child(1) .task-card:nth-child(2) { animation-delay: 0.1s; }
+.phase-lane:nth-child(1) .task-card:nth-child(3) { animation-delay: 0.15s; }
+.phase-lane:nth-child(1) .task-card:nth-child(4) { animation-delay: 0.2s; }
+.phase-lane:nth-child(2) .task-card:nth-child(1) { animation-delay: 0.15s; }
+.phase-lane:nth-child(2) .task-card:nth-child(2) { animation-delay: 0.2s; }
+.phase-lane:nth-child(2) .task-card:nth-child(3) { animation-delay: 0.25s; }
+.phase-lane:nth-child(3) .task-card:nth-child(1) { animation-delay: 0.25s; }
+.phase-lane:nth-child(3) .task-card:nth-child(2) { animation-delay: 0.3s; }
+.phase-lane:nth-child(3) .task-card:nth-child(3) { animation-delay: 0.35s; }
+.phase-lane:nth-child(4) .task-card:nth-child(1) { animation-delay: 0.35s; }
+.phase-lane:nth-child(4) .task-card:nth-child(2) { animation-delay: 0.4s; }
+
+/* Celebration flash */
+@keyframes celebrate-glow {
+  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+  50% { box-shadow: 0 0 20px 8px rgba(34, 197, 94, 0.2); }
+  100% { box-shadow: var(--shadow-sm); }
+}
+
+.task-card.just-completed {
+  animation: celebrate-glow 1s ease;
+}
+</style>
+</head>
+<body>
+
+<!-- CONCEPT HEADER -->
+<div class="concept-header">
+  <h1>✨ Concept V2: Boards &amp; Bliss</h1>
+  <p>Monday.com-inspired · Visual-First · Board is the Star · Graph is a "Nerd View"</p>
+</div>
+
+<!-- VIEWPORT -->
+<div class="viewport">
+
+  <!-- TOP NAV — no sidebar! -->
+  <nav class="topnav">
+    <div class="topnav-logo">
+      <svg viewBox="0 0 28 28" fill="none">
+        <circle cx="14" cy="14" r="13" fill="url(#logo-grad)"/>
+        <path d="M9 8l5 6-5 6M14 14h6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs><linearGradient id="logo-grad" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#7C3AED"/><stop offset="1" stop-color="#EC4899"/></linearGradient></defs>
+      </svg>
+      <span>DeepFlow</span>
+    </div>
+
+    <div class="topnav-project">
+      Build ICAAP Document <span class="chevron">▾</span>
+    </div>
+
+    <div class="topnav-tabs">
+      <button class="topnav-tab active" data-view="board"><span class="tab-icon">▦</span> Board</button>
+      <button class="topnav-tab" data-view="graph"><span class="tab-icon">◈</span> Graph</button>
+      <button class="topnav-tab" data-view="timeline"><span class="tab-icon">☰</span> Timeline</button>
+      <button class="topnav-tab" data-view="chat"><span class="tab-icon">💬</span> Chat</button>
+    </div>
+
+    <div class="topnav-right">
+      <div class="topnav-progress">
+        <svg class="topnav-progress-ring" viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="14" fill="none" stroke="#E5E7EB" stroke-width="4"/>
+          <circle cx="18" cy="18" r="14" fill="none" stroke="#22C55E" stroke-width="4" stroke-linecap="round"
+            stroke-dasharray="88" stroke-dashoffset="55" transform="rotate(-90 18 18)"/>
+          <text x="18" y="20" text-anchor="middle" font-size="9" font-weight="800" fill="#1A1A2E">38%</text>
+        </svg>
+      </div>
+      <div class="avatar-stack">
+        <div class="avatar" style="background:#7C3AED" title="Ali Panju">AP</div>
+        <div class="avatar" style="background:#EC4899" title="Molly Buckwald">MB</div>
+        <div class="avatar" style="background:#3B82F6" title="Jonathan Gilmore">JG</div>
+        <div class="avatar" style="background:#22C55E" title="DeepFlow AI">🤖</div>
+      </div>
+      <button class="topnav-btn topnav-btn-primary">+ Add Task</button>
+    </div>
+  </nav>
+
+  <!-- ═══ BOARD VIEW ═══ -->
+  <div class="view-panel active" id="view-board">
+    <div class="board">
+
+      <!-- PHASE 1: Research & Data Gathering -->
+      <div class="phase-lane">
+        <div class="phase-header">
+          <div class="phase-ring-container">
+            <svg viewBox="0 0 44 44">
+              <circle class="ring-bg" cx="22" cy="22" r="18"/>
+              <circle class="ring-fill" cx="22" cy="22" r="18" stroke="#22C55E"
+                stroke-dasharray="113" stroke-dashoffset="0"/>
+            </svg>
+            <span class="phase-ring-label">✓</span>
+          </div>
+          <div class="phase-info">
+            <div class="phase-name">🔬 Phase 1 — Research &amp; Data Gathering</div>
+            <div class="phase-meta">
+              <span class="count">3 of 3 done</span>
+              <div class="phase-progress-bar">
+                <div class="seg" style="width:100%;background:var(--status-done)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cards-row">
+          <div class="task-card celebrated" onclick="openModal(this)" data-task="risk-inventory">
+            <div class="card-status-stripe done"></div>
+            <div class="card-body">
+              <div class="card-status-label done"><span class="status-dot"></span> Done</div>
+              <div class="card-title">Risk Inventory Refresh</div>
+              <div class="card-footer">
+                <div class="card-assignee">
+                  <div class="mini-avatar" style="background:#EC4899">MB</div>
+                  <span class="assignee-name">Molly Buckwald</span>
+                </div>
+                <div class="card-badge">
+                  <span class="badge-type" title="Human task">👤</span>
+                </div>
+              </div>
+            </div>
+            <span class="card-drag">⋮⋮</span>
+          </div>
+
+          <div class="task-card celebrated" onclick="openModal(this)">
+            <div class="card-status-stripe done"></div>
+            <div class="card-body">
+              <div class="card-status-label done"><span class="status-dot"></span> Done</div>
+              <div class="card-title">Model Calibration and Independent Validation</div>
+              <div class="card-footer">
+                <div class="card-assignee">
+                  <div class="mini-avatar" style="background:#7C3AED">AP</div>
+                  <span class="assignee-name">Ali Panju</span>
+                </div>
+                <div class="card-badge">
+                  <span class="badge-type" title="Human task">👤</span>
+                </div>
+              </div>
+            </div>
+            <span class="card-drag">⋮⋮</span>
+          </div>
+
+          <div class="task-card celebrated" onclick="openModal(this)">
+            <div class="card-status-stripe done"></div>
+            <div class="card-body">
+              <div class="card-status-label done"><span class="status-dot"></span> Done</div>
+              <div class="card-title">Collect Historical Loss Data</div>
+              <div class="card-footer">
+                <div class="card-assignee">
+                  <div class="mini-avatar" style="background:#22C55E">🤖</div>
+                  <span class="assignee-name">DeepFlow AI</span>
+                </div>
+                <div class="card-badge">
+                  <span class="badge-type" title="AI agent">🤖</span>
+                </div>
+              </div>
+            </div>
+            <span class="card-drag">⋮⋮</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHASE 2: Scenario Generation & Modelling -->
+      <div class="phase-lane">
+        <div class="phase-header">
+          <div class="phase-ring-container">
+            <svg viewBox="0 0 44 44">
+              <circle class="ring-bg" cx="22" cy="22" r="18"/>
+              <circle class="ring-fill" cx="22" cy="22" r="18" stroke="#F59E0B"
+                stroke-dasharray="113" stroke-dashoffset="38"/>
+            </svg>
+            <span class="phase-ring-label">66%</span>
+          </div>
+          <div class="phase-info">
+            <div class="phase-name">📊 Phase 2 — Scenario Generation &amp; Modelling</div>
+            <div class="phase-meta">
+              <span class="count">2 of 3 done</span>
+              <div class="phase-progress-bar">
+                <div class="seg" style="width:33%;background:var(--status-done)"></div>
+                <div class="seg" style="width:33%;background:var(--status-done)"></div>
+                <div class="seg" style="width:34%;background:var(--status-progress)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cards-row">
+          <div class="task-card celebrated" onclick="openModal(this)">
+            <div class="card-status-stripe done"></div>
+            <div class="card-body">
+              <div class="card-status-label done"><span class="status-dot"></span> Done</div>
+              <div class="card-title">Generate 3 Scenarios (Base, Adverse, Severe)</div>
+              <div class="card-footer">
+                <div class="card-assignee">
+                  <div class="mini-avatar" style="background:#7C3AED">AP</div>
+                  <span class="assignee-name">Ali Panju</span>
+                </div>
+                <div class="card-badge">
+                  <span class="badge-type" title="Human task">👤</span>
+                </div>
+              </div>
+            </div>
+            <span class="card-drag">⋮⋮</span>
+          </div>
+
+          <div class="task-card" onclick="openModal(this)" data-task="run-model">
+            <div class="card-status-stripe progress"></div>
+            <div class="card-body">
+              <div class="card-status-label progress"><span class="status-dot"></span> In Progress</div>
+              <div class="card-title">Run Capital Adequacy Model</div>
+              <div class="card-footer">
+                <div class="card-assignee">
+                  <div class="mini-avatar" style="background:#22C55E">🤖</div>
+                  <span class="assignee-name">DeepFlow AI</span>
+                </div>
+                <div class="card-badge">
+                  <span class="badge-type" title="AI agent">🤖</span>
+                  <span class="card-due">2/3 runs</span>
+                </div>
+              </div>
+              <div class="card-progress">
+                <div class="card-progress-fill" style="width:66%;background:var(--status-progress)"></div>
+              </div>
+            </div>
+            <span class="card-drag">⋮⋮</span>
+          </div>
+
+          <div class="task-card celebrated" onclick="openModal(this)">
+            <div class="card-status-stripe done"></div>
+            <div class="card-body">
+              <div class="card-status-label done"><span class="status-dot"></span> Done</div>
+              <div class="card-title">Stress Test Parameter Configuration</div>
+              <div class="card-footer">
+                <div class="card-assignee">
+                  <div class="mini-avatar" style="background:#22C55E">🤖</div>
+                  <span class="assignee-name">DeepFlow AI</span>
+                </div>
+                <div class="card-badge">
+                  <span class="badge-type" title="AI agent">🤖</span>
+                </div>
+              </div>
+            </div>
+            <span class="card-drag">⋮⋮</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHASE 3: Analysis & Drafting -->
+      <div class="phase-lane">
+        <div class="phase-header">
+          <div class="phase-ring-container">
+            <svg viewBox="0 0 44 44">
+              <circle class="ring-bg" cx="22" cy="22" r="18"/>
+              <circle class="ring-fill" cx="22" cy="22" r="18" stroke="#EF4444"
+                stroke-dasharray="113" stroke-dashoffset="113"/>
+            </svg>
+            <span class="phase-ring-label">0%</span>
+          </div>
+          <div class="phase-info">
+            <div class="phase-name">✍️ Phase 3 — Analysis &amp; Drafting</div>
+            <div class="phase-meta">
+              <span class="count">0 of 3 done · 1 blocked</span>
+              <div class="phase-progress-bar">
+                <div class="seg" style="width:33%;background:var(--status-blocked)"></div>
+                <div class="seg" style="width:33%;background:var(--status-ready)"></div>
+                <div class="seg" style="width:34%;background:var(--status-pending)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cards-row">
+          <div class="task-card" onclick="openModal(this)">
+            <div class="card-status-stripe blocked"></div>
+            <div class="card-body">
+              <div class="card-status-label blocked"><span class="status-dot"></span> Blocked</div>
+              <div class="card-title">Define Management Actions and Mitigation Strategies</div>
+              <div class="card-footer">
+                <div class="card-assignee">
+                  <div class="mini-avatar" style="background:#EC4899">MB</div>
+                  <span class="assignee-name">Molly Buckwald</span>
+                </div>
+                <div class="card-badge">
+                  <span class="badge-type" title="Human task">👤</span>
+                </div>
+              </div>
+            </div>
+            <span class="card-drag">⋮⋮</span>
+          </div>
+
+          <div class="task-card" onclick="openModal(this)">
+            <div class="card-status-stripe ready"></div>
+            <div class="card-body">
+              <div class="card-status-label ready"><span class="status-dot"></span> Ready</div>
+              <div class="card-title">Draft Capital Adequacy Statement</div>
+              <div class="card-footer">
+                <div class="card-assignee">
+                  <div class="mini-avatar" style="background:#3B82F6">JG</div>
+                  <span class="assignee-name">Jonathan Gilmore</span>
+                </div>
+                <div class="card-badge">
+                  <span class="badge-type" title="Human task">👤</span>
+                </div>
+              </div>
+            </div>
+            <span class="card-drag">⋮⋮</span>
+          </div>
+
+          <div class="task-card" onclick="openModal(this)">
+            <div class="card-status-stripe pending"></div>
+            <div class="card-body">
+              <div class="card-status-label pending"><span class="status-dot"></span> Pending</div>
+              <div class="card-title">Compile Supporting Evidence &amp; Appendices</div>
+              <div class="card-footer">
+                <div class="card-assignee">
+                  <div class="mini-avatar" style="background:#22C55E">🤖</div>
+                  <span class="assignee-name">DeepFlow AI</span>
+                </div>
+                <div class="card-badge">
+                  <span class="badge-type" title="AI agent">🤖</span>
+                </div>
+              </div>
+            </div>
+            <span class="card-drag">⋮⋮</span>
+          </div>
+
+          <div class="add-task-card">
+            <span class="plus-icon">+</span>
+            <span>Add task</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHASE 4: Review & Approval -->
+      <div class="phase-lane">
+        <div class="phase-header">
+          <div class="phase-ring-container">
+            <svg viewBox="0 0 44 44">
+              <circle class="ring-bg" cx="22" cy="22" r="18"/>
+              <circle class="ring-fill" cx="22" cy="22" r="18" stroke="var(--status-pending)"
+                stroke-dasharray="113" stroke-dashoffset="113"/>
+            </svg>
+            <span class="phase-ring-label">0%</span>
+          </div>
+          <div class="phase-info">
+            <div class="phase-name">🏁 Phase 4 — Review &amp; Approval</div>
+            <div class="phase-meta">
+              <span class="count">0 of 2 done</span>
+              <div class="phase-progress-bar">
+                <div class="seg" style="width:50%;background:var(--status-pending)"></div>
+                <div class="seg" style="width:50%;background:var(--status-pending)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cards-row">
+          <div class="task-card" onclick="openModal(this)">
+            <div class="card-status-stripe pending"></div>
+            <div class="card-body">
+              <div class="card-status-label pending"><span class="status-dot"></span> Pending</div>
+              <div class="card-title">Board Approval and Sign-Off</div>
+              <div class="card-footer">
+                <div class="card-assignee">
+                  <div class="mini-avatar" style="background:#7C3AED">AP</div>
+                  <span class="assignee-name">Ali Panju</span>
+                </div>
+                <div class="card-badge">
+                  <span class="badge-type" title="Human task">👤</span>
+                </div>
+              </div>
+            </div>
+            <span class="card-drag">⋮⋮</span>
+          </div>
+
+          <div class="task-card" onclick="openModal(this)">
+            <div class="card-status-stripe pending"></div>
+            <div class="card-body">
+              <div class="card-status-label pending"><span class="status-dot"></span> Pending</div>
+              <div class="card-title">Final Document Formatting &amp; Submission</div>
+              <div class="card-footer">
+                <div class="card-assignee">
+                  <div class="mini-avatar" style="background:#22C55E">🤖</div>
+                  <span class="assignee-name">DeepFlow AI</span>
+                </div>
+                <div class="card-badge">
+                  <span class="badge-type" title="AI agent">🤖</span>
+                </div>
+              </div>
+            </div>
+            <span class="card-drag">⋮⋮</span>
+          </div>
+
+          <div class="add-task-card">
+            <span class="plus-icon">+</span>
+            <span>Add task</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ GRAPH VIEW ═══ -->
+  <div class="view-panel" id="view-graph">
+    <div class="graph-view">
+      <div class="graph-placeholder">
+        <svg viewBox="0 0 500 350">
+          <!-- Background grid -->
+          <defs>
+            <pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse">
+              <path d="M 25 0 L 0 0 0 25" fill="none" stroke="#E5E7EB" stroke-width="0.5"/>
+            </pattern>
+            <linearGradient id="edge-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#7C3AED;stop-opacity:0.5"/>
+              <stop offset="100%" style="stop-color:#EC4899;stop-opacity:0.5"/>
+            </linearGradient>
+          </defs>
+          <rect width="500" height="350" fill="url(#grid)"/>
+
+          <!-- Edges -->
+          <path d="M120,80 C180,80 170,160 230,160" stroke="url(#edge-grad)" stroke-width="2" fill="none" stroke-dasharray="6,4"/>
+          <path d="M120,80 C180,80 170,240 230,240" stroke="url(#edge-grad)" stroke-width="2" fill="none" stroke-dasharray="6,4"/>
+          <path d="M290,160 C340,160 330,160 380,160" stroke="url(#edge-grad)" stroke-width="2" fill="none" stroke-dasharray="6,4"/>
+          <path d="M290,240 C340,240 330,200 380,200" stroke="url(#edge-grad)" stroke-width="2" fill="none" stroke-dasharray="6,4"/>
+          <path d="M290,160 C340,160 330,200 380,200" stroke="url(#edge-grad)" stroke-width="2" fill="none" stroke-dasharray="6,4"/>
+
+          <!-- Nodes — rounded rectangles instead of circles -->
+          <!-- L1: Research -->
+          <rect x="50" y="55" width="140" height="50" rx="14" fill="white" stroke="#22C55E" stroke-width="2.5"/>
+          <rect x="50" y="55" width="140" height="6" rx="3" fill="#22C55E"/>
+          <text x="120" y="83" text-anchor="middle" font-size="10" font-weight="700" fill="#1A1A2E">Research &amp; Data</text>
+          <circle cx="65" cy="90" r="6" fill="#22C55E"/>
+          <text x="75" y="93" font-size="8" fill="#15803D" font-weight="600">Done</text>
+
+          <!-- L2: Scenarios -->
+          <rect x="230" y="135" width="130" height="50" rx="14" fill="white" stroke="#F59E0B" stroke-width="2.5"/>
+          <rect x="230" y="135" width="130" height="6" rx="3" fill="#F59E0B"/>
+          <text x="295" y="163" text-anchor="middle" font-size="10" font-weight="700" fill="#1A1A2E">Run Model</text>
+          <circle cx="245" cy="170" r="6" fill="#F59E0B"/>
+          <text x="255" y="173" font-size="8" fill="#B45309" font-weight="600">2/3</text>
+
+          <!-- L2: Define Actions -->
+          <rect x="230" y="215" width="130" height="50" rx="14" fill="white" stroke="#EF4444" stroke-width="2.5"/>
+          <rect x="230" y="215" width="130" height="6" rx="3" fill="#EF4444"/>
+          <text x="295" y="243" text-anchor="middle" font-size="10" font-weight="700" fill="#1A1A2E">Define Actions</text>
+          <circle cx="245" cy="250" r="6" fill="#EF4444"/>
+          <text x="255" y="253" font-size="8" fill="#DC2626" font-weight="600">Blocked</text>
+
+          <!-- L3: Board Approval -->
+          <rect x="380" y="170" width="110" height="50" rx="14" fill="white" stroke="#9CA3AF" stroke-width="2"/>
+          <rect x="380" y="170" width="110" height="6" rx="3" fill="#9CA3AF"/>
+          <text x="435" y="198" text-anchor="middle" font-size="10" font-weight="700" fill="#1A1A2E">Board Approval</text>
+          <circle cx="395" cy="205" r="6" fill="#9CA3AF"/>
+          <text x="405" y="208" font-size="8" fill="#6B7280" font-weight="600">Pending</text>
+
+          <!-- Legend -->
+          <text x="18" y="330" font-size="9" fill="#9CA3AF" font-weight="600">DEPENDENCY GRAPH · Rounded cards with status-colour borders · Same visual language as Board view</text>
+        </svg>
+        <div class="graph-label">
+          The full dependency graph — same visual language as the board, just spatially arranged.<br>
+          <span style="color:var(--accent);font-weight:600">Click any node to open the task detail modal.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TIMELINE VIEW ═══ -->
+  <div class="view-panel" id="view-timeline">
+    <div class="timeline-view">
+      <div class="timeline-placeholder">
+        <div class="timeline-placeholder-icon">📅</div>
+        <h3>Timeline View</h3>
+        <p>Gantt-style timeline with phases as rows, tasks as colour-coded bars. Coming soon.</p>
+        <div style="margin-top:24px;background:var(--bg-white);border:1px solid var(--border);border-radius:16px;padding:20px 24px;width:500px;text-align:left">
+          <!-- Mini Gantt preview -->
+          <div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">Preview</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span style="font-size:12px;font-weight:600;width:100px;flex-shrink:0">🔬 Phase 1</span>
+            <div style="flex:1;height:24px;background:var(--status-done);border-radius:6px;display:flex;align-items:center;padding:0 8px;color:white;font-size:11px;font-weight:600">Complete ✓</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span style="font-size:12px;font-weight:600;width:100px;flex-shrink:0">📊 Phase 2</span>
+            <div style="flex:1;height:24px;background:var(--border);border-radius:6px;overflow:hidden;display:flex">
+              <div style="width:66%;height:100%;background:var(--status-progress);border-radius:6px;display:flex;align-items:center;padding:0 8px;color:white;font-size:11px;font-weight:600">66%</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span style="font-size:12px;font-weight:600;width:100px;flex-shrink:0">✍️ Phase 3</span>
+            <div style="flex:1;height:24px;background:var(--border);border-radius:6px;display:flex;align-items:center;padding:0 8px;color:var(--text-muted);font-size:11px;font-weight:600">Not started</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:12px;font-weight:600;width:100px;flex-shrink:0">🏁 Phase 4</span>
+            <div style="flex:1;height:24px;background:var(--border);border-radius:6px;display:flex;align-items:center;padding:0 8px;color:var(--text-muted);font-size:11px;font-weight:600">Waiting</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CHAT VIEW ═══ -->
+  <div class="view-panel" id="view-chat">
+    <div class="chat-view">
+      <div class="chat-messages-area" id="chatMessages">
+
+        <!-- User message -->
+        <div class="chat-full-msg user">
+          <div class="chat-full-avatar" style="background:#7C3AED">AP</div>
+          <div>
+            <div class="chat-full-bubble">Show me what's blocked right now</div>
+            <div class="chat-msg-time" style="text-align:right">2:14 PM</div>
+          </div>
+        </div>
+
+        <!-- AI response with rich card -->
+        <div class="chat-full-msg ai">
+          <div class="chat-full-avatar" style="background:linear-gradient(135deg,#7C3AED,#EC4899)">✦</div>
+          <div>
+            <div class="chat-full-bubble">
+              There's <strong>1 blocked task</strong> in Phase 3. It's waiting for the model run in Phase 2 to complete (2 of 3 scenarios done).
+              <div class="chat-rich-card">
+                <div class="chat-rich-card-header">🚫 Blocked Tasks</div>
+                <div class="chat-task-row">
+                  <div class="chat-task-status-dot" style="background:var(--status-blocked)"></div>
+                  <span class="chat-task-name">Define Management Actions and Mitigation Strategies</span>
+                  <span class="chat-task-reason">⏳ Waiting on "Run Capital Adequacy Model"</span>
+                </div>
+              </div>
+            </div>
+            <div class="chat-msg-time">2:14 PM</div>
+          </div>
+        </div>
+
+        <!-- User follow-up -->
+        <div class="chat-full-msg user">
+          <div class="chat-full-avatar" style="background:#7C3AED">AP</div>
+          <div>
+            <div class="chat-full-bubble">Start the final model run</div>
+            <div class="chat-msg-time" style="text-align:right">2:15 PM</div>
+          </div>
+        </div>
+
+        <!-- AI confirmation -->
+        <div class="chat-full-msg ai">
+          <div class="chat-full-avatar" style="background:linear-gradient(135deg,#7C3AED,#EC4899)">✦</div>
+          <div>
+            <div class="chat-full-bubble">
+              Starting scenario 3 (Severe) for <strong>Run Capital Adequacy Model</strong>. I'll notify you when it completes — this should unblock Phase 3. ⚡
+              <div class="chat-rich-card">
+                <div class="chat-rich-card-header">🚀 Task Kicked Off</div>
+                <div class="chat-task-row">
+                  <div class="chat-task-status-dot" style="background:var(--status-progress)"></div>
+                  <span class="chat-task-name">Run Capital Adequacy Model — Scenario 3 (Severe)</span>
+                  <span class="chat-task-reason">🤖 DeepFlow AI executing</span>
+                </div>
+              </div>
+            </div>
+            <div class="chat-msg-time">2:15 PM</div>
+          </div>
+        </div>
+
+        <!-- User asking for summary -->
+        <div class="chat-full-msg user">
+          <div class="chat-full-avatar" style="background:#7C3AED">AP</div>
+          <div>
+            <div class="chat-full-bubble">What's the overall progress?</div>
+            <div class="chat-msg-time" style="text-align:right">2:16 PM</div>
+          </div>
+        </div>
+
+        <!-- AI summary with board embed -->
+        <div class="chat-full-msg ai">
+          <div class="chat-full-avatar" style="background:linear-gradient(135deg,#7C3AED,#EC4899)">✦</div>
+          <div>
+            <div class="chat-full-bubble">
+              You're <strong>38% complete</strong> on the ICAAP document. Phase 1 is fully done 🎉, Phase 2 is nearly there. Here's the breakdown:
+              <div class="chat-rich-card">
+                <div class="chat-rich-card-header">📊 Project Progress</div>
+                <div style="padding:14px">
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                    <span style="font-size:12px;font-weight:600;width:80px;flex-shrink:0">Phase 1</span>
+                    <div style="flex:1;height:20px;background:#DCFCE7;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:600;color:#15803D">3/3 ✓</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                    <span style="font-size:12px;font-weight:600;width:80px;flex-shrink:0">Phase 2</span>
+                    <div style="flex:1;height:20px;background:#FEF3C7;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:600;color:#B45309">2/3 — running</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                    <span style="font-size:12px;font-weight:600;width:80px;flex-shrink:0">Phase 3</span>
+                    <div style="flex:1;height:20px;background:#FEE2E2;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:600;color:#DC2626">0/3 · 1 blocked</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <span style="font-size:12px;font-weight:600;width:80px;flex-shrink:0">Phase 4</span>
+                    <div style="flex:1;height:20px;background:#F3F4F6;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:600;color:#6B7280">0/2 · waiting</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="chat-msg-time">2:16 PM</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-input-area">
+        <div class="chat-input-box">
+          <input type="text" placeholder="Ask anything — &quot;what's blocking phase 3?&quot;, &quot;assign Molly to the draft&quot;, &quot;add a review step&quot;...">
+          <button class="chat-send-btn">↑</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERSISTENT CHAT BAR (shown on non-chat views) -->
+  <div class="persistent-chat-bar" id="persistentChatBar">
+    <span class="pcb-icon">✦</span>
+    <input type="text" placeholder="Ask DeepFlow anything — &quot;what's blocked?&quot;, &quot;add a task to Phase 2&quot;, &quot;start the model run&quot;...">
+    <div class="pcb-hint"><span class="pcb-kbd">⌘</span><span class="pcb-kbd">K</span></div>
+  </div>
+
+</div><!-- /viewport -->
+
+<!-- ═══ TASK DETAIL MODAL ═══ -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-task-status progress" style="background:var(--status-progress-bg);color:#B45309" id="modalStatus">
+          <span class="status-dot" style="background:var(--status-progress)"></span> In Progress
+        </div>
+        <div class="modal-task-title" id="modalTitle">Run Capital Adequacy Model</div>
+        <div class="modal-task-meta">
+          <span>🤖 DeepFlow AI</span>
+          <span>·</span>
+          <span>📊 Phase 2 — Scenario Generation</span>
+          <span>·</span>
+          <span>Due: Mar 15, 2026</span>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Section 1: Workspace / Output -->
+      <div class="modal-section">
+        <div class="modal-section-header">📄 Workspace <span style="margin-left:auto;font-size:11px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--text-light)">V2/3</span></div>
+        <div class="modal-section-content">
+          <div style="background:var(--bg);border-radius:12px;padding:16px;font-size:13px;line-height:1.7">
+            <div style="font-weight:700;margin-bottom:8px;color:var(--text)">Scenario 2 — Adverse Results</div>
+            <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px">
+              <tr style="border-bottom:1px solid var(--border)">
+                <td style="padding:6px 0;font-weight:600;color:var(--text-muted)">Capital Ratio</td>
+                <td style="padding:6px 0;text-align:right;font-weight:700">12.4%</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border)">
+                <td style="padding:6px 0;font-weight:600;color:var(--text-muted)">Minimum Req.</td>
+                <td style="padding:6px 0;text-align:right;font-weight:700">8.0%</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border)">
+                <td style="padding:6px 0;font-weight:600;color:var(--text-muted)">Buffer</td>
+                <td style="padding:6px 0;text-align:right;font-weight:700;color:#22C55E">+4.4%</td>
+              </tr>
+              <tr>
+                <td style="padding:6px 0;font-weight:600;color:var(--text-muted)">Risk Rating</td>
+                <td style="padding:6px 0;text-align:right"><span style="background:#FEF3C7;color:#B45309;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700">MEDIUM</span></td>
+              </tr>
+            </table>
+            <div style="font-size:12px;color:var(--text-muted);line-height:1.6">
+              Under the adverse scenario, credit losses increase by 180bps but the institution maintains adequate capitalisation above the minimum requirement with a 4.4% buffer...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Chat with AI -->
+      <div class="modal-section">
+        <div class="modal-section-header">💬 Chat <span style="margin-left:auto;font-size:11px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--text-light)">with DeepFlow AI</span></div>
+        <div class="modal-section-content">
+          <div class="modal-chat-messages">
+            <div class="chat-msg ai">
+              <div class="chat-msg-avatar" style="background:linear-gradient(135deg,#7C3AED,#EC4899)">✦</div>
+              <div>
+                <div class="chat-msg-bubble">I've completed scenarios 1 (Base) and 2 (Adverse). Starting scenario 3 (Severe) now. The adverse scenario shows a 4.4% capital buffer — healthy.</div>
+                <div class="chat-msg-time">2:15 PM</div>
+              </div>
+            </div>
+            <div class="chat-msg">
+              <div class="chat-msg-avatar" style="background:#7C3AED">AP</div>
+              <div>
+                <div class="chat-msg-bubble">Good. Make sure the severe scenario includes the correlation stress.</div>
+                <div class="chat-msg-time">2:16 PM</div>
+              </div>
+            </div>
+            <div class="chat-msg ai">
+              <div class="chat-msg-avatar" style="background:linear-gradient(135deg,#7C3AED,#EC4899)">✦</div>
+              <div>
+                <div class="chat-msg-bubble">Got it — adding inter-risk correlation stress (ρ=0.85) to the severe scenario. This typically reduces the buffer by 1.5-2%. Running now... ⚡</div>
+                <div class="chat-msg-time">2:16 PM</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-chat-input">
+          <input type="text" placeholder="Message DeepFlow AI...">
+        </div>
+      </div>
+
+      <!-- Section 3: Details & Mini Dep Map -->
+      <div class="modal-section" style="border-right:none">
+        <div class="modal-section-header">ℹ️ Details</div>
+        <div class="modal-section-content">
+          <!-- Mini dependency map -->
+          <div class="mini-dep-map">
+            <svg viewBox="0 0 200 120">
+              <!-- Upstream -->
+              <rect x="10" y="10" width="80" height="30" rx="8" fill="#DCFCE7" stroke="#22C55E" stroke-width="1.5"/>
+              <text x="50" y="29" text-anchor="middle" font-size="8" font-weight="600" fill="#15803D">Scenarios ✓</text>
+              <rect x="10" y="50" width="80" height="30" rx="8" fill="#DCFCE7" stroke="#22C55E" stroke-width="1.5"/>
+              <text x="50" y="69" text-anchor="middle" font-size="8" font-weight="600" fill="#15803D">Calibration ✓</text>
+              <!-- Current -->
+              <rect x="110" y="30" width="80" height="30" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+              <text x="150" y="49" text-anchor="middle" font-size="8" font-weight="700" fill="#B45309">Run Model</text>
+              <!-- Arrows -->
+              <line x1="90" y1="25" x2="110" y2="40" stroke="#22C55E" stroke-width="1.5" marker-end="url(#arrowG)"/>
+              <line x1="90" y1="65" x2="110" y2="50" stroke="#22C55E" stroke-width="1.5" marker-end="url(#arrowG)"/>
+              <!-- Downstream -->
+              <rect x="110" y="80" width="80" height="30" rx="8" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="4,2"/>
+              <text x="150" y="99" text-anchor="middle" font-size="8" font-weight="600" fill="#DC2626">Define Actions 🔒</text>
+              <line x1="150" y1="60" x2="150" y2="80" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowO)"/>
+              <defs>
+                <marker id="arrowG" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill="#22C55E"/></marker>
+                <marker id="arrowO" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill="#F59E0B"/></marker>
+              </defs>
+            </svg>
+            <div style="font-size:10px;color:var(--text-light);margin-top:4px;font-weight:500">Direct dependencies only</div>
+          </div>
+
+          <!-- Detail items -->
+          <div class="detail-item">
+            <span class="detail-label">Assignee</span>
+            <span class="detail-value"><span style="display:inline-flex;width:20px;height:20px;border-radius:50%;background:#22C55E;align-items:center;justify-content:center;font-size:10px;color:white">🤖</span> DeepFlow AI</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Type</span>
+            <span class="detail-value">⬡ AI Agent Task</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Due Date</span>
+            <span class="detail-value">Mar 15, 2026</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Progress</span>
+            <span class="detail-value">
+              <div style="width:80px;height:6px;background:var(--border);border-radius:3px;overflow:hidden">
+                <div style="width:66%;height:100%;background:var(--status-progress);border-radius:3px"></div>
+              </div>
+              66%
+            </span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Created</span>
+            <span class="detail-value" style="font-size:12px">Mar 10, 2026</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Phase</span>
+            <span class="detail-value">📊 Phase 2</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// TAB SWITCHING
+// ═══════════════════════════════════════════
+
+const tabs = document.querySelectorAll('.topnav-tab');
+const panels = document.querySelectorAll('.view-panel');
+const chatBar = document.getElementById('persistentChatBar');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const viewId = tab.dataset.view;
+
+    // Update tabs
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+
+    // Update panels
+    panels.forEach(p => p.classList.remove('active'));
+    document.getElementById('view-' + viewId).classList.add('active');
+
+    // Show/hide persistent chat bar (hidden when chat view is active)
+    chatBar.style.display = viewId === 'chat' ? 'none' : 'flex';
+  });
+});
+
+// ═══════════════════════════════════════════
+// MODAL OPEN / CLOSE
+// ═══════════════════════════════════════════
+
+function openModal(cardEl) {
+  const overlay = document.getElementById('modalOverlay');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  const overlay = document.getElementById('modalOverlay');
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ESC to close
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ═══════════════════════════════════════════
+// CARD HOVER CELEBRATIONS
+// ═══════════════════════════════════════════
+
+// Add confetti burst on completed cards when hovered
+const completedCards = document.querySelectorAll('.task-card.celebrated');
+completedCards.forEach(card => {
+  let celebrated = false;
+  card.addEventListener('mouseenter', () => {
+    if (celebrated) return;
+    celebrated = true;
+    spawnConfetti(card);
+    setTimeout(() => celebrated = false, 3000);
+  });
+});
+
+function spawnConfetti(card) {
+  const container = document.createElement('div');
+  container.className = 'confetti-container';
+  card.appendChild(container);
+
+  const colors = ['#22C55E', '#7C3AED', '#EC4899', '#F59E0B', '#3B82F6'];
+  for (let i = 0; i < 12; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = (10 + Math.random() * 80) + '%';
+    piece.style.top = '0px';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDelay = (Math.random() * 0.3) + 's';
+    piece.style.width = (4 + Math.random() * 4) + 'px';
+    piece.style.height = (4 + Math.random() * 4) + 'px';
+    container.appendChild(piece);
+  }
+
+  setTimeout(() => container.remove(), 1500);
+}
+
+// ═══════════════════════════════════════════
+// CARD HOVER LIFT ENHANCEMENT
+// ═══════════════════════════════════════════
+
+document.querySelectorAll('.task-card').forEach(card => {
+  card.addEventListener('mouseenter', () => {
+    card.style.borderColor = getComputedStyle(card.querySelector('.card-status-stripe')).backgroundColor;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.borderColor = '';
+  });
+});
+</script>
+
+</body>
+</html>

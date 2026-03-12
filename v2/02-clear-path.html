@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepFlow — Clear Path</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#fff;--bg-hover:#f8f9fa;--bg-active:#f0f4ff;--border:#e5e7eb;--border-light:#f0f1f3;
+    --text:#1a1a2e;--text-secondary:#6b7280;--text-tertiary:#9ca3af;
+    --accent:#4f6df5;--accent-light:#eef1fe;
+    --sidebar-bg:#1a1a2e;--sidebar-text:#a0a3b1;--sidebar-active:#fff;
+    --done:#22c55e;--done-bg:#f0fdf4;--done-text:#166534;
+    --active:#3b82f6;--active-bg:#eff6ff;--active-text:#1e40af;
+    --ready:#f59e0b;--ready-bg:#fffbeb;--ready-text:#92400e;
+    --pending:#9ca3af;--pending-bg:#f3f4f6;--pending-text:#4b5563;
+    --failed:#ef4444;--failed-bg:#fef2f2;--failed-text:#991b1b;
+    --blocked:#ef4444;
+    --depth-l1:#3b82f6;--depth-l2:#8b5cf6;--depth-l3:#ec4899;--depth-l4:#ef4444;
+    --radius:6px;--radius-lg:10px;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.05);--shadow-md:0 4px 12px rgba(0,0,0,.08);--shadow-lg:0 8px 30px rgba(0,0,0,.12);
+    --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+    --mono:'SF Mono',Monaco,'Cascadia Code',monospace;
+  }
+  html{font-size:14px;line-height:1.5}
+  body{font-family:var(--font);color:var(--text);background:var(--bg);display:flex;height:100vh;overflow:hidden}
+
+  /* ─── SIDEBAR ─── */
+  .sidebar{width:240px;min-width:240px;background:var(--sidebar-bg);color:var(--sidebar-text);display:flex;flex-direction:column;overflow-y:auto;border-right:1px solid rgba(255,255,255,.06)}
+  .sidebar-brand{padding:20px 20px 16px;display:flex;align-items:center;gap:10px}
+  .sidebar-brand svg{width:28px;height:28px;flex-shrink:0}
+  .sidebar-brand span{font-size:16px;font-weight:700;color:#fff;letter-spacing:-.3px}
+  .sidebar-section{padding:4px 12px}
+  .sidebar-section-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.3);padding:16px 8px 6px}
+  .sidebar-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:var(--radius);cursor:pointer;font-size:13px;transition:background .15s,color .15s;position:relative}
+  .sidebar-item:hover{background:rgba(255,255,255,.07);color:#ddd}
+  .sidebar-item.active{background:rgba(79,109,245,.25);color:#fff;font-weight:500}
+  .sidebar-item .icon{width:18px;height:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:.6}
+  .sidebar-item.active .icon{opacity:1}
+  .sidebar-item .badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-weight:600;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center}
+  .sidebar-divider{height:1px;background:rgba(255,255,255,.06);margin:8px 16px}
+  .sidebar-project{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:var(--radius);cursor:pointer;font-size:13px}
+  .sidebar-project:hover{background:rgba(255,255,255,.07);color:#ddd}
+  .sidebar-project.active{color:#fff;font-weight:500}
+  .sidebar-project .dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+  .sidebar-avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;flex-shrink:0}
+  .sidebar-team{display:flex;align-items:center;gap:8px;padding:5px 10px;font-size:12px;cursor:pointer;border-radius:var(--radius)}
+  .sidebar-team:hover{background:rgba(255,255,255,.07)}
+  .sidebar-footer{margin-top:auto;padding:12px 16px;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:10px}
+  .sidebar-footer .sidebar-avatar{width:32px;height:32px;font-size:12px}
+
+  /* ─── MAIN AREA ─── */
+  .main{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
+
+  /* Top Bar */
+  .topbar{display:flex;align-items:center;padding:0 24px;height:56px;border-bottom:1px solid var(--border);flex-shrink:0;gap:12px}
+  .topbar-title{font-size:18px;font-weight:700;letter-spacing:-.3px;white-space:nowrap}
+  .topbar-breadcrumb{font-size:12px;color:var(--text-secondary);margin-left:4px}
+  .topbar-spacer{flex:1}
+  .view-tabs{display:flex;gap:2px;background:var(--bg-hover);border-radius:var(--radius);padding:3px}
+  .view-tab{padding:5px 14px;border-radius:4px;font-size:12px;font-weight:500;cursor:pointer;color:var(--text-secondary);transition:all .15s;white-space:nowrap}
+  .view-tab:hover{color:var(--text)}
+  .view-tab.active{background:#fff;color:var(--text);box-shadow:var(--shadow-sm)}
+  .topbar-actions{display:flex;align-items:center;gap:8px}
+  .topbar-btn{padding:5px 12px;border-radius:var(--radius);font-size:12px;border:1px solid var(--border);background:#fff;cursor:pointer;display:flex;align-items:center;gap:5px;color:var(--text-secondary);transition:all .15s}
+  .topbar-btn:hover{border-color:#ccc;color:var(--text)}
+  .topbar-search{width:200px;padding:6px 10px 6px 30px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='6' cy='6' r='5'/%3E%3Cpath d='M13 13l-3-3'/%3E%3C/svg%3E") 9px center no-repeat;outline:none;transition:border-color .15s}
+  .topbar-search:focus{border-color:var(--accent)}
+
+  /* ─── CONTENT ─── */
+  .content{flex:1;display:flex;overflow:hidden}
+  .content-view{flex:1;overflow-y:auto;padding:0}
+  .content-view.hidden{display:none}
+
+  /* ─── LIST VIEW ─── */
+  .list-header{display:grid;grid-template-columns:44px 1fr 100px 110px 100px 150px 150px 40px;align-items:center;padding:0 24px;height:36px;border-bottom:1px solid var(--border);background:var(--bg-hover);font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;position:sticky;top:0;z-index:10}
+  .list-header span:nth-child(n+3){text-align:left;padding-left:8px}
+
+  /* Section */
+  .section{border-bottom:1px solid var(--border-light)}
+  .section-header{display:flex;align-items:center;gap:10px;padding:10px 24px;cursor:pointer;user-select:none;transition:background .1s}
+  .section-header:hover{background:var(--bg-hover)}
+  .section-chevron{width:16px;height:16px;transition:transform .2s;color:var(--text-tertiary);flex-shrink:0}
+  .section-header.collapsed .section-chevron{transform:rotate(-90deg)}
+  .section-title{font-size:14px;font-weight:700;letter-spacing:-.2px}
+  .section-count{font-size:11px;color:var(--text-tertiary);background:var(--bg-hover);padding:1px 8px;border-radius:10px}
+  .section-progress{margin-left:auto;display:flex;align-items:center;gap:8px}
+  .section-progress-bar{width:80px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+  .section-progress-fill{height:100%;border-radius:2px;transition:width .3s}
+  .section-progress-text{font-size:11px;color:var(--text-tertiary);min-width:28px;text-align:right}
+  .section-body{overflow:hidden;transition:max-height .25s ease}
+  .section-body.collapsed{max-height:0 !important}
+
+  /* Task Row */
+  .task-row{display:grid;grid-template-columns:44px 1fr 100px 110px 100px 150px 150px 40px;align-items:center;padding:0 24px;min-height:42px;border-bottom:1px solid var(--border-light);cursor:pointer;transition:background .1s;position:relative}
+  .task-row:hover{background:var(--bg-hover)}
+  .task-row.selected{background:var(--bg-active)}
+  .task-row .depth-indicator{position:absolute;left:0;top:0;bottom:0;width:3px}
+
+  .task-checkbox{width:18px;height:18px;border:2px solid var(--border);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+  .task-checkbox:hover{border-color:var(--accent)}
+  .task-checkbox.done{background:var(--done);border-color:var(--done)}
+  .task-checkbox.done::after{content:'✓';color:#fff;font-size:11px;font-weight:700}
+
+  .task-name-cell{display:flex;align-items:center;gap:8px;min-width:0;padding-right:16px}
+  .task-indent{flex-shrink:0}
+  .task-expand{width:16px;height:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-tertiary);border-radius:3px;flex-shrink:0;transition:all .15s}
+  .task-expand:hover{background:var(--border);color:var(--text)}
+  .task-expand.collapsed svg{transform:rotate(-90deg)}
+  .task-expand.leaf{visibility:hidden}
+  .task-type-icon{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0}
+  .task-type-icon.ai{border-radius:4px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)}
+  .task-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .task-name.done{text-decoration:line-through;color:var(--text-tertiary)}
+
+  .task-status{padding-left:8px}
+  .status-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;white-space:nowrap}
+  .status-pill.done{background:var(--done-bg);color:var(--done-text)}
+  .status-pill.active{background:var(--active-bg);color:var(--active-text)}
+  .status-pill.ready{background:var(--ready-bg);color:var(--ready-text)}
+  .status-pill.pending{background:var(--pending-bg);color:var(--pending-text)}
+  .status-pill.failed{background:var(--failed-bg);color:var(--failed-text)}
+
+  .task-assignee{display:flex;align-items:center;gap:6px;padding-left:8px}
+  .assignee-avatar{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:#fff;flex-shrink:0}
+  .assignee-name{font-size:12px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  .task-due{font-size:12px;color:var(--text-secondary);padding-left:8px}
+  .task-due.overdue{color:var(--failed)}
+
+  .task-deps,.task-blocks{padding-left:8px;display:flex;flex-wrap:wrap;gap:3px}
+  .dep-chip{display:inline-flex;align-items:center;gap:3px;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:500;background:var(--bg-hover);color:var(--text-secondary);border:1px solid var(--border-light);white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis}
+  .dep-chip.blocked{background:var(--failed-bg);color:var(--failed-text);border-color:rgba(239,68,68,.2)}
+  .dep-chip::before{font-size:8px}
+  .dep-chip.incoming::before{content:'← '}
+  .dep-chip.outgoing::before{content:'→ '}
+  .blocks-chip{background:var(--ready-bg);color:var(--ready-text);border-color:rgba(245,158,11,.2)}
+
+  .task-actions{display:flex;align-items:center;opacity:0;transition:opacity .15s}
+  .task-row:hover .task-actions{opacity:1}
+  .task-action-btn{width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;color:var(--text-tertiary)}
+  .task-action-btn:hover{background:var(--border);color:var(--text)}
+
+  /* Add Task */
+  .add-task-row{display:flex;align-items:center;gap:8px;padding:8px 24px 8px 68px;cursor:pointer;color:var(--text-tertiary);font-size:13px;transition:all .15s}
+  .add-task-row:hover{color:var(--accent);background:var(--accent-light)}
+  .add-task-row .plus{font-size:16px;font-weight:300}
+
+  /* ─── SLIDE-OVER ─── */
+  .slide-over-backdrop{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.08);z-index:50;opacity:0;pointer-events:none;transition:opacity .2s}
+  .slide-over-backdrop.open{opacity:1;pointer-events:auto}
+  .slide-over{position:absolute;top:0;right:0;bottom:0;width:520px;background:#fff;border-left:1px solid var(--border);z-index:51;transform:translateX(100%);transition:transform .25s ease;display:flex;flex-direction:column;box-shadow:var(--shadow-lg)}
+  .slide-over.open{transform:translateX(0)}
+
+  .so-header{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border);flex-shrink:0}
+  .so-close{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius);cursor:pointer;color:var(--text-secondary);transition:all .15s}
+  .so-close:hover{background:var(--bg-hover);color:var(--text)}
+  .so-title-area{flex:1;min-width:0}
+  .so-title{font-size:18px;font-weight:700;letter-spacing:-.3px}
+  .so-subtitle{font-size:12px;color:var(--text-tertiary);margin-top:2px}
+
+  .so-meta{display:flex;gap:16px;padding:16px 20px;border-bottom:1px solid var(--border-light);flex-wrap:wrap}
+  .so-meta-item{display:flex;flex-direction:column;gap:3px}
+  .so-meta-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-tertiary)}
+  .so-meta-value{font-size:13px;display:flex;align-items:center;gap:6px}
+
+  .so-body{flex:1;overflow-y:auto;padding:0}
+  .so-section{padding:16px 20px;border-bottom:1px solid var(--border-light)}
+  .so-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary);margin-bottom:10px;display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
+  .so-section-title .chevron{transition:transform .2s;font-size:10px}
+  .so-section-title.collapsed .chevron{transform:rotate(-90deg)}
+  .so-section-content{font-size:13px;line-height:1.7;color:var(--text)}
+  .so-section-content.collapsed{display:none}
+  .so-section-content p{margin-bottom:8px}
+
+  /* Mini Graph */
+  .mini-graph{background:var(--bg-hover);border-radius:var(--radius-lg);padding:16px;margin-top:8px}
+  .mini-graph-container{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+  .mini-graph-node{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .mini-graph-circle{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;border:2px solid transparent}
+  .mini-graph-circle.current{border:3px solid var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
+  .mini-graph-circle.ai{border-radius:8px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)}
+  .mini-graph-label{font-size:10px;color:var(--text-secondary);max-width:70px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mini-graph-arrow{color:var(--text-tertiary);font-size:16px;flex-shrink:0}
+
+  /* AI Chat */
+  .ai-chat-input{display:flex;gap:8px;margin-top:10px}
+  .ai-chat-input input{flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;outline:none}
+  .ai-chat-input input:focus{border-color:var(--accent)}
+  .ai-chat-input button{padding:8px 14px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer}
+  .ai-chat-input button:hover{opacity:.9}
+
+  /* Subtask */
+  .so-subtask{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border-light)}
+  .so-subtask:last-child{border-bottom:none}
+
+  /* Activity */
+  .activity-item{display:flex;gap:10px;padding:8px 0;font-size:12px}
+  .activity-dot{width:8px;height:8px;border-radius:50%;background:var(--border);margin-top:4px;flex-shrink:0}
+  .activity-text{color:var(--text-secondary);line-height:1.5}
+  .activity-text strong{color:var(--text);font-weight:600}
+  .activity-time{color:var(--text-tertiary);font-size:11px}
+
+  /* ─── BOARD VIEW ─── */
+  .board{display:flex;gap:16px;padding:20px 24px;overflow-x:auto;height:100%}
+  .board-column{min-width:280px;width:280px;display:flex;flex-direction:column;background:var(--bg-hover);border-radius:var(--radius-lg);overflow:hidden}
+  .board-col-header{padding:12px 16px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border-light)}
+  .board-col-header .count{font-size:11px;font-weight:500;color:var(--text-tertiary);background:#fff;padding:0 7px;border-radius:10px}
+  .board-col-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+  .board-col-body{flex:1;overflow-y:auto;padding:8px}
+  .board-card{background:#fff;border:1px solid var(--border-light);border-radius:var(--radius);padding:12px;margin-bottom:6px;cursor:pointer;transition:box-shadow .15s,border-color .15s}
+  .board-card:hover{box-shadow:var(--shadow-sm);border-color:var(--border)}
+  .board-card-title{font-size:13px;font-weight:600;margin-bottom:6px;line-height:1.4}
+  .board-card-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .board-card-assignee{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-secondary)}
+  .board-card-dep{font-size:10px;padding:2px 6px;border-radius:8px}
+  .board-card-dep.blocked{background:var(--failed-bg);color:var(--failed-text)}
+  .board-card-dep.has-dep{background:var(--bg-hover);color:var(--text-secondary);border:1px solid var(--border-light)}
+  .board-card-depth{position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
+  .board-card{position:relative;overflow:hidden}
+
+  /* ─── GRAPH VIEW placeholder ─── */
+  .graph-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;color:var(--text-tertiary)}
+  .graph-placeholder svg{width:80px;height:80px;opacity:.3}
+  .graph-placeholder p{font-size:14px}
+
+  /* ─── Utilities ─── */
+  .truncate{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  @keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+</style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#4f6df5" stroke-width="2"/><path d="M8 14l4 4 8-8" stroke="#4f6df5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>DeepFlow</span>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-item active">
+      <div class="icon">📥</div> Inbox <span class="badge">3</span>
+    </div>
+    <div class="sidebar-item">
+      <div class="icon">✅</div> My Tasks
+    </div>
+    <div class="sidebar-item">
+      <div class="icon">📊</div> Dashboard
+    </div>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Favourites</div>
+    <div class="sidebar-project active">
+      <div class="dot" style="background:var(--accent)"></div> ICAAP Document
+    </div>
+    <div class="sidebar-project">
+      <div class="dot" style="background:#22c55e"></div> Paper Airplane
+    </div>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Projects</div>
+    <div class="sidebar-project">
+      <div class="dot" style="background:#8b5cf6"></div> Financial Analysis
+    </div>
+    <div class="sidebar-project">
+      <div class="dot" style="background:#f59e0b"></div> Hubspot Integration
+    </div>
+    <div class="sidebar-project">
+      <div class="dot" style="background:#ec4899"></div> Slack Automation
+    </div>
+    <div class="sidebar-project">
+      <div class="dot" style="background:#14b8a6"></div> Document Writing
+    </div>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Team</div>
+    <div class="sidebar-team">
+      <div class="sidebar-avatar" style="background:#4f6df5">AP</div>
+      <span>Ali Panju</span>
+    </div>
+    <div class="sidebar-team">
+      <div class="sidebar-avatar" style="background:#8b5cf6">MB</div>
+      <span>Molly Buckwald</span>
+    </div>
+    <div class="sidebar-team">
+      <div class="sidebar-avatar" style="background:#14b8a6">JG</div>
+      <span>Jonathan Gilmore</span>
+    </div>
+    <div class="sidebar-team">
+      <div class="sidebar-avatar" style="background:var(--text-tertiary)">DF</div>
+      <span style="opacity:.7">DeepFlow Agent</span>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-avatar" style="background:#4f6df5">AP</div>
+    <div>
+      <div style="color:#fff;font-size:13px;font-weight:500">Ali Panju</div>
+      <div style="font-size:11px">ali@enriched.co</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="topbar-title">ICAAP Document</div>
+    <div class="topbar-breadcrumb">12 tasks · 3 done</div>
+    <div class="topbar-spacer"></div>
+    <div class="view-tabs">
+      <div class="view-tab active" data-view="list">List</div>
+      <div class="view-tab" data-view="board">Board</div>
+      <div class="view-tab" data-view="graph">Graph</div>
+      <div class="view-tab" data-view="timeline">Timeline</div>
+    </div>
+    <div class="topbar-actions">
+      <div class="topbar-btn">⚙ Filter</div>
+      <div class="topbar-btn">↕ Sort</div>
+      <input class="topbar-search" type="text" placeholder="Search tasks…">
+    </div>
+  </div>
+
+  <!-- ═══ LIST VIEW ═══ -->
+  <div class="content-view" id="view-list">
+    <!-- Column Header -->
+    <div class="list-header">
+      <span></span>
+      <span>Task</span>
+      <span>Status</span>
+      <span>Assignee</span>
+      <span>Due</span>
+      <span>Depends on</span>
+      <span>Blocks</span>
+      <span></span>
+    </div>
+
+    <!-- PHASE 1 -->
+    <div class="section" data-section="phase1">
+      <div class="section-header" onclick="toggleSection(this)">
+        <svg class="section-chevron" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="section-title">Phase 1 — Data Gathering &amp; Risk Assessment</span>
+        <span class="section-count">5 tasks</span>
+        <div class="section-progress">
+          <div class="section-progress-bar"><div class="section-progress-fill" style="width:60%;background:var(--done)"></div></div>
+          <span class="section-progress-text">60%</span>
+        </div>
+      </div>
+      <div class="section-body" id="phase1-body">
+        <!-- L1 tasks -->
+        <div class="task-row" data-task="risk-inventory" onclick="openTask(this)">
+          <div class="depth-indicator" style="background:var(--depth-l1)"></div>
+          <div class="task-checkbox done"></div>
+          <div class="task-name-cell">
+            <div class="task-indent" style="width:0"></div>
+            <div class="task-expand leaf"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <div class="task-type-icon" style="background:var(--depth-l1)">AP</div>
+            <div class="task-name done">Risk Inventory Refresh</div>
+          </div>
+          <div class="task-status"><span class="status-pill done">✓ Done</span></div>
+          <div class="task-assignee">
+            <div class="assignee-avatar" style="background:#4f6df5">AP</div>
+            <span class="assignee-name">Ali P.</span>
+          </div>
+          <div class="task-due">Mar 1</div>
+          <div class="task-deps"><span class="dep-chip" style="color:var(--text-tertiary);font-style:italic;background:none;border:none;padding:0">—</span></div>
+          <div class="task-blocks"><span class="dep-chip outgoing">Scenarios</span></div>
+          <div class="task-actions"><div class="task-action-btn">⋯</div></div>
+        </div>
+
+        <div class="task-row" data-task="collect-data" onclick="openTask(this)">
+          <div class="depth-indicator" style="background:var(--depth-l1)"></div>
+          <div class="task-checkbox done"></div>
+          <div class="task-name-cell">
+            <div class="task-indent" style="width:0"></div>
+            <div class="task-expand leaf"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <div class="task-type-icon" style="background:var(--depth-l1)">MB</div>
+            <div class="task-name done">Collect Historical Loss Data</div>
+          </div>
+          <div class="task-status"><span class="status-pill done">✓ Done</span></div>
+          <div class="task-assignee">
+            <div class="assignee-avatar" style="background:#8b5cf6">MB</div>
+            <span class="assignee-name">Molly B.</span>
+          </div>
+          <div class="task-due">Feb 28</div>
+          <div class="task-deps"><span class="dep-chip" style="color:var(--text-tertiary);font-style:italic;background:none;border:none;padding:0">—</span></div>
+          <div class="task-blocks"><span class="dep-chip outgoing">Calibration</span></div>
+          <div class="task-actions"><div class="task-action-btn">⋯</div></div>
+        </div>
+
+        <div class="task-row" data-task="generate-scenarios" onclick="openTask(this)">
+          <div class="depth-indicator" style="background:var(--depth-l1)"></div>
+          <div class="task-checkbox done"></div>
+          <div class="task-name-cell">
+            <div class="task-indent" style="width:0"></div>
+            <div class="task-expand leaf"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <div class="task-type-icon ai" style="background:var(--depth-l2)">DF</div>
+            <div class="task-name done">Generate Stress Scenarios</div>
+          </div>
+          <div class="task-status"><span class="status-pill done">✓ Done</span></div>
+          <div class="task-assignee">
+            <div class="assignee-avatar" style="background:var(--text-tertiary)">DF</div>
+            <span class="assignee-name">DeepFlow</span>
+          </div>
+          <div class="task-due">Mar 3</div>
+          <div class="task-deps"><span class="dep-chip incoming">Risk Inventory</span></div>
+          <div class="task-blocks"><span class="dep-chip outgoing">Run Model</span></div>
+          <div class="task-actions"><div class="task-action-btn">⋯</div></div>
+        </div>
+
+        <div class="task-row" data-task="model-calibration" onclick="openTask(this)">
+          <div class="depth-indicator" style="background:var(--depth-l2)"></div>
+          <div class="task-checkbox"></div>
+          <div class="task-name-cell">
+            <div class="task-indent" style="width:24px"></div>
+            <div class="task-expand leaf"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <div class="task-type-icon" style="background:var(--depth-l2)">JG</div>
+            <div class="task-name">Model Calibration &amp; Validation</div>
+          </div>
+          <div class="task-status"><span class="status-pill active">● Active</span></div>
+          <div class="task-assignee">
+            <div class="assignee-avatar" style="background:#14b8a6">JG</div>
+            <span class="assignee-name">Jonathan G.</span>
+          </div>
+          <div class="task-due">Mar 8</div>
+          <div class="task-deps"><span class="dep-chip incoming">Loss Data</span></div>
+          <div class="task-blocks"><span class="dep-chip outgoing">Run Model</span></div>
+          <div class="task-actions"><div class="task-action-btn">⋯</div></div>
+        </div>
+
+        <div class="task-row" data-task="run-model" onclick="openTask(this)">
+          <div class="depth-indicator" style="background:var(--depth-l2)"></div>
+          <div class="task-checkbox"></div>
+          <div class="task-name-cell">
+            <div class="task-indent" style="width:24px"></div>
+            <div class="task-expand leaf"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <div class="task-type-icon ai" style="background:var(--depth-l3)">DF</div>
+            <div class="task-name">Run Capital Adequacy Model</div>
+          </div>
+          <div class="task-status"><span class="status-pill pending">○ Pending</span></div>
+          <div class="task-assignee">
+            <div class="assignee-avatar" style="background:var(--text-tertiary)">DF</div>
+            <span class="assignee-name">DeepFlow</span>
+          </div>
+          <div class="task-due">Mar 10</div>
+          <div class="task-deps">
+            <span class="dep-chip incoming blocked">Calibration</span>
+            <span class="dep-chip incoming">Scenarios</span>
+          </div>
+          <div class="task-blocks"><span class="dep-chip outgoing">Draft Stmt</span></div>
+          <div class="task-actions"><div class="task-action-btn">⋯</div></div>
+        </div>
+
+        <div class="add-task-row"><span class="plus">+</span> Add task…</div>
+      </div>
+    </div>
+
+    <!-- PHASE 2 -->
+    <div class="section" data-section="phase2">
+      <div class="section-header" onclick="toggleSection(this)">
+        <svg class="section-chevron" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="section-title">Phase 2 — Analysis &amp; Documentation</span>
+        <span class="section-count">4 tasks</span>
+        <div class="section-progress">
+          <div class="section-progress-bar"><div class="section-progress-fill" style="width:0%;background:var(--done)"></div></div>
+          <span class="section-progress-text">0%</span>
+        </div>
+      </div>
+      <div class="section-body" id="phase2-body">
+        <div class="task-row" data-task="define-actions" onclick="openTask(this)">
+          <div class="depth-indicator" style="background:var(--depth-l1)"></div>
+          <div class="task-checkbox"></div>
+          <div class="task-name-cell">
+            <div class="task-indent" style="width:0"></div>
+            <div class="task-expand leaf"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <div class="task-type-icon" style="background:var(--depth-l1)">AP</div>
+            <div class="task-name">Define Management Actions</div>
+          </div>
+          <div class="task-status"><span class="status-pill ready">◐ Ready</span></div>
+          <div class="task-assignee">
+            <div class="assignee-avatar" style="background:#4f6df5">AP</div>
+            <span class="assignee-name">Ali P.</span>
+          </div>
+          <div class="task-due">Mar 12</div>
+          <div class="task-deps"><span class="dep-chip" style="color:var(--text-tertiary);font-style:italic;background:none;border:none;padding:0">—</span></div>
+          <div class="task-blocks"><span class="dep-chip outgoing">Draft Stmt</span></div>
+          <div class="task-actions"><div class="task-action-btn">⋯</div></div>
+        </div>
+
+        <div class="task-row" data-task="draft-statement" onclick="openTask(this)">
+          <div class="depth-indicator" style="background:var(--depth-l2)"></div>
+          <div class="task-checkbox"></div>
+          <div class="task-name-cell">
+            <div class="task-indent" style="width:0"></div>
+            <div class="task-expand" onclick="event.stopPropagation();toggleChildren(this,'draft-children')"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <div class="task-type-icon ai" style="background:var(--depth-l2)">DF</div>
+            <div class="task-name">Draft Capital Adequacy Statement</div>
+          </div>
+          <div class="task-status"><span class="status-pill pending">○ Pending</span></div>
+          <div class="task-assignee">
+            <div class="assignee-avatar" style="background:var(--text-tertiary)">DF</div>
+            <span class="assignee-name">DeepFlow</span>
+          </div>
+          <div class="task-due">Mar 15</div>
+          <div class="task-deps">
+            <span class="dep-chip incoming blocked">Run Model</span>
+            <span class="dep-chip incoming">Mgmt Actions</span>
+          </div>
+          <div class="task-blocks"><span class="dep-chip outgoing">Review</span></div>
+          <div class="task-actions"><div class="task-action-btn">⋯</div></div>
+        </div>
+
+        <!-- Sub-tasks of Draft -->
+        <div class="draft-children">
+          <div class="task-row" data-task="exec-summary" onclick="openTask(this)">
+            <div class="depth-indicator" style="background:var(--depth-l3)"></div>
+            <div class="task-checkbox"></div>
+            <div class="task-name-cell">
+              <div class="task-indent" style="width:48px"></div>
+              <div class="task-expand leaf"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+              <div class="task-type-icon ai" style="background:var(--depth-l3)">DF</div>
+              <div class="task-name">Write Executive Summary</div>
+            </div>
+            <div class="task-status"><span class="status-pill pending">○ Pending</span></div>
+            <div class="task-assignee">
+              <div class="assignee-avatar" style="background:var(--text-tertiary)">DF</div>
+              <span class="assignee-name">DeepFlow</span>
+            </div>
+            <div class="task-due">Mar 14</div>
+            <div class="task-deps"><span class="dep-chip incoming blocked">Run Model</span></div>
+            <div class="task-blocks"><span class="dep-chip" style="color:var(--text-tertiary);font-style:italic;background:none;border:none;padding:0">—</span></div>
+            <div class="task-actions"><div class="task-action-btn">⋯</div></div>
+          </div>
+
+          <div class="task-row" data-task="risk-appendix" onclick="openTask(this)">
+            <div class="depth-indicator" style="background:var(--depth-l3)"></div>
+            <div class="task-checkbox"></div>
+            <div class="task-name-cell">
+              <div class="task-indent" style="width:48px"></div>
+              <div class="task-expand leaf"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+              <div class="task-type-icon ai" style="background:var(--depth-l3)">DF</div>
+              <div class="task-name">Compile Risk Appendices</div>
+            </div>
+            <div class="task-status"><span class="status-pill pending">○ Pending</span></div>
+            <div class="task-assignee">
+              <div class="assignee-avatar" style="background:var(--text-tertiary)">DF</div>
+              <span class="assignee-name">DeepFlow</span>
+            </div>
+            <div class="task-due">Mar 14</div>
+            <div class="task-deps"><span class="dep-chip incoming">Risk Inventory</span></div>
+            <div class="task-blocks"><span class="dep-chip" style="color:var(--text-tertiary);font-style:italic;background:none;border:none;padding:0">—</span></div>
+            <div class="task-actions"><div class="task-action-btn">⋯</div></div>
+          </div>
+        </div>
+
+        <div class="add-task-row"><span class="plus">+</span> Add task…</div>
+      </div>
+    </div>
+
+    <!-- PHASE 3 -->
+    <div class="section" data-section="phase3">
+      <div class="section-header" onclick="toggleSection(this)">
+        <svg class="section-chevron" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="section-title">Phase 3 — Review &amp; Approval</span>
+        <span class="section-count">3 tasks</span>
+        <div class="section-progress">
+          <div class="section-progress-bar"><div class="section-progress-fill" style="width:0%;background:var(--done)"></div></div>
+          <span class="section-progress-text">0%</span>
+        </div>
+      </div>
+      <div class="section-body" id="phase3-body">
+        <div class="task-row" data-task="peer-review" onclick="openTask(this)">
+          <div class="depth-indicator" style="background:var(--depth-l1)"></div>
+          <div class="task-checkbox"></div>
+          <div class="task-name-cell">
+            <div class="task-indent" style="width:0"></div>
+            <div class="task-expand leaf"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <div class="task-type-icon" style="background:var(--depth-l1)">MB</div>
+            <div class="task-name">Peer Review &amp; QA</div>
+          </div>
+          <div class="task-status"><span class="status-pill pending">○ Pending</span></div>
+          <div class="task-assignee">
+            <div class="assignee-avatar" style="background:#8b5cf6">MB</div>
+            <span class="assignee-name">Molly B.</span>
+          </div>
+          <div class="task-due">Mar 18</div>
+          <div class="task-deps"><span class="dep-chip incoming blocked">Draft Stmt</span></div>
+          <div class="task-blocks"><span class="dep-chip outgoing">Revisions</span></div>
+          <div class="task-actions"><div class="task-action-btn">⋯</div></div>
+        </div>
+
+        <div class="task-row" data-task="revisions" onclick="openTask(this)">
+          <div class="depth-indicator" style="background:var(--depth-l2)"></div>
+          <div class="task-checkbox"></div>
+          <div class="task-name-cell">
+            <div class="task-indent" style="width:0"></div>
+            <div class="task-expand leaf"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <div class="task-type-icon ai" style="background:var(--depth-l2)">DF</div>
+            <div class="task-name">Incorporate Review Feedback &amp; Revisions</div>
+          </div>
+          <div class="task-status"><span class="status-pill pending">○ Pending</span></div>
+          <div class="task-assignee">
+            <div class="assignee-avatar" style="background:var(--text-tertiary)">DF</div>
+            <span class="assignee-name">DeepFlow</span>
+          </div>
+          <div class="task-due">Mar 20</div>
+          <div class="task-deps"><span class="dep-chip incoming blocked">Peer Review</span></div>
+          <div class="task-blocks"><span class="dep-chip outgoing">Board Approval</span></div>
+          <div class="task-actions"><div class="task-action-btn">⋯</div></div>
+        </div>
+
+        <div class="task-row" data-task="board-approval" onclick="openTask(this)">
+          <div class="depth-indicator" style="background:var(--depth-l1)"></div>
+          <div class="task-checkbox"></div>
+          <div class="task-name-cell">
+            <div class="task-indent" style="width:0"></div>
+            <div class="task-expand leaf"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <div class="task-type-icon" style="background:var(--depth-l1)">AP</div>
+            <div class="task-name">Board Approval &amp; Sign Off</div>
+          </div>
+          <div class="task-status"><span class="status-pill pending">○ Pending</span></div>
+          <div class="task-assignee">
+            <div class="assignee-avatar" style="background:#4f6df5">AP</div>
+            <span class="assignee-name">Ali P.</span>
+          </div>
+          <div class="task-due">Mar 25</div>
+          <div class="task-deps"><span class="dep-chip incoming blocked">Revisions</span></div>
+          <div class="task-blocks"><span class="dep-chip" style="color:var(--text-tertiary);font-style:italic;background:none;border:none;padding:0">—</span></div>
+          <div class="task-actions"><div class="task-action-btn">⋯</div></div>
+        </div>
+
+        <div class="add-task-row"><span class="plus">+</span> Add task…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ BOARD VIEW ═══ -->
+  <div class="content-view hidden" id="view-board">
+    <div class="board">
+      <!-- PENDING -->
+      <div class="board-column">
+        <div class="board-col-header">
+          <div class="board-col-dot" style="background:var(--pending)"></div>
+          Pending <span class="count">5</span>
+        </div>
+        <div class="board-col-body">
+          <div class="board-card" onclick="openTaskByName('run-model')">
+            <div class="board-card-depth" style="background:var(--depth-l2)"></div>
+            <div class="board-card-title">Run Capital Adequacy Model</div>
+            <div class="board-card-meta">
+              <div class="board-card-assignee"><div class="assignee-avatar" style="background:var(--text-tertiary);width:18px;height:18px;font-size:8px">DF</div> DeepFlow</div>
+              <span class="board-card-dep blocked">⚠ Blocked</span>
+            </div>
+          </div>
+          <div class="board-card" onclick="openTaskByName('draft-statement')">
+            <div class="board-card-depth" style="background:var(--depth-l2)"></div>
+            <div class="board-card-title">Draft Capital Adequacy Statement</div>
+            <div class="board-card-meta">
+              <div class="board-card-assignee"><div class="assignee-avatar" style="background:var(--text-tertiary);width:18px;height:18px;font-size:8px">DF</div> DeepFlow</div>
+              <span class="board-card-dep blocked">⚠ Blocked</span>
+            </div>
+          </div>
+          <div class="board-card" onclick="openTaskByName('peer-review')">
+            <div class="board-card-depth" style="background:var(--depth-l1)"></div>
+            <div class="board-card-title">Peer Review &amp; QA</div>
+            <div class="board-card-meta">
+              <div class="board-card-assignee"><div class="assignee-avatar" style="background:#8b5cf6;width:18px;height:18px;font-size:8px">MB</div> Molly B.</div>
+              <span class="board-card-dep blocked">⚠ Blocked</span>
+            </div>
+          </div>
+          <div class="board-card" onclick="openTaskByName('revisions')">
+            <div class="board-card-depth" style="background:var(--depth-l2)"></div>
+            <div class="board-card-title">Incorporate Review Feedback</div>
+            <div class="board-card-meta">
+              <div class="board-card-assignee"><div class="assignee-avatar" style="background:var(--text-tertiary);width:18px;height:18px;font-size:8px">DF</div> DeepFlow</div>
+              <span class="board-card-dep blocked">⚠ Blocked</span>
+            </div>
+          </div>
+          <div class="board-card" onclick="openTaskByName('board-approval')">
+            <div class="board-card-depth" style="background:var(--depth-l1)"></div>
+            <div class="board-card-title">Board Approval &amp; Sign Off</div>
+            <div class="board-card-meta">
+              <div class="board-card-assignee"><div class="assignee-avatar" style="background:#4f6df5;width:18px;height:18px;font-size:8px">AP</div> Ali P.</div>
+              <span class="board-card-dep blocked">⚠ Blocked</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- READY -->
+      <div class="board-column">
+        <div class="board-col-header">
+          <div class="board-col-dot" style="background:var(--ready)"></div>
+          Ready <span class="count">1</span>
+        </div>
+        <div class="board-col-body">
+          <div class="board-card" onclick="openTaskByName('define-actions')">
+            <div class="board-card-depth" style="background:var(--depth-l1)"></div>
+            <div class="board-card-title">Define Management Actions</div>
+            <div class="board-card-meta">
+              <div class="board-card-assignee"><div class="assignee-avatar" style="background:#4f6df5;width:18px;height:18px;font-size:8px">AP</div> Ali P.</div>
+              <span class="board-card-dep has-dep">No blockers</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVE -->
+      <div class="board-column">
+        <div class="board-col-header">
+          <div class="board-col-dot" style="background:var(--active)"></div>
+          In Progress <span class="count">1</span>
+        </div>
+        <div class="board-col-body">
+          <div class="board-card" onclick="openTaskByName('model-calibration')">
+            <div class="board-card-depth" style="background:var(--depth-l2)"></div>
+            <div class="board-card-title">Model Calibration &amp; Validation</div>
+            <div class="board-card-meta">
+              <div class="board-card-assignee"><div class="assignee-avatar" style="background:#14b8a6;width:18px;height:18px;font-size:8px">JG</div> Jonathan G.</div>
+              <span class="board-card-dep has-dep">← Loss Data ✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DONE -->
+      <div class="board-column">
+        <div class="board-col-header">
+          <div class="board-col-dot" style="background:var(--done)"></div>
+          Done <span class="count">3</span>
+        </div>
+        <div class="board-col-body">
+          <div class="board-card" style="opacity:.7">
+            <div class="board-card-depth" style="background:var(--depth-l1)"></div>
+            <div class="board-card-title" style="text-decoration:line-through">Risk Inventory Refresh</div>
+            <div class="board-card-meta">
+              <div class="board-card-assignee"><div class="assignee-avatar" style="background:#4f6df5;width:18px;height:18px;font-size:8px">AP</div> Ali P.</div>
+            </div>
+          </div>
+          <div class="board-card" style="opacity:.7">
+            <div class="board-card-depth" style="background:var(--depth-l1)"></div>
+            <div class="board-card-title" style="text-decoration:line-through">Collect Historical Loss Data</div>
+            <div class="board-card-meta">
+              <div class="board-card-assignee"><div class="assignee-avatar" style="background:#8b5cf6;width:18px;height:18px;font-size:8px">MB</div> Molly B.</div>
+            </div>
+          </div>
+          <div class="board-card" style="opacity:.7">
+            <div class="board-card-depth" style="background:var(--depth-l2)"></div>
+            <div class="board-card-title" style="text-decoration:line-through">Generate Stress Scenarios</div>
+            <div class="board-card-meta">
+              <div class="board-card-assignee"><div class="assignee-avatar" style="background:var(--text-tertiary);width:18px;height:18px;font-size:8px">DF</div> DeepFlow</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ GRAPH VIEW ═══ -->
+  <div class="content-view hidden" id="view-graph">
+    <div class="graph-placeholder">
+      <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="20" cy="20" r="8"/><circle cx="60" cy="20" r="8"/><circle cx="40" cy="50" r="8"/><circle cx="20" cy="70" r="6"/><circle cx="60" cy="70" r="6"/>
+        <path d="M28 20h24M24 27l12 17M56 27l-12 17M36 56l-12 10M44 56l12 10" stroke-dasharray="3 3"/>
+      </svg>
+      <p>Graph view — interactive dependency canvas</p>
+      <p style="font-size:12px;max-width:320px;text-align:center;line-height:1.6">The full ReactFlow graph lives here. Same power as current DeepFlow, available as a supplementary lens alongside the list.</p>
+    </div>
+  </div>
+
+  <!-- ═══ TIMELINE VIEW ═══ -->
+  <div class="content-view hidden" id="view-timeline">
+    <div class="graph-placeholder">
+      <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="5" y="15" width="20" height="6" rx="2"/><rect x="30" y="15" width="30" height="6" rx="2"/><rect x="15" y="30" width="25" height="6" rx="2"/><rect x="45" y="30" width="20" height="6" rx="2"/><rect x="35" y="45" width="35" height="6" rx="2"/><rect x="50" y="60" width="25" height="6" rx="2"/>
+      </svg>
+      <p>Timeline view — Gantt-style schedule</p>
+      <p style="font-size:12px;max-width:320px;text-align:center;line-height:1.6">Tasks plotted on a timeline with dependency arrows showing the critical path. Duration bars colour-coded by depth level.</p>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDE-OVER ═══ -->
+  <div class="slide-over-backdrop" id="slideBackdrop" onclick="closeSlideOver()"></div>
+  <div class="slide-over" id="slideOver">
+    <div class="so-header">
+      <div class="so-close" onclick="closeSlideOver()">✕</div>
+      <div class="so-title-area">
+        <div class="so-title" id="soTitle">Model Calibration &amp; Validation</div>
+        <div class="so-subtitle" id="soSubtitle">Phase 1 — Data Gathering &amp; Risk Assessment · L2</div>
+      </div>
+    </div>
+
+    <div class="so-meta" id="soMeta">
+      <div class="so-meta-item">
+        <div class="so-meta-label">Status</div>
+        <div class="so-meta-value"><span class="status-pill active" id="soStatus">● Active</span></div>
+      </div>
+      <div class="so-meta-item">
+        <div class="so-meta-label">Assignee</div>
+        <div class="so-meta-value" id="soAssignee">
+          <div class="assignee-avatar" style="background:#14b8a6;width:20px;height:20px;font-size:9px">JG</div>
+          Jonathan Gilmore
+        </div>
+      </div>
+      <div class="so-meta-item">
+        <div class="so-meta-label">Due Date</div>
+        <div class="so-meta-value" id="soDue">Mar 8, 2026</div>
+      </div>
+      <div class="so-meta-item">
+        <div class="so-meta-label">Type</div>
+        <div class="so-meta-value" id="soType">👤 Human Task</div>
+      </div>
+    </div>
+
+    <div class="so-body">
+      <!-- Description -->
+      <div class="so-section">
+        <div class="so-section-title" onclick="toggleSOSection(this)"><span class="chevron">▾</span> Description</div>
+        <div class="so-section-content" id="soDescription">
+          <p>Calibrate the internal capital adequacy model using collected historical loss data. Validate model outputs against known benchmarks and stress test results.</p>
+          <p>Key deliverables: calibrated model parameters, validation report with back-testing results, sensitivity analysis on key assumptions.</p>
+        </div>
+      </div>
+
+      <!-- Dependency Graph -->
+      <div class="so-section">
+        <div class="so-section-title" onclick="toggleSOSection(this)"><span class="chevron">▾</span> Dependencies</div>
+        <div class="so-section-content" id="soDeps">
+          <div class="mini-graph" id="soMiniGraph">
+            <div class="mini-graph-container">
+              <div class="mini-graph-node">
+                <div class="mini-graph-circle" style="background:var(--depth-l1)">MB</div>
+                <div class="mini-graph-label">Loss Data</div>
+                <span class="status-pill done" style="font-size:9px;padding:1px 6px">✓ Done</span>
+              </div>
+              <div class="mini-graph-arrow">→</div>
+              <div class="mini-graph-node">
+                <div class="mini-graph-circle current" style="background:var(--depth-l2)">JG</div>
+                <div class="mini-graph-label" style="font-weight:700">Calibration</div>
+                <span class="status-pill active" style="font-size:9px;padding:1px 6px">● Active</span>
+              </div>
+              <div class="mini-graph-arrow">→</div>
+              <div class="mini-graph-node">
+                <div class="mini-graph-circle ai" style="background:var(--depth-l3)">DF</div>
+                <div class="mini-graph-label">Run Model</div>
+                <span class="status-pill pending" style="font-size:9px;padding:1px 6px">○ Pending</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Chat -->
+      <div class="so-section">
+        <div class="so-section-title" onclick="toggleSOSection(this)"><span class="chevron">▾</span> 🤖 Ask DeepFlow</div>
+        <div class="so-section-content" id="soChat">
+          <div style="background:var(--bg-hover);border-radius:var(--radius);padding:10px 12px;font-size:12px;color:var(--text-secondary);margin-bottom:10px">
+            <strong style="color:var(--text)">DeepFlow:</strong> This task depends on "Collect Historical Loss Data" which is complete. All inputs are available. Would you like me to suggest calibration parameters based on the collected data?
+          </div>
+          <div class="ai-chat-input">
+            <input type="text" placeholder="Ask about this task…">
+            <button>Send</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subtasks -->
+      <div class="so-section">
+        <div class="so-section-title" onclick="toggleSOSection(this)"><span class="chevron">▾</span> Subtasks <span style="font-weight:400;color:var(--text-tertiary);font-size:10px;text-transform:none;letter-spacing:0">(0 of 3 done)</span></div>
+        <div class="so-section-content" id="soSubtasks">
+          <div class="so-subtask">
+            <div class="task-checkbox" style="width:16px;height:16px;border-width:1.5px"></div>
+            <span style="font-size:12px">Set up model environment and import data</span>
+          </div>
+          <div class="so-subtask">
+            <div class="task-checkbox" style="width:16px;height:16px;border-width:1.5px"></div>
+            <span style="font-size:12px">Run back-testing against 2023–2025 actuals</span>
+          </div>
+          <div class="so-subtask">
+            <div class="task-checkbox" style="width:16px;height:16px;border-width:1.5px"></div>
+            <span style="font-size:12px">Document calibration parameters and assumptions</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity -->
+      <div class="so-section">
+        <div class="so-section-title" onclick="toggleSOSection(this)"><span class="chevron">▾</span> Activity</div>
+        <div class="so-section-content" id="soActivity">
+          <div class="activity-item">
+            <div class="activity-dot" style="background:var(--active)"></div>
+            <div>
+              <div class="activity-text"><strong>Jonathan Gilmore</strong> changed status to <strong>Active</strong></div>
+              <div class="activity-time">Mar 5, 2026 · 10:24 AM</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:var(--done)"></div>
+            <div>
+              <div class="activity-text">Dependency <strong>Collect Historical Loss Data</strong> was marked as <strong>Done</strong></div>
+              <div class="activity-time">Mar 4, 2026 · 3:12 PM</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot"></div>
+            <div>
+              <div class="activity-text"><strong>Ali Panju</strong> assigned this task to <strong>Jonathan Gilmore</strong></div>
+              <div class="activity-time">Feb 27, 2026 · 9:00 AM</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot"></div>
+            <div>
+              <div class="activity-text"><strong>DeepFlow</strong> created this task from workflow decomposition</div>
+              <div class="activity-time">Feb 26, 2026 · 2:15 PM</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ─── Task data for slide-over ───
+const tasks = {
+  'risk-inventory': {
+    title: 'Risk Inventory Refresh',
+    subtitle: 'Phase 1 — Data Gathering & Risk Assessment · L1',
+    status: 'done', statusLabel: '✓ Done',
+    assignee: { initials: 'AP', name: 'Ali Panju', color: '#4f6df5' },
+    due: 'Mar 1, 2026', type: '👤 Human Task',
+    description: '<p>Conduct a comprehensive refresh of the organisation\'s risk inventory. Review existing risk categories, identify new and emerging risks, and update risk ratings based on current business environment.</p><p>Output feeds into the stress scenario generation process.</p>',
+    predecessors: [],
+    successors: [{ label: 'Scenarios', color: 'var(--depth-l2)', initials: 'DF', ai: true, status: 'done', statusLabel: '✓ Done' }],
+    current: { label: 'Risk Inventory', color: 'var(--depth-l1)', initials: 'AP', status: 'done', statusLabel: '✓ Done' },
+    subtasks: ['Catalogue operational risks', 'Update credit risk assessments', 'Review market risk factors'],
+    subtasksDone: 3,
+    activity: [
+      { color: 'var(--done)', text: '<strong>Ali Panju</strong> marked as <strong>Done</strong>', time: 'Mar 1, 2026 · 4:30 PM' },
+      { color: '', text: '<strong>DeepFlow</strong> created this task', time: 'Feb 26, 2026 · 2:15 PM' }
+    ]
+  },
+  'collect-data': {
+    title: 'Collect Historical Loss Data',
+    subtitle: 'Phase 1 — Data Gathering & Risk Assessment · L1',
+    status: 'done', statusLabel: '✓ Done',
+    assignee: { initials: 'MB', name: 'Molly Buckwald', color: '#8b5cf6' },
+    due: 'Feb 28, 2026', type: '👤 Human Task',
+    description: '<p>Gather historical loss data from internal systems covering the last 5 years. Include operational losses, credit defaults, and market losses. Clean and normalise data for model consumption.</p>',
+    predecessors: [],
+    successors: [{ label: 'Calibration', color: 'var(--depth-l2)', initials: 'JG', status: 'active', statusLabel: '● Active' }],
+    current: { label: 'Loss Data', color: 'var(--depth-l1)', initials: 'MB', status: 'done', statusLabel: '✓ Done' },
+    subtasks: ['Export data from risk database', 'Validate and clean datasets', 'Prepare model-ready format'],
+    subtasksDone: 3,
+    activity: [
+      { color: 'var(--done)', text: '<strong>Molly Buckwald</strong> marked as <strong>Done</strong>', time: 'Feb 28, 2026 · 5:45 PM' },
+      { color: '', text: '<strong>Ali Panju</strong> assigned to <strong>Molly Buckwald</strong>', time: 'Feb 26, 2026 · 3:00 PM' }
+    ]
+  },
+  'generate-scenarios': {
+    title: 'Generate Stress Scenarios',
+    subtitle: 'Phase 1 — Data Gathering & Risk Assessment · L2',
+    status: 'done', statusLabel: '✓ Done',
+    assignee: { initials: 'DF', name: 'DeepFlow Agent', color: 'var(--text-tertiary)' },
+    due: 'Mar 3, 2026', type: '🤖 AI Agent Task',
+    description: '<p>Generate a comprehensive set of stress scenarios based on the refreshed risk inventory. Include baseline, adverse, and severely adverse scenarios covering credit, market, and operational risk.</p><p>AI agent will use historical patterns and regulatory guidelines (PRA, EBA) to construct plausible scenarios.</p>',
+    predecessors: [{ label: 'Risk Inventory', color: 'var(--depth-l1)', initials: 'AP', status: 'done', statusLabel: '✓ Done' }],
+    successors: [{ label: 'Run Model', color: 'var(--depth-l3)', initials: 'DF', ai: true, status: 'pending', statusLabel: '○ Pending' }],
+    current: { label: 'Scenarios', color: 'var(--depth-l2)', initials: 'DF', ai: true, status: 'done', statusLabel: '✓ Done' },
+    subtasks: ['Analyse risk inventory for scenario drivers', 'Generate baseline scenario', 'Generate adverse & severely adverse'],
+    subtasksDone: 3,
+    activity: [
+      { color: 'var(--done)', text: '<strong>DeepFlow Agent</strong> completed execution', time: 'Mar 3, 2026 · 11:20 AM' },
+      { color: '', text: 'Dependency <strong>Risk Inventory</strong> completed — task unblocked', time: 'Mar 1, 2026 · 4:32 PM' }
+    ]
+  },
+  'model-calibration': {
+    title: 'Model Calibration & Validation',
+    subtitle: 'Phase 1 — Data Gathering & Risk Assessment · L2',
+    status: 'active', statusLabel: '● Active',
+    assignee: { initials: 'JG', name: 'Jonathan Gilmore', color: '#14b8a6' },
+    due: 'Mar 8, 2026', type: '👤 Human Task',
+    description: '<p>Calibrate the internal capital adequacy model using collected historical loss data. Validate model outputs against known benchmarks and stress test results.</p><p>Key deliverables: calibrated model parameters, validation report with back-testing results, sensitivity analysis on key assumptions.</p>',
+    predecessors: [{ label: 'Loss Data', color: 'var(--depth-l1)', initials: 'MB', status: 'done', statusLabel: '✓ Done' }],
+    successors: [{ label: 'Run Model', color: 'var(--depth-l3)', initials: 'DF', ai: true, status: 'pending', statusLabel: '○ Pending' }],
+    current: { label: 'Calibration', color: 'var(--depth-l2)', initials: 'JG', status: 'active', statusLabel: '● Active' },
+    subtasks: ['Set up model environment and import data', 'Run back-testing against 2023–2025 actuals', 'Document calibration parameters and assumptions'],
+    subtasksDone: 0,
+    activity: [
+      { color: 'var(--active)', text: '<strong>Jonathan Gilmore</strong> changed status to <strong>Active</strong>', time: 'Mar 5, 2026 · 10:24 AM' },
+      { color: 'var(--done)', text: 'Dependency <strong>Collect Historical Loss Data</strong> marked <strong>Done</strong>', time: 'Mar 4, 2026 · 3:12 PM' },
+      { color: '', text: '<strong>Ali Panju</strong> assigned to <strong>Jonathan Gilmore</strong>', time: 'Feb 27, 2026 · 9:00 AM' },
+      { color: '', text: '<strong>DeepFlow</strong> created this task from workflow decomposition', time: 'Feb 26, 2026 · 2:15 PM' }
+    ]
+  },
+  'run-model': {
+    title: 'Run Capital Adequacy Model',
+    subtitle: 'Phase 1 — Data Gathering & Risk Assessment · L3',
+    status: 'pending', statusLabel: '○ Pending',
+    assignee: { initials: 'DF', name: 'DeepFlow Agent', color: 'var(--text-tertiary)' },
+    due: 'Mar 10, 2026', type: '🤖 AI Agent Task',
+    description: '<p>Execute the calibrated capital adequacy model across all stress scenarios. Generate capital requirement estimates under each scenario and produce summary output for the draft statement.</p>',
+    predecessors: [
+      { label: 'Calibration', color: 'var(--depth-l2)', initials: 'JG', status: 'active', statusLabel: '● Active' },
+      { label: 'Scenarios', color: 'var(--depth-l2)', initials: 'DF', ai: true, status: 'done', statusLabel: '✓ Done' }
+    ],
+    successors: [{ label: 'Draft Stmt', color: 'var(--depth-l2)', initials: 'DF', ai: true, status: 'pending', statusLabel: '○ Pending' }],
+    current: { label: 'Run Model', color: 'var(--depth-l3)', initials: 'DF', ai: true, status: 'pending', statusLabel: '○ Pending' },
+    subtasks: ['Load calibrated parameters', 'Run all scenario simulations', 'Generate output tables and charts'],
+    subtasksDone: 0,
+    activity: [
+      { color: '', text: '<strong>DeepFlow</strong> created this task from workflow decomposition', time: 'Feb 26, 2026 · 2:15 PM' }
+    ]
+  },
+  'define-actions': {
+    title: 'Define Management Actions',
+    subtitle: 'Phase 2 — Analysis & Documentation · L1',
+    status: 'ready', statusLabel: '◐ Ready',
+    assignee: { initials: 'AP', name: 'Ali Panju', color: '#4f6df5' },
+    due: 'Mar 12, 2026', type: '👤 Human Task',
+    description: '<p>Define the set of management actions that the firm would take under each stress scenario to mitigate capital shortfalls. Include both preventive and corrective actions with estimated capital impact.</p>',
+    predecessors: [],
+    successors: [{ label: 'Draft Stmt', color: 'var(--depth-l2)', initials: 'DF', ai: true, status: 'pending', statusLabel: '○ Pending' }],
+    current: { label: 'Mgmt Actions', color: 'var(--depth-l1)', initials: 'AP', status: 'ready', statusLabel: '◐ Ready' },
+    subtasks: ['List potential management actions', 'Estimate capital impact of each', 'Map actions to scenarios'],
+    subtasksDone: 0,
+    activity: [
+      { color: 'var(--ready)', text: 'Task marked as <strong>Ready</strong> — no blockers', time: 'Mar 1, 2026 · 5:00 PM' }
+    ]
+  },
+  'draft-statement': {
+    title: 'Draft Capital Adequacy Statement',
+    subtitle: 'Phase 2 — Analysis & Documentation · L2',
+    status: 'pending', statusLabel: '○ Pending',
+    assignee: { initials: 'DF', name: 'DeepFlow Agent', color: 'var(--text-tertiary)' },
+    due: 'Mar 15, 2026', type: '🤖 AI Agent Task',
+    description: '<p>Compile the full ICAAP capital adequacy statement document. Incorporate model results, management actions, risk assessments, and executive summary into a board-ready document.</p>',
+    predecessors: [
+      { label: 'Run Model', color: 'var(--depth-l3)', initials: 'DF', ai: true, status: 'pending', statusLabel: '○ Pending' },
+      { label: 'Mgmt Actions', color: 'var(--depth-l1)', initials: 'AP', status: 'ready', statusLabel: '◐ Ready' }
+    ],
+    successors: [{ label: 'Peer Review', color: 'var(--depth-l1)', initials: 'MB', status: 'pending', statusLabel: '○ Pending' }],
+    current: { label: 'Draft Stmt', color: 'var(--depth-l2)', initials: 'DF', ai: true, status: 'pending', statusLabel: '○ Pending' },
+    subtasks: ['Write Executive Summary', 'Compile Risk Appendices', 'Format for board presentation'],
+    subtasksDone: 0,
+    activity: [
+      { color: '', text: '<strong>DeepFlow</strong> created this task from workflow decomposition', time: 'Feb 26, 2026 · 2:15 PM' }
+    ]
+  },
+  'peer-review': {
+    title: 'Peer Review & QA',
+    subtitle: 'Phase 3 — Review & Approval · L1',
+    status: 'pending', statusLabel: '○ Pending',
+    assignee: { initials: 'MB', name: 'Molly Buckwald', color: '#8b5cf6' },
+    due: 'Mar 18, 2026', type: '👤 Human Task',
+    description: '<p>Conduct independent peer review of the draft ICAAP document. Check for accuracy, completeness, regulatory compliance, and internal consistency. Provide detailed feedback for revision.</p>',
+    predecessors: [{ label: 'Draft Stmt', color: 'var(--depth-l2)', initials: 'DF', ai: true, status: 'pending', statusLabel: '○ Pending' }],
+    successors: [{ label: 'Revisions', color: 'var(--depth-l2)', initials: 'DF', ai: true, status: 'pending', statusLabel: '○ Pending' }],
+    current: { label: 'Peer Review', color: 'var(--depth-l1)', initials: 'MB', status: 'pending', statusLabel: '○ Pending' },
+    subtasks: ['Review methodology section', 'Verify calculations', 'Check regulatory compliance', 'Document feedback'],
+    subtasksDone: 0,
+    activity: [
+      { color: '', text: '<strong>DeepFlow</strong> created this task from workflow decomposition', time: 'Feb 26, 2026 · 2:15 PM' }
+    ]
+  },
+  'revisions': {
+    title: 'Incorporate Review Feedback & Revisions',
+    subtitle: 'Phase 3 — Review & Approval · L2',
+    status: 'pending', statusLabel: '○ Pending',
+    assignee: { initials: 'DF', name: 'DeepFlow Agent', color: 'var(--text-tertiary)' },
+    due: 'Mar 20, 2026', type: '🤖 AI Agent Task',
+    description: '<p>Process all peer review feedback and incorporate revisions into the ICAAP document. Track all changes for audit trail. Flag any feedback that requires human judgement for Ali\'s review.</p>',
+    predecessors: [{ label: 'Peer Review', color: 'var(--depth-l1)', initials: 'MB', status: 'pending', statusLabel: '○ Pending' }],
+    successors: [{ label: 'Board Approval', color: 'var(--depth-l1)', initials: 'AP', status: 'pending', statusLabel: '○ Pending' }],
+    current: { label: 'Revisions', color: 'var(--depth-l2)', initials: 'DF', ai: true, status: 'pending', statusLabel: '○ Pending' },
+    subtasks: ['Parse review comments', 'Apply non-contentious changes', 'Flag items for human review'],
+    subtasksDone: 0,
+    activity: [
+      { color: '', text: '<strong>DeepFlow</strong> created this task from workflow decomposition', time: 'Feb 26, 2026 · 2:15 PM' }
+    ]
+  },
+  'board-approval': {
+    title: 'Board Approval & Sign Off',
+    subtitle: 'Phase 3 — Review & Approval · L1',
+    status: 'pending', statusLabel: '○ Pending',
+    assignee: { initials: 'AP', name: 'Ali Panju', color: '#4f6df5' },
+    due: 'Mar 25, 2026', type: '👤 Human Task',
+    description: '<p>Present the final ICAAP document to the board for approval. Secure sign-off from all required parties. Submit to the PRA as required by the regulatory timeline.</p>',
+    predecessors: [{ label: 'Revisions', color: 'var(--depth-l2)', initials: 'DF', ai: true, status: 'pending', statusLabel: '○ Pending' }],
+    successors: [],
+    current: { label: 'Board Approval', color: 'var(--depth-l1)', initials: 'AP', status: 'pending', statusLabel: '○ Pending' },
+    subtasks: ['Prepare board presentation', 'Schedule board meeting', 'Submit to PRA'],
+    subtasksDone: 0,
+    activity: [
+      { color: '', text: '<strong>DeepFlow</strong> created this task from workflow decomposition', time: 'Feb 26, 2026 · 2:15 PM' }
+    ]
+  },
+  'exec-summary': {
+    title: 'Write Executive Summary',
+    subtitle: 'Phase 2 — Analysis & Documentation · L3',
+    status: 'pending', statusLabel: '○ Pending',
+    assignee: { initials: 'DF', name: 'DeepFlow Agent', color: 'var(--text-tertiary)' },
+    due: 'Mar 14, 2026', type: '🤖 AI Agent Task',
+    description: '<p>Write a concise executive summary for the ICAAP document covering key findings, capital adequacy position, and recommended management actions.</p>',
+    predecessors: [{ label: 'Run Model', color: 'var(--depth-l3)', initials: 'DF', ai: true, status: 'pending', statusLabel: '○ Pending' }],
+    successors: [],
+    current: { label: 'Exec Summary', color: 'var(--depth-l3)', initials: 'DF', ai: true, status: 'pending', statusLabel: '○ Pending' },
+    subtasks: [],
+    subtasksDone: 0,
+    activity: [{ color: '', text: '<strong>DeepFlow</strong> created this task', time: 'Feb 26, 2026 · 2:15 PM' }]
+  },
+  'risk-appendix': {
+    title: 'Compile Risk Appendices',
+    subtitle: 'Phase 2 — Analysis & Documentation · L3',
+    status: 'pending', statusLabel: '○ Pending',
+    assignee: { initials: 'DF', name: 'DeepFlow Agent', color: 'var(--text-tertiary)' },
+    due: 'Mar 14, 2026', type: '🤖 AI Agent Task',
+    description: '<p>Compile detailed risk appendices including risk inventory tables, loss data summaries, scenario parameters, and model methodology notes.</p>',
+    predecessors: [{ label: 'Risk Inventory', color: 'var(--depth-l1)', initials: 'AP', status: 'done', statusLabel: '✓ Done' }],
+    successors: [],
+    current: { label: 'Appendices', color: 'var(--depth-l3)', initials: 'DF', ai: true, status: 'pending', statusLabel: '○ Pending' },
+    subtasks: [],
+    subtasksDone: 0,
+    activity: [{ color: '', text: '<strong>DeepFlow</strong> created this task', time: 'Feb 26, 2026 · 2:15 PM' }]
+  }
+};
+
+// ─── View Switching ───
+document.querySelectorAll('.view-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const view = tab.dataset.view;
+    document.querySelectorAll('.content-view').forEach(v => v.classList.add('hidden'));
+    document.getElementById('view-' + view).classList.remove('hidden');
+  });
+});
+
+// ─── Section Collapse ───
+function toggleSection(header) {
+  header.classList.toggle('collapsed');
+  const body = header.nextElementSibling;
+  if (header.classList.contains('collapsed')) {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    requestAnimationFrame(() => { body.classList.add('collapsed'); });
+  } else {
+    body.classList.remove('collapsed');
+    body.style.maxHeight = body.scrollHeight + 'px';
+    setTimeout(() => { body.style.maxHeight = 'none'; }, 260);
+  }
+}
+
+// ─── Children Collapse ───
+function toggleChildren(expander, className) {
+  expander.classList.toggle('collapsed');
+  const rows = document.querySelectorAll('.' + className);
+  rows.forEach(r => {
+    r.style.display = expander.classList.contains('collapsed') ? 'none' : '';
+  });
+}
+
+// ─── Slide-Over ───
+function openTask(row) {
+  const taskId = row.dataset.task;
+  if (!taskId || !tasks[taskId]) return;
+  const t = tasks[taskId];
+
+  // Highlight row
+  document.querySelectorAll('.task-row').forEach(r => r.classList.remove('selected'));
+  row.classList.add('selected');
+
+  // Populate
+  document.getElementById('soTitle').textContent = t.title;
+  document.getElementById('soSubtitle').textContent = t.subtitle;
+
+  const statusEl = document.getElementById('soStatus');
+  statusEl.className = 'status-pill ' + t.status;
+  statusEl.textContent = t.statusLabel;
+
+  const assigneeEl = document.getElementById('soAssignee');
+  assigneeEl.innerHTML = `<div class="assignee-avatar" style="background:${t.assignee.color};width:20px;height:20px;font-size:9px">${t.assignee.initials}</div> ${t.assignee.name}`;
+
+  document.getElementById('soDue').textContent = t.due;
+  document.getElementById('soType').textContent = t.type;
+  document.getElementById('soDescription').innerHTML = t.description;
+
+  // Mini graph
+  const graphContainer = document.getElementById('soMiniGraph');
+  let graphHTML = '<div class="mini-graph-container">';
+
+  t.predecessors.forEach(p => {
+    graphHTML += `<div class="mini-graph-node">
+      <div class="mini-graph-circle${p.ai ? ' ai' : ''}" style="background:${p.color}">${p.initials}</div>
+      <div class="mini-graph-label">${p.label}</div>
+      <span class="status-pill ${p.status}" style="font-size:9px;padding:1px 6px">${p.statusLabel}</span>
+    </div><div class="mini-graph-arrow">→</div>`;
+  });
+
+  graphHTML += `<div class="mini-graph-node">
+    <div class="mini-graph-circle current${t.current.ai ? ' ai' : ''}" style="background:${t.current.color}">${t.current.initials}</div>
+    <div class="mini-graph-label" style="font-weight:700">${t.current.label}</div>
+    <span class="status-pill ${t.current.status}" style="font-size:9px;padding:1px 6px">${t.current.statusLabel}</span>
+  </div>`;
+
+  t.successors.forEach(s => {
+    graphHTML += `<div class="mini-graph-arrow">→</div><div class="mini-graph-node">
+      <div class="mini-graph-circle${s.ai ? ' ai' : ''}" style="background:${s.color}">${s.initials}</div>
+      <div class="mini-graph-label">${s.label}</div>
+      <span class="status-pill ${s.status}" style="font-size:9px;padding:1px 6px">${s.statusLabel}</span>
+    </div>`;
+  });
+
+  graphHTML += '</div>';
+  graphContainer.innerHTML = graphHTML;
+
+  // AI Chat
+  const chatEl = document.getElementById('soChat');
+  const chatMessages = {
+    'risk-inventory': 'This task is complete. The risk inventory has been refreshed with 47 risk categories across operational, credit, and market risk.',
+    'collect-data': 'This task is complete. Historical loss data for 2019–2025 has been collected and formatted for model input.',
+    'generate-scenarios': 'This task is complete. I generated 3 scenario sets (baseline, adverse, severely adverse) based on PRA guidelines and the refreshed risk inventory.',
+    'model-calibration': 'This task depends on "Collect Historical Loss Data" which is complete. All inputs are available. Would you like me to suggest calibration parameters based on the collected data?',
+    'run-model': 'This task is blocked. Waiting on "Model Calibration & Validation" (currently active) and uses scenarios from the completed "Generate Stress Scenarios" task.',
+    'define-actions': 'This task has no blockers and is ready to start. I can help draft initial management action templates based on the stress scenarios once they\'re finalised.',
+    'draft-statement': 'This task is blocked by two dependencies. "Run Model" is still pending, and "Define Management Actions" is ready but not started.',
+    'peer-review': 'This task is waiting for the draft statement to be completed. I can prepare a review checklist based on PRA regulatory requirements.',
+    'revisions': 'This task will process feedback from peer review. I\'ll automatically categorise feedback as "auto-apply" or "needs human review".',
+    'board-approval': 'This is the final task in the workflow. All preceding tasks must be completed before board presentation can proceed.',
+    'exec-summary': 'This subtask will synthesise model outputs into a concise executive summary for the board.',
+    'risk-appendix': 'This subtask will compile supporting appendices from the risk inventory data.'
+  };
+  chatEl.innerHTML = `<div style="background:var(--bg-hover);border-radius:var(--radius);padding:10px 12px;font-size:12px;color:var(--text-secondary);margin-bottom:10px">
+    <strong style="color:var(--text)">DeepFlow:</strong> ${chatMessages[taskId] || 'How can I help with this task?'}
+  </div>
+  <div class="ai-chat-input">
+    <input type="text" placeholder="Ask about this task…">
+    <button>Send</button>
+  </div>`;
+
+  // Subtasks
+  const subtasksEl = document.getElementById('soSubtasks');
+  if (t.subtasks.length === 0) {
+    subtasksEl.innerHTML = '<div style="font-size:12px;color:var(--text-tertiary);padding:4px 0">No subtasks</div>';
+  } else {
+    subtasksEl.innerHTML = t.subtasks.map((s, i) =>
+      `<div class="so-subtask">
+        <div class="task-checkbox${i < t.subtasksDone ? ' done' : ''}" style="width:16px;height:16px;border-width:1.5px"></div>
+        <span style="font-size:12px${i < t.subtasksDone ? ';text-decoration:line-through;color:var(--text-tertiary)' : ''}">${s}</span>
+      </div>`
+    ).join('');
+  }
+  // Update section title
+  const subtitleEl = subtasksEl.closest('.so-section').querySelector('.so-section-title span');
+  if (subtitleEl) subtitleEl.textContent = `(${t.subtasksDone} of ${t.subtasks.length} done)`;
+
+  // Activity
+  const activityEl = document.getElementById('soActivity');
+  activityEl.innerHTML = t.activity.map(a =>
+    `<div class="activity-item">
+      <div class="activity-dot" style="background:${a.color || 'var(--border)'}"></div>
+      <div>
+        <div class="activity-text">${a.text}</div>
+        <div class="activity-time">${a.time}</div>
+      </div>
+    </div>`
+  ).join('');
+
+  // Show
+  document.getElementById('slideBackdrop').classList.add('open');
+  document.getElementById('slideOver').classList.add('open');
+}
+
+function openTaskByName(name) {
+  const row = document.querySelector(`[data-task="${name}"]`);
+  if (row) openTask(row);
+}
+
+function closeSlideOver() {
+  document.getElementById('slideBackdrop').classList.remove('open');
+  document.getElementById('slideOver').classList.remove('open');
+  document.querySelectorAll('.task-row').forEach(r => r.classList.remove('selected'));
+}
+
+// ─── SO Section Collapse ───
+function toggleSOSection(title) {
+  title.classList.toggle('collapsed');
+  const content = title.nextElementSibling;
+  content.classList.toggle('collapsed');
+}
+
+// ─── Checkbox toggle (visual only) ───
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('task-checkbox')) {
+    e.stopPropagation();
+    e.target.classList.toggle('done');
+  }
+});
+
+// Keyboard shortcut: Escape closes slide-over
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeSlideOver();
+});
+</script>
+</body>
+</html>

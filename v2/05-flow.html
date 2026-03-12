@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flow — DeepFlow Reimagined</title>
+<style>
+  /* ═══════════════════════════════════════════
+     FLOW — Linear meets orchestration
+     Typography-driven. Near-monochrome. Fast.
+     ═══════════════════════════════════════════ */
+
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #fafbfc;
+    --bg-hover: #f3f4f6;
+    --bg-selected: #eef0f2;
+    --bg-sidebar: #f8f9fa;
+    --border: #e5e7eb;
+    --border-light: #f0f1f3;
+    --text-primary: #1a1a2e;
+    --text-secondary: #6b7280;
+    --text-tertiary: #9ca3af;
+    --accent: #0ea5e9;
+    --accent-subtle: #e0f2fe;
+    --status-done: #22c55e;
+    --status-progress: #f59e0b;
+    --status-blocked: #ef4444;
+    --status-ready: #3b82f6;
+    --status-pending: #9ca3af;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --transition: 200ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  html { font-size: 14px; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  /* ── Layout Shell ── */
+  .shell {
+    display: flex;
+    height: 100vh;
+    width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 220px;
+    min-width: 220px;
+    border-right: 1px solid var(--border);
+    background: var(--bg-sidebar);
+    display: flex;
+    flex-direction: column;
+    padding: 16px 0;
+    user-select: none;
+    transition: width var(--transition), min-width var(--transition);
+  }
+
+  .sidebar-brand {
+    padding: 0 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sidebar-brand svg { width: 20px; height: 20px; color: var(--accent); flex-shrink: 0; }
+  .sidebar-brand span {
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.3px;
+    color: var(--text-primary);
+  }
+
+  .sidebar-section {
+    padding: 0 8px;
+    margin-bottom: 4px;
+  }
+  .sidebar-section-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 8px 8px 4px;
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-secondary);
+    transition: all 120ms ease;
+    position: relative;
+  }
+  .sidebar-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+  .sidebar-item.active { background: var(--bg-selected); color: var(--text-primary); font-weight: 500; }
+  .sidebar-item svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.6; }
+  .sidebar-item.active svg { opacity: 1; }
+  .sidebar-item .badge {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    background: var(--bg-hover);
+    padding: 1px 6px;
+    border-radius: 8px;
+  }
+  .sidebar-item .kbd {
+    margin-left: auto;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    font-family: var(--font);
+    opacity: 0;
+    transition: opacity 120ms;
+  }
+  .sidebar-item:hover .kbd { opacity: 1; }
+
+  .sidebar-tree {
+    padding: 0 8px;
+  }
+  .tree-project {
+    padding: 5px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 120ms ease;
+  }
+  .tree-project:hover { background: var(--bg-hover); color: var(--text-primary); }
+  .tree-project.active { color: var(--text-primary); font-weight: 500; }
+  .tree-dot {
+    width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+  }
+  .tree-project .count {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .avatar-sm {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .sidebar-footer .name { font-size: 13px; font-weight: 500; }
+  .sidebar-footer .role { font-size: 11px; color: var(--text-tertiary); }
+
+  /* ── Main Content ── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ── Top Bar ── */
+  .topbar {
+    height: 48px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .topbar-breadcrumb {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .topbar-breadcrumb .sep { color: var(--border); }
+  .topbar-breadcrumb .current { color: var(--text-primary); font-weight: 500; }
+  .topbar-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .topbar-btn {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: var(--font);
+    transition: all 120ms;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .topbar-btn:hover { background: var(--bg-hover); border-color: var(--border); }
+  .topbar-btn.active { background: var(--bg-selected); border-color: var(--border); color: var(--text-primary); font-weight: 500; }
+  .topbar-btn svg { width: 14px; height: 14px; }
+
+  /* ── View Tabs ── */
+  .view-tabs {
+    display: flex;
+    gap: 0;
+    height: 36px;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .view-tab {
+    padding: 0 12px;
+    font-size: 13px;
+    color: var(--text-tertiary);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 120ms;
+    font-family: var(--font);
+    background: none;
+    border-top: none; border-left: none; border-right: none;
+    position: relative;
+    top: 1px;
+  }
+  .view-tab:hover { color: var(--text-secondary); }
+  .view-tab.active {
+    color: var(--text-primary);
+    border-bottom-color: var(--text-primary);
+    font-weight: 500;
+  }
+  .view-tab svg { width: 14px; height: 14px; }
+
+  /* ── Content Area ── */
+  .content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .view {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 200ms ease, transform 200ms ease;
+    pointer-events: none;
+    overflow-y: auto;
+  }
+  .view.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* ══════════════════
+     VIEW 1: ISSUES LIST
+     ══════════════════ */
+  .issues-list {
+    padding: 0;
+  }
+  .issues-header {
+    padding: 16px 24px 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .issues-count {
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+  .issues-filter {
+    margin-left: auto;
+    display: flex;
+    gap: 4px;
+  }
+  .filter-chip {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: all 120ms;
+    font-family: var(--font);
+    background: none;
+    border: none;
+  }
+  .filter-chip:hover { color: var(--text-secondary); background: var(--bg-hover); }
+  .filter-chip.active { color: var(--text-primary); background: var(--bg-selected); font-weight: 500; }
+
+  .issue-row {
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    height: 40px;
+    border-bottom: 1px solid var(--border-light);
+    cursor: pointer;
+    transition: background 80ms ease;
+    gap: 12px;
+    position: relative;
+  }
+  .issue-row:hover { background: var(--bg-hover); }
+  .issue-row.selected {
+    background: var(--bg-selected);
+  }
+  .issue-row.selected::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--accent);
+  }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .status-dot.done { background: var(--status-done); }
+  .status-dot.progress { background: var(--status-progress); }
+  .status-dot.blocked { background: var(--status-blocked); }
+  .status-dot.ready { background: var(--status-ready); }
+  .status-dot.pending { background: var(--status-pending); }
+
+  .priority-indicator {
+    width: 14px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+  }
+  .priority-bar {
+    width: 3px;
+    border-radius: 1px;
+  }
+  .priority-urgent .priority-bar { height: 12px; background: var(--status-blocked); }
+  .priority-high .priority-bar { height: 10px; background: var(--status-progress); }
+  .priority-medium .priority-bar { height: 7px; background: var(--status-ready); }
+  .priority-low .priority-bar { height: 4px; background: var(--text-tertiary); }
+
+  .issue-id {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+    width: 52px;
+    flex-shrink: 0;
+  }
+
+  .issue-title {
+    font-size: 13px;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 400;
+  }
+  .issue-row.selected .issue-title { font-weight: 500; }
+
+  .issue-labels {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .issue-label {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    color: var(--text-tertiary);
+    white-space: nowrap;
+  }
+
+  .issue-assignee {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    font-size: 9px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: white;
+  }
+
+  .issue-due {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    width: 56px;
+    text-align: right;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Keyboard hint */
+  .keyboard-hint {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text-primary);
+    color: white;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    display: flex;
+    gap: 16px;
+    z-index: 100;
+    opacity: 0.9;
+  }
+  .keyboard-hint kbd {
+    background: rgba(255,255,255,0.15);
+    padding: 1px 5px;
+    border-radius: 2px;
+    font-family: var(--font);
+    font-size: 11px;
+    margin-right: 4px;
+  }
+
+  /* ══════════════════
+     VIEW 2: TASK DETAIL
+     ══════════════════ */
+  .task-detail {
+    display: flex;
+    overflow-y: auto;
+    height: 100%;
+  }
+  .task-detail-main {
+    flex: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  .task-detail-gutter {
+    width: 260px;
+    flex-shrink: 0;
+    border-left: 1px solid var(--border);
+    padding: 40px 20px;
+  }
+
+  .task-back {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 20px;
+    transition: color 120ms;
+  }
+  .task-back:hover { color: var(--text-primary); }
+  .task-back svg { width: 12px; height: 12px; }
+
+  .task-title-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .task-title-row .status-dot { margin-top: 10px; }
+  .task-title {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.3;
+    color: var(--text-primary);
+  }
+
+  .task-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+  .task-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-tertiary); }
+
+  .task-description {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+  }
+  .task-description p { margin-bottom: 12px; }
+
+  /* Dependencies */
+  .task-section-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-tertiary);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .dep-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--accent);
+    transition: opacity 120ms;
+  }
+  .dep-item:hover { opacity: 0.7; }
+  .dep-item .status-dot { width: 6px; height: 6px; }
+
+  /* AI Chat Thread */
+  .chat-thread {
+    margin-top: 40px;
+  }
+  .chat-message {
+    padding: 16px 0;
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    gap: 12px;
+  }
+  .chat-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    flex-shrink: 0;
+    color: white;
+  }
+  .chat-body { flex: 1; }
+  .chat-author {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .chat-author .time { font-weight: 400; color: var(--text-tertiary); }
+  .chat-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+  .chat-text .thought {
+    background: #fffbeb;
+    border-left: 2px solid var(--status-progress);
+    padding: 8px 12px;
+    margin: 8px 0;
+    font-size: 12px;
+    border-radius: 0 4px 4px 0;
+    color: var(--text-secondary);
+  }
+
+  .chat-input-row {
+    margin-top: 16px;
+    display: flex;
+    gap: 8px;
+  }
+  .chat-input {
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-family: var(--font);
+    color: var(--text-primary);
+    background: white;
+    outline: none;
+    transition: border-color 120ms;
+  }
+  .chat-input:focus { border-color: var(--accent); }
+  .chat-input::placeholder { color: var(--text-tertiary); }
+
+  /* Gutter properties */
+  .gutter-section {
+    margin-bottom: 24px;
+  }
+  .gutter-label {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-bottom: 4px;
+  }
+  .gutter-value {
+    font-size: 13px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .gutter-value .status-dot { width: 6px; height: 6px; }
+
+  /* Activity */
+  .activity-item {
+    display: flex;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+  .activity-item .action { color: var(--text-secondary); }
+  .activity-item .who { font-weight: 500; color: var(--text-primary); }
+
+  /* ══════════════════
+     VIEW 3: GRAPH
+     ══════════════════ */
+  .graph-view {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    overflow: hidden;
+    padding: 40px;
+  }
+  .graph-canvas {
+    position: relative;
+    width: 840px;
+    height: 440px;
+  }
+
+  /* SVG lines */
+  .graph-canvas svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .graph-canvas svg path {
+    fill: none;
+    stroke: #d1d5db;
+    stroke-width: 1;
+    transition: stroke 200ms;
+  }
+  .graph-canvas svg path.highlighted {
+    stroke: var(--accent);
+    stroke-width: 1.5;
+  }
+
+  /* Graph nodes */
+  .graph-node {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 200ms cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 200ms;
+    z-index: 2;
+  }
+  .graph-node:hover {
+    transform: scale(1.3);
+    z-index: 10;
+  }
+  .graph-node .node-inner {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: white;
+    transition: all 200ms;
+  }
+  .graph-node .node-label {
+    position: absolute;
+    top: 42px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 200ms;
+    pointer-events: none;
+    background: var(--bg);
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 500;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .graph-node:hover .node-label {
+    opacity: 1;
+  }
+  .graph-node.hex .node-inner {
+    border-radius: 4px;
+    transform: rotate(0deg);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+
+  /* ══════════════════
+     COMMAND PALETTE
+     ══════════════════ */
+  .cmd-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    padding-top: 120px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms;
+    backdrop-filter: blur(2px);
+  }
+  .cmd-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .cmd-palette {
+    width: 560px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+    overflow: hidden;
+    transform: translateY(-8px) scale(0.98);
+    transition: transform 150ms cubic-bezier(0.25, 0.1, 0.25, 1);
+    max-height: 400px;
+    display: flex;
+    flex-direction: column;
+  }
+  .cmd-overlay.open .cmd-palette {
+    transform: translateY(0) scale(1);
+  }
+  .cmd-input-row {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--border);
+    gap: 8px;
+  }
+  .cmd-input-row svg { width: 16px; height: 16px; color: var(--text-tertiary); flex-shrink: 0; }
+  .cmd-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 14px 0;
+    font-size: 14px;
+    font-family: var(--font);
+    color: var(--text-primary);
+    background: transparent;
+  }
+  .cmd-input::placeholder { color: var(--text-tertiary); }
+  .cmd-results {
+    overflow-y: auto;
+    padding: 8px;
+  }
+  .cmd-result {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 80ms;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .cmd-result:hover, .cmd-result.selected { background: var(--bg-hover); color: var(--text-primary); }
+  .cmd-result .cmd-icon {
+    width: 28px; height: 28px;
+    border-radius: 4px;
+    background: var(--bg-hover);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .cmd-result .cmd-icon svg { width: 14px; height: 14px; color: var(--text-tertiary); }
+  .cmd-result .cmd-shortcut {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+  .cmd-section-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 8px 10px 4px;
+  }
+
+  /* ══════════════════
+     UTILITY
+     ══════════════════ */
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+  /* Level badge */
+  .level-badge {
+    font-size: 9px;
+    font-weight: 600;
+    padding: 1px 4px;
+    border-radius: 2px;
+    color: var(--text-tertiary);
+    border: 1px solid var(--border);
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+
+  /* Shape: hexagon node indicator for AI tasks in list */
+  .shape-hex {
+    width: 8px; height: 8px;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    flex-shrink: 0;
+  }
+
+  /* Animation for view transitions */
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-in { animation: fadeSlideIn 200ms ease forwards; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <!-- ════════ SIDEBAR ════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      <span>DeepFlow</span>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-item" onclick="showView('issues')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Inbox
+        <span class="badge">3</span>
+      </div>
+      <div class="sidebar-item" onclick="showView('issues')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+        My Tasks
+        <span class="badge">12</span>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Projects</div>
+    </div>
+
+    <div class="sidebar-tree" id="projectTree">
+      <div class="tree-project active" onclick="selectProject(this, 'ICAAP Document')">
+        <div class="tree-dot" style="background: var(--status-ready)"></div>
+        ICAAP Document
+        <span class="count">23</span>
+      </div>
+      <div class="tree-project" onclick="selectProject(this, 'Paper Airplane')">
+        <div class="tree-dot" style="background: var(--status-done)"></div>
+        Paper Airplane Design
+        <span class="count">14</span>
+      </div>
+      <div class="tree-project" onclick="selectProject(this, 'Very Deep')">
+        <div class="tree-dot" style="background: var(--status-progress)"></div>
+        Very Deep
+        <span class="count">90</span>
+      </div>
+      <div class="tree-project" onclick="selectProject(this, 'Q1 Strategy')">
+        <div class="tree-dot" style="background: var(--status-pending)"></div>
+        Q1 Strategy Review
+        <span class="count">8</span>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="avatar-sm" style="background: #6366f1;">AP</div>
+      <div>
+        <div class="name">Ali Panju</div>
+        <div class="role">Owner</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ════════ MAIN ════════ -->
+  <div class="main">
+    <!-- Top bar -->
+    <div class="topbar">
+      <div class="topbar-breadcrumb">
+        <span>Projects</span>
+        <span class="sep">/</span>
+        <span class="current" id="projectName">ICAAP Document</span>
+        <span class="level-badge" id="levelBadge">L1</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="topbar-btn" onclick="toggleCmdPalette()" title="⌘K">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <span style="font-size:11px;color:var(--text-tertiary)">⌘K</span>
+        </button>
+        <button class="topbar-btn" title="Filter">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- View tabs -->
+    <div class="view-tabs">
+      <button class="view-tab active" data-view="issues" onclick="showView('issues')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Issues
+      </button>
+      <button class="view-tab" data-view="detail" onclick="showView('detail')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Detail
+      </button>
+      <button class="view-tab" data-view="graph" onclick="showView('graph')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Graph
+      </button>
+    </div>
+
+    <div class="content">
+      <!-- ═══ VIEW: ISSUES LIST ═══ -->
+      <div class="view active" id="view-issues">
+        <div class="issues-header">
+          <span class="issues-count">23 tasks</span>
+          <div class="issues-filter">
+            <button class="filter-chip active">All</button>
+            <button class="filter-chip">Active</button>
+            <button class="filter-chip">Blocked</button>
+            <button class="filter-chip">Done</button>
+          </div>
+        </div>
+        <div class="issues-list" id="issuesList"></div>
+      </div>
+
+      <!-- ═══ VIEW: TASK DETAIL ═══ -->
+      <div class="view" id="view-detail">
+        <div class="task-detail">
+          <div class="task-detail-main">
+            <div class="task-back" onclick="showView('issues')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+              Back to issues
+            </div>
+            <div class="task-title-row">
+              <div class="status-dot progress" style="width:10px;height:10px;margin-top:8px;"></div>
+              <h1 class="task-title" id="detailTitle">Risk Assessment & Materiality Analysis</h1>
+            </div>
+            <div class="task-meta">
+              <span>DF-7</span>
+              <div class="dot"></div>
+              <span>Created 3 days ago by Ali Panju</span>
+              <div class="dot"></div>
+              <span>Updated 2h ago</span>
+            </div>
+            <div class="task-description">
+              <p>Conduct a comprehensive risk assessment covering all material risk categories for the ICAAP document. This includes credit risk, market risk, operational risk, liquidity risk, and concentration risk.</p>
+              <p>The assessment should evaluate both current exposures and forward-looking scenarios under the base case, adverse case, and severe adverse case. Output should include a materiality matrix and risk appetite statement alignment check.</p>
+            </div>
+
+            <div style="margin-bottom: 32px;">
+              <div class="task-section-title">Dependencies</div>
+              <div class="dep-item">
+                <div class="status-dot done" style="width:6px;height:6px;"></div>
+                DF-3 · Data Collection & Validation
+              </div>
+              <div class="dep-item">
+                <div class="status-dot done" style="width:6px;height:6px;"></div>
+                DF-5 · Capital Resource Identification
+              </div>
+              <div class="dep-item">
+                <div class="status-dot progress" style="width:6px;height:6px;"></div>
+                DF-6 · Stress Testing Framework Setup
+              </div>
+            </div>
+
+            <div style="margin-bottom: 32px;">
+              <div class="task-section-title">Blocked by this</div>
+              <div class="dep-item">
+                <div class="status-dot pending" style="width:6px;height:6px;"></div>
+                DF-11 · Capital Adequacy Calculation
+              </div>
+              <div class="dep-item">
+                <div class="status-dot pending" style="width:6px;height:6px;"></div>
+                DF-15 · ICAAP Narrative Drafting
+              </div>
+            </div>
+
+            <!-- AI Chat Thread -->
+            <div class="chat-thread">
+              <div class="task-section-title">Thread</div>
+              <div class="chat-message">
+                <div class="chat-avatar" style="background: var(--accent);">DF</div>
+                <div class="chat-body">
+                  <div class="chat-author">DeepFlow AI <span class="time">2h ago</span></div>
+                  <div class="chat-text">
+                    <div class="thought">
+                      <strong>Thinking:</strong> Analysing the risk categories from the data collection output. Credit risk and operational risk appear to have the highest materiality scores based on the preliminary data.
+                    </div>
+                    I've completed the initial risk identification phase. Here's what I found:
+                    <br><br>
+                    <strong>High materiality:</strong> Credit risk (score: 8.2), Operational risk (7.9)<br>
+                    <strong>Medium:</strong> Liquidity risk (5.4), Market risk (5.1)<br>
+                    <strong>Low:</strong> Concentration risk (3.2)
+                    <br><br>
+                    Ready to proceed with the detailed assessment. Should I use the standard Basel III framework or the enhanced internal methodology?
+                  </div>
+                </div>
+              </div>
+              <div class="chat-message">
+                <div class="chat-avatar" style="background: #6366f1;">AP</div>
+                <div class="chat-body">
+                  <div class="chat-author">Ali Panju <span class="time">1h ago</span></div>
+                  <div class="chat-text">Use the enhanced internal methodology. Also flag any risks that changed category vs last year's ICAAP.</div>
+                </div>
+              </div>
+              <div class="chat-input-row">
+                <input class="chat-input" placeholder="Reply to thread… (AI will respond)" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Right gutter -->
+          <div class="task-detail-gutter">
+            <div class="gutter-section">
+              <div class="gutter-label">Status</div>
+              <div class="gutter-value"><div class="status-dot progress"></div> In Progress</div>
+            </div>
+            <div class="gutter-section">
+              <div class="gutter-label">Priority</div>
+              <div class="gutter-value">
+                <div style="width:3px;height:10px;background:var(--status-progress);border-radius:1px;"></div>
+                High
+              </div>
+            </div>
+            <div class="gutter-section">
+              <div class="gutter-label">Assignee</div>
+              <div class="gutter-value">
+                <div class="avatar-sm" style="background:#6366f1;width:20px;height:20px;font-size:8px;">AP</div>
+                Ali Panju
+              </div>
+            </div>
+            <div class="gutter-section">
+              <div class="gutter-label">Executor</div>
+              <div class="gutter-value">
+                <div class="avatar-sm" style="background:var(--accent);width:20px;height:20px;font-size:8px;">DF</div>
+                DeepFlow AI
+              </div>
+            </div>
+            <div class="gutter-section">
+              <div class="gutter-label">Due Date</div>
+              <div class="gutter-value">Mar 15, 2026</div>
+            </div>
+            <div class="gutter-section">
+              <div class="gutter-label">Level</div>
+              <div class="gutter-value"><span class="level-badge">L2</span> Risk Analysis</div>
+            </div>
+            <div class="gutter-section">
+              <div class="gutter-label">Version</div>
+              <div class="gutter-value">V3 / 3</div>
+            </div>
+
+            <div style="margin-top: 32px;">
+              <div class="task-section-title">Activity</div>
+              <div class="activity-item"><span class="who">Ali</span><span class="action">updated description</span><span>· 1h</span></div>
+              <div class="activity-item"><span class="who">DeepFlow</span><span class="action">started execution</span><span>· 2h</span></div>
+              <div class="activity-item"><span class="who">Ali</span><span class="action">assigned to DeepFlow AI</span><span>· 3h</span></div>
+              <div class="activity-item"><span class="who">System</span><span class="action">dependency DF-5 completed</span><span>· 1d</span></div>
+              <div class="activity-item"><span class="who">Ali</span><span class="action">created this task</span><span>· 3d</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ VIEW: GRAPH ═══ -->
+      <div class="view" id="view-graph">
+        <div class="graph-view">
+          <div class="graph-canvas" id="graphCanvas">
+            <svg id="graphSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- ═══ COMMAND PALETTE ═══ -->
+<div class="cmd-overlay" id="cmdOverlay" onclick="closeCmdPalette(event)">
+  <div class="cmd-palette" onclick="event.stopPropagation()">
+    <div class="cmd-input-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="cmd-input" id="cmdInput" placeholder="Search tasks, projects, actions…" autofocus />
+    </div>
+    <div class="cmd-results" id="cmdResults">
+      <div class="cmd-section-label">Quick actions</div>
+      <div class="cmd-result selected">
+        <div class="cmd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
+        Show graph view
+        <span class="cmd-shortcut">G</span>
+      </div>
+      <div class="cmd-result">
+        <div class="cmd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></div>
+        Filter: blocked tasks
+        <span class="cmd-shortcut">F B</span>
+      </div>
+      <div class="cmd-result">
+        <div class="cmd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></div>
+        Assign task to Molly Buckwald
+      </div>
+      <div class="cmd-section-label">Tasks</div>
+      <div class="cmd-result">
+        <div class="cmd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        DF-7 · Risk Assessment &amp; Materiality Analysis
+        <span class="cmd-shortcut">↵</span>
+      </div>
+      <div class="cmd-result">
+        <div class="cmd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        DF-11 · Capital Adequacy Calculation
+        <span class="cmd-shortcut">↵</span>
+      </div>
+      <div class="cmd-section-label">Projects</div>
+      <div class="cmd-result">
+        <div class="cmd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+        ICAAP Document
+      </div>
+      <div class="cmd-result">
+        <div class="cmd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+        Paper Airplane Design
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ KEYBOARD HINT ═══ -->
+<div class="keyboard-hint" id="keyboardHint">
+  <span><kbd>j</kbd><kbd>k</kbd> navigate</span>
+  <span><kbd>↵</kbd> open</span>
+  <span><kbd>g</kbd> graph</span>
+  <span><kbd>⌘</kbd><kbd>k</kbd> search</span>
+</div>
+
+<script>
+// ════════════════════════════════════════
+// DATA
+// ════════════════════════════════════════
+const tasks = [
+  { id: 'DF-1',  title: 'ICAAP Scope Definition & Governance',          status: 'done',     priority: 'medium', assignee: 'AP', assigneeColor: '#6366f1', due: 'Feb 28',  type: 'human', labels: ['L1'] },
+  { id: 'DF-2',  title: 'Business Model & Strategy Summary',            status: 'done',     priority: 'low',    assignee: 'DF', assigneeColor: '#0ea5e9', due: 'Mar 1',   type: 'ai',    labels: ['L1'] },
+  { id: 'DF-3',  title: 'Data Collection & Validation',                 status: 'done',     priority: 'high',   assignee: 'MB', assigneeColor: '#8b5cf6', due: 'Mar 3',   type: 'human', labels: ['L2'] },
+  { id: 'DF-4',  title: 'Regulatory Requirements Mapping',              status: 'done',     priority: 'medium', assignee: 'DF', assigneeColor: '#0ea5e9', due: 'Mar 3',   type: 'ai',    labels: ['L2'] },
+  { id: 'DF-5',  title: 'Capital Resource Identification',              status: 'done',     priority: 'high',   assignee: 'AP', assigneeColor: '#6366f1', due: 'Mar 5',   type: 'human', labels: ['L2'] },
+  { id: 'DF-6',  title: 'Stress Testing Framework Setup',               status: 'progress', priority: 'urgent', assignee: 'DF', assigneeColor: '#0ea5e9', due: 'Mar 10',  type: 'ai',    labels: ['L2'] },
+  { id: 'DF-7',  title: 'Risk Assessment & Materiality Analysis',       status: 'progress', priority: 'high',   assignee: 'AP', assigneeColor: '#6366f1', due: 'Mar 15',  type: 'human', labels: ['L2','critical'] },
+  { id: 'DF-8',  title: 'Credit Risk Deep-Dive',                        status: 'progress', priority: 'high',   assignee: 'MB', assigneeColor: '#8b5cf6', due: 'Mar 14',  type: 'human', labels: ['L3'] },
+  { id: 'DF-9',  title: 'Operational Risk Assessment',                  status: 'ready',    priority: 'medium', assignee: 'DF', assigneeColor: '#0ea5e9', due: 'Mar 16',  type: 'ai',    labels: ['L3'] },
+  { id: 'DF-10', title: 'Market Risk Evaluation',                       status: 'ready',    priority: 'medium', assignee: 'DF', assigneeColor: '#0ea5e9', due: 'Mar 16',  type: 'ai',    labels: ['L3'] },
+  { id: 'DF-11', title: 'Capital Adequacy Calculation',                 status: 'pending',  priority: 'urgent', assignee: '',   assigneeColor: '#9ca3af', due: 'Mar 18',  type: 'human', labels: ['L2','blocked'] },
+  { id: 'DF-12', title: 'Scenario Analysis — Base Case',                status: 'pending',  priority: 'high',   assignee: 'DF', assigneeColor: '#0ea5e9', due: 'Mar 19',  type: 'ai',    labels: ['L3'] },
+  { id: 'DF-13', title: 'Scenario Analysis — Adverse Case',             status: 'pending',  priority: 'high',   assignee: 'DF', assigneeColor: '#0ea5e9', due: 'Mar 19',  type: 'ai',    labels: ['L3'] },
+  { id: 'DF-14', title: 'Scenario Analysis — Severe Adverse',           status: 'pending',  priority: 'urgent', assignee: 'DF', assigneeColor: '#0ea5e9', due: 'Mar 20',  type: 'ai',    labels: ['L3'] },
+  { id: 'DF-15', title: 'ICAAP Narrative Drafting',                     status: 'pending',  priority: 'medium', assignee: '',   assigneeColor: '#9ca3af', due: 'Mar 22',  type: 'human', labels: ['L1','blocked'] },
+  { id: 'DF-16', title: 'Governance Review & Sign-Off',                 status: 'pending',  priority: 'low',    assignee: 'AP', assigneeColor: '#6366f1', due: 'Mar 25',  type: 'human', labels: ['L1'] },
+  { id: 'DF-17', title: 'Board Presentation Preparation',               status: 'pending',  priority: 'low',    assignee: '',   assigneeColor: '#9ca3af', due: 'Mar 27',  type: 'human', labels: ['L1'] },
+  { id: 'DF-18', title: 'Concentration Risk Analysis',                  status: 'ready',    priority: 'medium', assignee: 'MB', assigneeColor: '#8b5cf6', due: 'Mar 15',  type: 'human', labels: ['L3'] },
+  { id: 'DF-19', title: 'Liquidity Risk Buffer Calculation',            status: 'pending',  priority: 'high',   assignee: 'DF', assigneeColor: '#0ea5e9', due: 'Mar 17',  type: 'ai',    labels: ['L3'] },
+  { id: 'DF-20', title: 'Internal Validation of Models',                status: 'pending',  priority: 'medium', assignee: 'AP', assigneeColor: '#6366f1', due: 'Mar 20',  type: 'human', labels: ['L2'] },
+  { id: 'DF-21', title: 'Peer Comparison Benchmarking',                 status: 'ready',    priority: 'low',    assignee: 'DF', assigneeColor: '#0ea5e9', due: 'Mar 18',  type: 'ai',    labels: ['L2'] },
+  { id: 'DF-22', title: 'Recovery Plan Integration',                    status: 'pending',  priority: 'high',   assignee: '',   assigneeColor: '#9ca3af', due: 'Mar 24',  type: 'human', labels: ['L1'] },
+  { id: 'DF-23', title: 'Final QA & Submission Package',                status: 'pending',  priority: 'urgent', assignee: '',   assigneeColor: '#9ca3af', due: 'Mar 28',  type: 'human', labels: ['L1'] },
+];
+
+// ════════════════════════════════════════
+// ISSUES LIST RENDER
+// ════════════════════════════════════════
+let selectedIdx = 6; // DF-7 selected by default
+
+function renderIssues() {
+  const list = document.getElementById('issuesList');
+  list.innerHTML = tasks.map((t, i) => {
+    const isAI = t.type === 'ai';
+    const statusDot = isAI
+      ? `<div class="shape-hex ${t.status}" style="background: var(--status-${t.status});"></div>`
+      : `<div class="status-dot ${t.status}"></div>`;
+    const labelsHtml = t.labels.map(l => `<span class="issue-label">${l}</span>`).join('');
+    return `<div class="issue-row${i === selectedIdx ? ' selected' : ''}" data-idx="${i}" onclick="selectIssue(${i})" ondblclick="openDetail(${i})">
+      ${statusDot}
+      <div class="priority-indicator priority-${t.priority}"><div class="priority-bar"></div></div>
+      <span class="issue-id">${t.id}</span>
+      <span class="issue-title">${t.title}</span>
+      <div class="issue-labels">${labelsHtml}</div>
+      ${t.assignee ? `<div class="issue-assignee" style="background:${t.assigneeColor}">${t.assignee}</div>` : '<div style="width:22px"></div>'}
+      <span class="issue-due">${t.due}</span>
+    </div>`;
+  }).join('');
+}
+
+function selectIssue(idx) {
+  selectedIdx = idx;
+  document.querySelectorAll('.issue-row').forEach((r, i) => {
+    r.classList.toggle('selected', i === idx);
+  });
+}
+
+function openDetail(idx) {
+  selectedIdx = idx;
+  showView('detail');
+}
+
+// ════════════════════════════════════════
+// VIEW SWITCHING
+// ════════════════════════════════════════
+let currentView = 'issues';
+
+function showView(viewId) {
+  currentView = viewId;
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t.dataset.view === viewId));
+  const el = document.getElementById('view-' + viewId);
+  if (el) {
+    el.classList.add('active');
+  }
+  // Show/hide keyboard hint
+  document.getElementById('keyboardHint').style.display = viewId === 'issues' ? 'flex' : 'none';
+  // Render graph if switching to graph
+  if (viewId === 'graph') renderGraph();
+}
+
+// ════════════════════════════════════════
+// GRAPH RENDERING
+// ════════════════════════════════════════
+const graphNodes = [
+  // L1 nodes (left)
+  { id: 0, x: 30,  y: 60,  status: 'done',     label: 'Scope Definition',         type: 'human' },
+  { id: 1, x: 30,  y: 180, status: 'done',     label: 'Business Model Summary',   type: 'ai' },
+  // L2 nodes
+  { id: 2, x: 180, y: 20,  status: 'done',     label: 'Data Collection',          type: 'human' },
+  { id: 3, x: 180, y: 100, status: 'done',     label: 'Regulatory Mapping',       type: 'ai' },
+  { id: 4, x: 180, y: 180, status: 'done',     label: 'Capital Resources',        type: 'human' },
+  { id: 5, x: 180, y: 260, status: 'progress', label: 'Stress Testing Setup',     type: 'ai' },
+  // L2 central
+  { id: 6, x: 360, y: 100, status: 'progress', label: 'Risk Assessment',          type: 'human' },
+  { id: 7, x: 360, y: 220, status: 'ready',    label: 'Peer Benchmarking',        type: 'ai' },
+  // L3 nodes
+  { id: 8,  x: 500, y: 20,  status: 'progress', label: 'Credit Risk',             type: 'human' },
+  { id: 9,  x: 500, y: 90,  status: 'ready',    label: 'Operational Risk',        type: 'ai' },
+  { id: 10, x: 500, y: 160, status: 'ready',    label: 'Market Risk',             type: 'ai' },
+  { id: 11, x: 500, y: 230, status: 'ready',    label: 'Concentration Risk',      type: 'human' },
+  { id: 12, x: 500, y: 300, status: 'pending',  label: 'Liquidity Risk Buffer',   type: 'ai' },
+  // Scenarios
+  { id: 13, x: 640, y: 60,  status: 'pending',  label: 'Base Case',               type: 'ai' },
+  { id: 14, x: 640, y: 140, status: 'pending',  label: 'Adverse Case',            type: 'ai' },
+  { id: 15, x: 640, y: 220, status: 'pending',  label: 'Severe Adverse',          type: 'ai' },
+  // Final
+  { id: 16, x: 640, y: 340, status: 'pending',  label: 'Capital Adequacy',        type: 'human' },
+  { id: 17, x: 780, y: 100, status: 'pending',  label: 'Model Validation',        type: 'human' },
+  { id: 18, x: 780, y: 220, status: 'pending',  label: 'ICAAP Narrative',         type: 'human' },
+  { id: 19, x: 780, y: 340, status: 'pending',  label: 'Recovery Plan',           type: 'human' },
+];
+
+const graphEdges = [
+  [0, 2], [0, 3], [1, 3], [1, 4],
+  [2, 6], [3, 6], [4, 6], [5, 6],
+  [4, 7],
+  [6, 8], [6, 9], [6, 10], [6, 11], [6, 12],
+  [8, 13], [9, 13], [8, 14], [9, 14], [10, 14],
+  [8, 15], [9, 15], [10, 15], [11, 15], [12, 15],
+  [13, 16], [14, 16], [15, 16],
+  [13, 17], [14, 17], [16, 17],
+  [17, 18], [16, 18], [7, 18],
+  [16, 19], [18, 19],
+];
+
+const statusColors = {
+  done: '#22c55e',
+  progress: '#f59e0b',
+  blocked: '#ef4444',
+  ready: '#3b82f6',
+  pending: '#9ca3af',
+};
+
+let hoveredNode = null;
+
+function renderGraph() {
+  const canvas = document.getElementById('graphCanvas');
+  const svg = document.getElementById('graphSvg');
+  // Clear old nodes (not SVG)
+  canvas.querySelectorAll('.graph-node').forEach(n => n.remove());
+
+  // Offset for centering
+  const ox = 20, oy = 40;
+
+  // Draw edges as smooth cubic beziers
+  let paths = '';
+  graphEdges.forEach(([from, to]) => {
+    const a = graphNodes[from], b = graphNodes[to];
+    const ax = a.x + ox + 18, ay = a.y + oy + 18;
+    const bx = b.x + ox + 18, by = b.y + oy + 18;
+    const dx = (bx - ax) * 0.45;
+    paths += `<path d="M${ax},${ay} C${ax+dx},${ay} ${bx-dx},${by} ${bx},${by}" data-from="${from}" data-to="${to}" />`;
+  });
+  svg.innerHTML = paths;
+
+  // Draw nodes
+  graphNodes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'graph-node' + (n.type === 'ai' ? ' hex' : '');
+    el.style.left = (n.x + ox) + 'px';
+    el.style.top = (n.y + oy) + 'px';
+    el.innerHTML = `<div class="node-inner" style="background:${statusColors[n.status]}">${n.type === 'ai' ? 'AI' : ''}</div><div class="node-label">${n.label}</div>`;
+
+    el.addEventListener('mouseenter', () => highlightConnected(n.id, true));
+    el.addEventListener('mouseleave', () => highlightConnected(n.id, false));
+    el.addEventListener('click', () => {
+      // Find matching task
+      const matchIdx = tasks.findIndex(t => t.title.toLowerCase().includes(n.label.toLowerCase().split(' ')[0]));
+      if (matchIdx >= 0) {
+        selectedIdx = matchIdx;
+        showView('detail');
+      }
+    });
+
+    canvas.appendChild(el);
+  });
+}
+
+function highlightConnected(nodeId, on) {
+  document.querySelectorAll('#graphSvg path').forEach(p => {
+    const from = parseInt(p.dataset.from);
+    const to = parseInt(p.dataset.to);
+    if (on && (from === nodeId || to === nodeId)) {
+      p.classList.add('highlighted');
+    } else {
+      p.classList.remove('highlighted');
+    }
+  });
+}
+
+// ════════════════════════════════════════
+// COMMAND PALETTE
+// ════════════════════════════════════════
+function toggleCmdPalette() {
+  const overlay = document.getElementById('cmdOverlay');
+  const isOpen = overlay.classList.contains('open');
+  if (isOpen) {
+    overlay.classList.remove('open');
+  } else {
+    overlay.classList.add('open');
+    setTimeout(() => document.getElementById('cmdInput').focus(), 50);
+  }
+}
+
+function closeCmdPalette(e) {
+  if (e.target === document.getElementById('cmdOverlay')) {
+    document.getElementById('cmdOverlay').classList.remove('open');
+  }
+}
+
+// ════════════════════════════════════════
+// KEYBOARD NAVIGATION
+// ════════════════════════════════════════
+document.addEventListener('keydown', (e) => {
+  // ⌘K
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    toggleCmdPalette();
+    return;
+  }
+
+  // Escape closes palette
+  if (e.key === 'Escape') {
+    document.getElementById('cmdOverlay').classList.remove('open');
+    return;
+  }
+
+  // If palette is open, don't handle other shortcuts
+  if (document.getElementById('cmdOverlay').classList.contains('open')) return;
+
+  // If typing in input, skip
+  if (e.target.tagName === 'INPUT') return;
+
+  if (currentView === 'issues') {
+    if (e.key === 'j') {
+      e.preventDefault();
+      selectedIdx = Math.min(selectedIdx + 1, tasks.length - 1);
+      renderIssues();
+      // Scroll into view
+      const row = document.querySelector('.issue-row.selected');
+      if (row) row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+    if (e.key === 'k') {
+      e.preventDefault();
+      selectedIdx = Math.max(selectedIdx - 1, 0);
+      renderIssues();
+      const row = document.querySelector('.issue-row.selected');
+      if (row) row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      showView('detail');
+    }
+  }
+
+  if (e.key === 'g') { showView('graph'); }
+  if (e.key === 'i') { showView('issues'); }
+});
+
+// ════════════════════════════════════════
+// PROJECT SELECTION
+// ════════════════════════════════════════
+function selectProject(el, name) {
+  document.querySelectorAll('.tree-project').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('projectName').textContent = name;
+}
+
+// ════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════
+renderIssues();
+</script>
+</body>
+</html>
