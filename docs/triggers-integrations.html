@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepFlow — Integrations, Triggers &amp; Execution Lifecycle</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+@font-face {
+  font-family: 'Euclid Circular B';
+  src: url('../guidelines/fonts/EuclidCircularB-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Euclid Circular B';
+  src: url('../guidelines/fonts/EuclidCircularB-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Euclid Circular B';
+  src: url('../guidelines/fonts/EuclidCircularB-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Euclid Circular B';
+  src: url('../guidelines/fonts/EuclidCircularB-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Euclid Circular B';
+  src: url('../guidelines/fonts/EuclidCircularB-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0F1019;
+  --surface: #181924;
+  --surface-raised: #1F2130;
+  --border: rgba(255,255,255,0.08);
+  --text: #E8E9ED;
+  --text-muted: #9499AD;
+  --text-dim: #646980;
+  --accent: #6C7CFF;
+  --accent-soft: rgba(108,124,255,0.12);
+  --red: #FF6B7A;
+  --amber: #FFB347;
+  --green: #5BDA8C;
+  --teal: #4DD9C0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Euclid Circular B', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* — Header — */
+.site-header {
+  border-bottom: 1px solid var(--border);
+  padding: 3rem 2rem 2.5rem;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(108,124,255,0.04) 0%, transparent 100%);
+}
+.site-header h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 0.35rem;
+}
+.site-header .subtitle {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.site-header .meta {
+  margin-top: 1.25rem;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* — Layout — */
+.container {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 6rem;
+}
+
+/* — Table of Contents — */
+.toc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 3rem;
+}
+.toc-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  margin-bottom: 0.75rem;
+}
+.toc ol {
+  list-style: none;
+  counter-reset: toc;
+}
+.toc ol li {
+  counter-increment: toc;
+}
+.toc ol li a {
+  display: block;
+  padding: 0.3rem 0;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.15s;
+}
+.toc ol li a::before {
+  content: counter(toc) ".";
+  display: inline-block;
+  width: 1.5rem;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+.toc ol li a:hover { color: var(--accent); }
+
+/* — Sections — */
+section { margin-bottom: 3rem; }
+section + section { padding-top: 1rem; }
+
+h2 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+h3 {
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin: 1.75rem 0 0.75rem;
+  color: var(--text);
+}
+h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 1.25rem 0 0.5rem;
+  color: var(--text);
+}
+
+p { margin-bottom: 1rem; }
+
+strong { font-weight: 600; color: var(--text); }
+em { font-style: italic; color: var(--text-muted); }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* — Callouts — */
+.callout {
+  background: var(--surface);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0 1.5rem;
+}
+.callout p { margin-bottom: 0.5rem; }
+.callout p:last-child { margin-bottom: 0; }
+
+.callout-amber { border-left-color: var(--amber); }
+.callout-green { border-left-color: var(--green); }
+.callout-red { border-left-color: var(--red); }
+.callout-teal { border-left-color: var(--teal); }
+
+/* — Lists — */
+ul, ol { margin: 0.5rem 0 1rem 1.25rem; }
+li { margin-bottom: 0.35rem; font-size: 0.95rem; }
+li strong { color: var(--text); }
+
+/* — Tables — */
+.table-wrap {
+  overflow-x: auto;
+  margin: 1rem 0 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+th {
+  background: var(--surface-raised);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.65rem 0.85rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+td {
+  padding: 0.6rem 0.85rem;
+  border-top: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: top;
+}
+tr:hover td { background: rgba(108,124,255,0.03); }
+
+/* — Verdict blocks — */
+.verdict {
+  background: var(--accent-soft);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0 1.5rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* — Flag blocks — */
+.flag {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin: 1rem 0;
+}
+.flag-title {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* — Recommendation cards — */
+.rec-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin: 1rem 0 1.5rem;
+}
+.rec-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.15rem 1.35rem;
+}
+.rec-card .num {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.25rem;
+}
+.rec-card h4 {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+.rec-card p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
+/* — Phase blocks — */
+.phase {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+.phase-header {
+  background: var(--surface-raised);
+  padding: 0.75rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.phase-body {
+  padding: 1rem 1.25rem;
+}
+.phase-body ul { margin: 0; list-style: none; padding: 0; }
+.phase-body li {
+  padding: 0.25rem 0;
+  padding-left: 1.25rem;
+  position: relative;
+}
+.phase-body li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--text-dim);
+}
+
+/* — Option comparison blocks — */
+.option-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin: 1rem 0;
+}
+.option-block.recommended {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, rgba(108,124,255,0.06), rgba(77,217,192,0.04));
+}
+.option-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  margin-bottom: 0.25rem;
+}
+.option-block.recommended .option-label { color: var(--accent); }
+.option-block h4 { margin-top: 0; }
+
+/* — Step flow — */
+.step-flow {
+  counter-reset: step;
+  margin: 1rem 0 1.5rem;
+}
+.step {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem 1rem 3.5rem;
+  margin-bottom: 0.5rem;
+  position: relative;
+  counter-increment: step;
+}
+.step::before {
+  content: counter(step);
+  position: absolute;
+  left: 1.25rem;
+  top: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: var(--accent-soft);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-align: center;
+  line-height: 1.5rem;
+}
+.step strong { display: block; margin-bottom: 0.25rem; }
+.step p { margin: 0; font-size: 0.9rem; color: var(--text-muted); }
+
+/* — MVP box — */
+.mvp-box {
+  background: linear-gradient(135deg, rgba(108,124,255,0.08), rgba(77,217,192,0.06));
+  border: 1px solid rgba(108,124,255,0.2);
+  border-radius: 10px;
+  padding: 1.75rem 1.75rem;
+  margin: 1.5rem 0;
+}
+.mvp-box h3 {
+  margin-top: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.mvp-box ol { margin: 0.75rem 0 1rem 1.25rem; }
+.mvp-box li { margin-bottom: 0.4rem; }
+
+/* — Requirements table — */
+.req-priority {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.req-must { background: rgba(255,107,122,0.15); color: var(--red); }
+.req-should { background: rgba(255,179,71,0.15); color: var(--amber); }
+.req-nice { background: rgba(91,218,140,0.15); color: var(--green); }
+
+/* — Diagram — */
+.diagram {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 1.25rem 0 1.5rem;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  overflow-x: auto;
+  white-space: pre;
+}
+.diagram .highlight { color: var(--accent); font-weight: 600; }
+.diagram .dim { color: var(--text-dim); }
+.diagram .green { color: var(--green); }
+.diagram .amber { color: var(--amber); }
+.diagram .red { color: var(--red); }
+.diagram .teal { color: var(--teal); }
+
+/* — Footer — */
+.final-note {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+/* — Responsive — */
+@media (max-width: 600px) {
+  .site-header { padding: 2rem 1.25rem 1.75rem; }
+  .site-header h1 { font-size: 1.4rem; }
+  .site-header .meta { flex-direction: column; gap: 0.25rem; }
+  .container { padding: 1.5rem 1rem 4rem; }
+  h2 { font-size: 1.15rem; }
+  .toc { padding: 1.25rem 1.25rem; }
+  table { font-size: 0.8rem; }
+  th, td { padding: 0.5rem 0.6rem; }
+  .step { padding-left: 3rem; }
+  .step::before { left: 0.85rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <h1>Integrations, Triggers &amp; Execution Lifecycle</h1>
+  <div class="subtitle">DeepFlow — Product Architecture Document</div>
+  <div class="meta">
+    <span>13 March 2026</span>
+    <span>Enriched Solutions</span>
+    <span>Internal Document</span>
+  </div>
+</header>
+
+<main class="container">
+
+<!-- TOC -->
+<nav class="toc">
+  <div class="toc-title">Contents</div>
+  <ol>
+    <li><a href="#thesis">Core Thesis</a></li>
+    <li><a href="#landscape">The Integration Landscape</a></li>
+    <li><a href="#triggers">Trigger Architecture</a></li>
+    <li><a href="#runs">Where Do Execution Runs Live?</a></li>
+    <li><a href="#visualising">Visualising Execution Runs</a></li>
+    <li><a href="#config-ui">The Trigger Configuration UI</a></li>
+    <li><a href="#agents-triggers">Agents as Triggers &amp; Responders</a></li>
+    <li><a href="#requirements">Requirements Specification</a></li>
+    <li><a href="#critique">Self-Critique</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================================ -->
+<!-- CORE THESIS -->
+<!-- ============================================================ -->
+<section id="thesis">
+<h2>Core Thesis</h2>
+
+<div class="callout">
+<p><strong>Triggers and integrations are how DeepFlow connects to the real world.</strong> The architecture of how triggered execution runs are created, visualised, and managed determines whether DeepFlow feels like an automation tool or an orchestration platform.</p>
+</div>
+
+<p>DeepFlow's core engine — natural language to dependency graph, mixed human/AI execution, governance and audit — is already built and functional. But a powerful engine sitting in isolation is a tech demo. The moment DeepFlow responds to a Slack message, fires on a schedule, or reacts to a webhook from Stripe, it stops being a tool users <em>visit</em> and becomes infrastructure they <em>rely on</em>.</p>
+
+<p>This document examines how that connection should work: what triggers an execution, where that execution lives in the product's information architecture, how users monitor and manage runs, and what the integration boundary looks like between DeepFlow and the services it connects to.</p>
+
+<p>The stakes are high. Get this wrong and DeepFlow becomes another Zapier clone with a graph view bolted on. Get it right and the graph engine becomes the <strong>nervous system</strong> of an organisation's operations — reacting to signals, orchestrating responses, and maintaining a governed audit trail of everything that happened and why.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- INTEGRATION LANDSCAPE -->
+<!-- ============================================================ -->
+<section id="landscape">
+<h2>1. The Integration Landscape</h2>
+
+<h3>What exists today</h3>
+<p>DeepFlow already has a working Slack integration. Users can interact with workflows from Slack, receive notifications, and trigger actions. Plans exist for email, Jira, and broader service connectivity. This isn't a blank page — it's a foundation to build on.</p>
+
+<h3>The Pipedream bet</h3>
+<p>Using <a href="https://pipedream.com">Pipedream</a> for authentication and custom tool orchestration is a genuinely smart architectural decision. OAuth is a graveyard of engineering time. Every integration needs token management, refresh flows, scope negotiation, and error handling. Pipedream abstracts all of this and provides a marketplace of pre-built connectors.</p>
+
+<div class="callout callout-amber">
+<p><strong>But the boundary matters.</strong> Where does Pipedream end and DeepFlow begin? If DeepFlow is just a fancy front-end for Pipedream workflows, users will eventually ask: "Why don't I just use Pipedream directly?" The answer needs to be clear: <strong>Pipedream handles auth and API plumbing. DeepFlow handles orchestration, governance, and the intelligence layer.</strong></p>
+</div>
+
+<p>Think of it like a building: Pipedream is the wiring and plumbing. DeepFlow is the architecture, the floor plan, and the people working inside. Nobody confuses an electrician with an architect — the boundary should be equally obvious.</p>
+
+<h3>Categories of integration</h3>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Category</th><th>Direction</th><th>Examples</th><th>DeepFlow Role</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Input Triggers</strong></td>
+      <td>External → DeepFlow</td>
+      <td>Slack message, inbound email, webhook, cron schedule, Stripe event</td>
+      <td>Receives signal, creates execution run</td>
+    </tr>
+    <tr>
+      <td><strong>Output Actions</strong></td>
+      <td>DeepFlow → External</td>
+      <td>Send Slack message, update Jira ticket, write to database, send email, call API</td>
+      <td>Task node executes external action as side-effect</td>
+    </tr>
+    <tr>
+      <td><strong>Bidirectional Sync</strong></td>
+      <td>DeepFlow ↔ External</td>
+      <td>Jira two-way sync, CRM data feed, real-time document collaboration</td>
+      <td>Maintains state parity between systems</td>
+    </tr>
+    <tr>
+      <td><strong>Context Enrichment</strong></td>
+      <td>External → DeepFlow (passive)</td>
+      <td>Pull customer data, fetch market prices, retrieve document from Drive</td>
+      <td>Task node reads external data to inform execution</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>The first two categories are table stakes for v1. Bidirectional sync is complex (conflict resolution, staleness, eventual consistency) and should be deferred. Context enrichment is high-value but can be handled as a special case of output actions — the "output" is data fetched into the workflow context.</p>
+
+<h3>The integration abstraction layer</h3>
+
+<p>DeepFlow should present integrations to users as <strong>connections</strong> — not as API configurations. The mental model:</p>
+<ul>
+  <li>"I've connected my Slack workspace" — not "I've configured an OAuth2 client with scopes chat:write and channels:read"</li>
+  <li>"I've connected my Jira project" — not "I've set up a webhook endpoint at /api/v1/triggers/jira with basic auth"</li>
+  <li>"I've connected my email" — not "I've configured IMAP polling with a 60-second interval"</li>
+</ul>
+
+<p>Pipedream handles the mechanical complexity. DeepFlow surfaces it as: <strong>Connected ✓</strong> or <strong>Connect →</strong>. One button. One flow. Done.</p>
+
+<div class="diagram"><span class="dim">┌─────────────────────────────────────────────────────────┐</span>
+<span class="dim">│</span>                    <span class="highlight">DeepFlow Platform</span>                      <span class="dim">│</span>
+<span class="dim">│</span>                                                         <span class="dim">│</span>
+<span class="dim">│</span>  <span class="teal">Orchestration Engine</span>  ←→  <span class="teal">Trigger Router</span>  ←→  <span class="teal">Run Manager</span>  <span class="dim">│</span>
+<span class="dim">│</span>          ↕                      ↕                       <span class="dim">│</span>
+<span class="dim">│</span>  <span class="teal">Graph Executor</span>         <span class="teal">Integration Layer</span>              <span class="dim">│</span>
+<span class="dim">│</span>                               ↕                          <span class="dim">│</span>
+<span class="dim">├─────────────────────────────────────────────────────────┤</span>
+<span class="dim">│</span>                  <span class="amber">Pipedream (Auth + API)</span>                  <span class="dim">│</span>
+<span class="dim">│</span>                                                         <span class="dim">│</span>
+<span class="dim">│</span>  <span class="green">Slack</span>  <span class="green">Gmail</span>  <span class="green">Jira</span>  <span class="green">Stripe</span>  <span class="green">GitHub</span>  <span class="green">HubSpot</span>  <span class="green">...</span>  <span class="dim">│</span>
+<span class="dim">└─────────────────────────────────────────────────────────┘</span></div>
+
+<p>The key principle: <strong>DeepFlow owns the intelligence. Pipedream owns the plumbing.</strong> Users never need to know Pipedream exists — they just see "DeepFlow connects to 500+ services."</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- TRIGGER ARCHITECTURE -->
+<!-- ============================================================ -->
+<section id="triggers">
+<h2>2. Trigger Architecture</h2>
+
+<h3>What is a trigger?</h3>
+<p>A trigger is an external event that initiates a workflow execution. It is the bridge between "something happened in the world" and "DeepFlow is now orchestrating a response." Every automated run in DeepFlow starts with a trigger. Manual runs — where a human clicks "Execute" — are themselves a trigger type.</p>
+
+<h3>Trigger taxonomy</h3>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Type</th><th>Signal Source</th><th>Example</th><th>Context Payload</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Webhook</strong></td>
+      <td>HTTP POST from external service</td>
+      <td>Stripe sends "payment_intent.succeeded"</td>
+      <td>Full webhook body: customer ID, amount, currency, metadata</td>
+    </tr>
+    <tr>
+      <td><strong>Schedule</strong></td>
+      <td>Cron expression / interval</td>
+      <td>"Every weekday at 9:00 AM" generates daily report</td>
+      <td>Timestamp, run sequence number, last run status</td>
+    </tr>
+    <tr>
+      <td><strong>Message</strong></td>
+      <td>Chat platform event</td>
+      <td>User types "/deepflow run weekly-standup" in Slack</td>
+      <td>Channel, user, message text, thread ID, attachments</td>
+    </tr>
+    <tr>
+      <td><strong>Email</strong></td>
+      <td>Inbound email matching filter</td>
+      <td>Email to support@company.com triggers triage workflow</td>
+      <td>Sender, subject, body, attachments, headers</td>
+    </tr>
+    <tr>
+      <td><strong>Threshold</strong></td>
+      <td>Metric crosses defined boundary</td>
+      <td>Error rate exceeds 5% → triggers incident response</td>
+      <td>Metric name, current value, threshold, trend data</td>
+    </tr>
+    <tr>
+      <td><strong>Manual</strong></td>
+      <td>Human clicks "Run" in DeepFlow UI</td>
+      <td>Ravi clicks "Execute" on the ICAAP template</td>
+      <td>User identity, any form inputs, selected parameters</td>
+    </tr>
+    <tr>
+      <td><strong>Chained</strong></td>
+      <td>Another DeepFlow workflow completes</td>
+      <td>Data pipeline finishes → triggers report generation</td>
+      <td>Parent run ID, output data, completion status, duration</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h3>The trigger → execution lifecycle</h3>
+
+<div class="diagram"><span class="highlight">Trigger fires</span>
+    <span class="dim">│</span>
+    <span class="dim">▼</span>
+<span class="amber">Trigger Router</span> receives event
+    <span class="dim">│</span>
+    <span class="dim">├──</span> Validate: Is this trigger active? Is the payload well-formed?
+    <span class="dim">├──</span> Authenticate: Does the source have permission?
+    <span class="dim">├──</span> Rate limit: Is this within acceptable frequency?
+    <span class="dim">│</span>
+    <span class="dim">▼</span>
+<span class="teal">Template Resolution</span>
+    <span class="dim">│</span>
+    <span class="dim">├──</span> Look up the workflow template bound to this trigger
+    <span class="dim">├──</span> Resolve the current version of the template
+    <span class="dim">├──</span> Map trigger context → workflow input variables
+    <span class="dim">│</span>
+    <span class="dim">▼</span>
+<span class="green">Execution Created</span>
+    <span class="dim">│</span>
+    <span class="dim">├──</span> Instantiate a NEW run of the template graph
+    <span class="dim">├──</span> Inject trigger context as input variables
+    <span class="dim">├──</span> Assign execution identity (who does this run "as"?)
+    <span class="dim">├──</span> Record trigger metadata for audit trail
+    <span class="dim">│</span>
+    <span class="dim">▼</span>
+<span class="highlight">Graph Executor</span> begins processing
+    <span class="dim">│</span>
+    <span class="dim">├──</span> Root nodes with no dependencies → status: <span class="amber">Ready</span>
+    <span class="dim">├──</span> Agents/humans assigned → status: <span class="teal">In Progress</span>
+    <span class="dim">├──</span> Dependency propagation runs as normal
+    <span class="dim">│</span>
+    <span class="dim">▼</span>
+<span class="green">Execution completes</span> (or <span class="red">fails</span>)
+    <span class="dim">│</span>
+    <span class="dim">├──</span> Notify trigger source (e.g., reply in Slack thread)
+    <span class="dim">├──</span> Fire chained triggers if configured
+    <span class="dim">└──</span> Archive run with full audit trail</div>
+
+<h3>Trigger context: the seed data</h3>
+
+<p>This is a subtlety that matters enormously for UX. When a trigger fires, it carries context — and that context <strong>seeds</strong> the workflow execution. Without context mapping, every triggered run is identical. With it, each run is contextualised to the specific event that created it.</p>
+
+<div class="callout callout-teal">
+<p><strong>Example:</strong> A Slack trigger fires when someone posts in #support. The trigger context includes: <code>user: "Sarah Chen"</code>, <code>channel: "#support"</code>, <code>message: "Client X can't access their dashboard"</code>. DeepFlow maps these to workflow inputs: <code>reporter → Sarah Chen</code>, <code>issue_description → "Client X can't access their dashboard"</code>, <code>priority → auto-detected from channel</code>. The workflow template is the same every time. The execution is unique every time.</p>
+</div>
+
+<p>This mapping — trigger context → workflow inputs — is one of the most important configuration surfaces in the trigger system. It's also where the "automation tool vs orchestration platform" distinction crystallises. Automation tools map fields. Orchestration platforms understand context and let AI agents <em>interpret</em> it.</p>
+
+<p>DeepFlow should do both: explicit field mapping for deterministic workflows, and AI context interpretation for workflows that benefit from intelligence at the input stage.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- WHERE DO RUNS LIVE? -->
+<!-- ============================================================ -->
+<section id="runs">
+<h2>3. The Big Question: Where Do Execution Runs Live?</h2>
+
+<p>This is the most consequential architectural decision in the trigger system. Every triggered workflow creates a <em>run</em> — a living, breathing instance of a template graph. Where that run lives in DeepFlow's information architecture determines how users discover, monitor, and manage their automated operations.</p>
+
+<p>There are three viable options. Each has genuine merit. Only one is right for DeepFlow.</p>
+
+<!-- Option A -->
+<div class="option-block">
+<div class="option-label">Option A</div>
+<h4>Runs create new projects</h4>
+<p>Each trigger creates a new project in the gallery. The project gallery becomes the "runs" view.</p>
+<ul>
+  <li><strong>Pro:</strong> Clean separation. Each run is fully self-contained. Full audit trail per run. Simple mental model — "every project is a run."</li>
+  <li><strong>Pro:</strong> Works with the existing project-centric UI without major refactoring.</li>
+  <li><strong>Con:</strong> The gallery becomes a junkyard. A daily report template running for 30 days creates 30 projects. Multiply by 10 templates and you have 300 projects in a month. The gallery ceases to be useful.</li>
+  <li><strong>Con:</strong> No natural grouping. "Which of these 300 projects are daily reports?" requires naming conventions or tags — fragile human discipline.</li>
+  <li><strong>Con:</strong> Ravi's personal command centre becomes a project dump. The exact opposite of "operating system."</li>
+</ul>
+<div class="verdict"><strong>Verdict:</strong> Works for low-frequency manual triggers. Catastrophic for automated/scheduled triggers at any scale.</div>
+</div>
+
+<!-- Option B -->
+<div class="option-block">
+<div class="option-label">Option B</div>
+<h4>Runs create tasks within a parent project</h4>
+<p>The template IS a project. Each trigger creates a new "instance" task (or sub-graph) within it. The project view shows all runs: completed, running, failed.</p>
+<ul>
+  <li><strong>Pro:</strong> Natural grouping. "Daily Reports" is a project. Open it, see 30 runs. Intuitive.</li>
+  <li><strong>Pro:</strong> Leverages existing project → task hierarchy. Less new UI surface.</li>
+  <li><strong>Con:</strong> Conflates template definition with execution instances. The template's task structure (the graph definition) gets mixed in with hundreds of instantiated runs. Which nodes are "the template" and which are "run #47"?</li>
+  <li><strong>Con:</strong> Status becomes ambiguous. Is the "Daily Reports" project 96% complete (because 29 of 30 runs succeeded) or is it ongoing (because it runs forever)?</li>
+  <li><strong>Con:</strong> Depth hierarchy collision. DeepFlow uses depth (L1→L4) for task decomposition. Adding "runs" as another hierarchy level is semantically confusing — a run isn't a subtask of the template.</li>
+</ul>
+<div class="verdict"><strong>Verdict:</strong> Seductive in its simplicity but creates semantic confusion at scale. Template definition and execution history are fundamentally different concepts forced into one container.</div>
+</div>
+
+<!-- Option C -->
+<div class="option-block recommended">
+<div class="option-label">★ Recommended — Option C</div>
+<h4>Runs are a separate concept — "Executions"</h4>
+<p>Templates live in the project gallery. Executions live in a separate "Runs" view. Like GitHub Actions: the workflow YAML is in the repo, runs are in the Actions tab.</p>
+<ul>
+  <li><strong>Pro:</strong> Clean separation of definition and execution. Templates are clean. Runs are queryable, filterable, archivable.</li>
+  <li><strong>Pro:</strong> Scales infinitely. 10,000 runs don't pollute the template gallery. The "Runs" view handles volume with filters, pagination, and search.</li>
+  <li><strong>Pro:</strong> Natural for all three personas. Ravi sees "5 active runs" on his dashboard. Sarah filters by template and status to manage team operations. David filters by date range for audit.</li>
+  <li><strong>Pro:</strong> Enables powerful run-level operations: compare runs, re-run with different parameters, bulk cancel, export audit for date range.</li>
+  <li><strong>Con:</strong> Another navigation concept. Users need to learn: "Projects are templates. Runs are executions." Two places to look.</li>
+  <li><strong>Con:</strong> Requires building a new "Runs" view that doesn't exist today.</li>
+</ul>
+</div>
+
+<h3>Why Option C — for DeepFlow specifically</h3>
+
+<div class="callout callout-green">
+<p><strong>The GitHub Actions analogy is powerful because it's already understood.</strong> Developers (and increasingly non-developers) understand: "I have a workflow definition. It produces runs. Runs have statuses. I can re-run failed ones." This mental model maps perfectly to DeepFlow's template → triggered execution flow.</p>
+</div>
+
+<p>Consider the three personas:</p>
+
+<ul>
+  <li><strong>Ravi (solo CEO)</strong> has 5-8 templates: daily standup, client onboarding, invoice processing, weekly report. He wants to see "3 runs active, 2 need attention" — not 300 projects. The Runs view gives him an operational dashboard. The project gallery stays clean — his 8 templates, curated and maintained.</li>
+
+  <li><strong>Sarah (ops manager)</strong> manages a team running 20+ templates daily. She needs to answer: "What failed last night? Which runs are stuck? How many daily reports completed?" The Runs view with filters (template, status, date, assignee) gives her exactly this. Trying to answer these questions by digging through 600 projects would be unusable.</li>
+
+  <li><strong>David (compliance)</strong> needs audit trails. "Show me all executions of the ICAAP workflow in Q4 2025, with their approval gate timestamps." A Runs view with structured metadata makes this a query. A project gallery makes this an archaeological expedition.</li>
+</ul>
+
+<p>The navigation cost is real but manageable. Two top-level concepts: <strong>Templates</strong> (your workflow definitions) and <strong>Runs</strong> (your execution history). Both are linked — click "View Runs" from a template, or click "View Template" from a run. The relationship is bidirectional and always one click away.</p>
+
+<h3>Information architecture with Option C</h3>
+
+<div class="diagram"><span class="highlight">DeepFlow Navigation</span>
+<span class="dim">│</span>
+<span class="dim">├──</span> <span class="teal">Home</span>              <span class="dim">Dashboard: active runs, recent templates, action items</span>
+<span class="dim">│</span>
+<span class="dim">├──</span> <span class="teal">Templates</span>         <span class="dim">Project gallery (existing). Clean. 8-20 workflow definitions.</span>
+<span class="dim">│   ├──</span> Template detail  <span class="dim">Graph editor, settings, trigger configuration</span>
+<span class="dim">│   └──</span> "View Runs →"   <span class="dim">Filtered runs for this template</span>
+<span class="dim">│</span>
+<span class="dim">├──</span> <span class="teal">Runs</span>              <span class="dim">All executions. Filterable by template, status, date, trigger.</span>
+<span class="dim">│   ├──</span> Run detail       <span class="dim">Instantiated graph with live progress, logs, outputs</span>
+<span class="dim">│   └──</span> "View Template →" <span class="dim">Back to definition</span>
+<span class="dim">│</span>
+<span class="dim">├──</span> <span class="teal">Connections</span>       <span class="dim">Manage integrations (Slack, email, Jira, etc.)</span>
+<span class="dim">│</span>
+<span class="dim">└──</span> <span class="teal">Settings</span>          <span class="dim">Account, team, permissions</span></div>
+</section>
+
+<!-- ============================================================ -->
+<!-- VISUALISING RUNS -->
+<!-- ============================================================ -->
+<section id="visualising">
+<h2>4. Visualising Execution Runs</h2>
+
+<h3>The "Live Runs" dashboard</h3>
+<p>When a user opens DeepFlow, they should immediately see: <strong>what's happening right now?</strong> Not what templates exist, not what was defined last week — what's <em>running</em>.</p>
+
+<p>The Home dashboard should surface:</p>
+<ul>
+  <li><strong>Active runs count</strong> — "7 workflows running" with a breakdown by template</li>
+  <li><strong>Needs attention</strong> — runs that are stuck, failed, or waiting for human input. This is the priority queue. Red badge, prominent placement.</li>
+  <li><strong>Recent completions</strong> — last 10 completed runs with status (success/failure), duration, and trigger source</li>
+  <li><strong>Upcoming scheduled</strong> — next 5 scheduled triggers with countdown timers</li>
+</ul>
+
+<div class="callout">
+<p><strong>Design principle:</strong> The dashboard should feel like an airport's flight departure board. At a glance: what's departed (completed), what's boarding (active), what's delayed (needs attention), what's next (scheduled). Not a spreadsheet — a status surface.</p>
+</div>
+
+<h3>The Runs list view</h3>
+<p>The primary Runs view is a filterable, sortable list. Every run is a row.</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Column</th><th>Content</th><th>Why It Matters</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Status</strong></td><td>Running / Completed / Failed / Waiting / Cancelled</td><td>The first thing users scan for</td></tr>
+    <tr><td><strong>Template</strong></td><td>Name of the workflow template</td><td>Groups runs by purpose</td></tr>
+    <tr><td><strong>Trigger</strong></td><td>What started it (Slack, schedule, webhook, manual)</td><td>Context for "why did this run?"</td></tr>
+    <tr><td><strong>Started</strong></td><td>Timestamp with relative time ("2 min ago")</td><td>Recency and ordering</td></tr>
+    <tr><td><strong>Duration</strong></td><td>Elapsed time or total time if complete</td><td>Performance baseline</td></tr>
+    <tr><td><strong>Progress</strong></td><td>Compact bar: 12/18 nodes complete</td><td>At-a-glance progress without opening</td></tr>
+    <tr><td><strong>Run As</strong></td><td>Identity/permissions of the execution</td><td>Audit and access control</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>Filters: template, status, trigger type, date range, run-as identity. Saved filter presets for repeated queries ("Show me all failed ICAAP runs this quarter").</p>
+
+<h3>Run detail view</h3>
+<p>Clicking a run opens the <strong>instantiated graph</strong> — the actual execution, not the template. This is where DeepFlow's graph engine shines.</p>
+
+<ul>
+  <li><strong>Live graph:</strong> Every node shows real-time status. Edges animate to show data flow. Completed nodes are green, active nodes pulse with cyan, failed nodes glow red. The user watches their workflow execute.</li>
+  <li><strong>Node detail:</strong> Click any node to see: input data, output data, execution logs, duration, agent/human identity, and any errors.</li>
+  <li><strong>Trigger context panel:</strong> A collapsible panel showing what triggered this run: the Slack message, the webhook payload, the schedule rule. Full provenance.</li>
+  <li><strong>Timeline rail:</strong> A compact timeline at the bottom showing the run's execution over time. Hover to see which nodes were active at any moment. Useful for understanding parallelism and bottlenecks.</li>
+</ul>
+
+<h3>Failed run diagnostics</h3>
+
+<p>Failure handling is where orchestration platforms earn their keep. A failed task in a 40-node graph needs context, not just a red icon.</p>
+
+<div class="flag">
+<div class="flag-title">🔍 What the failure view should show</div>
+<ul>
+  <li><strong>Which node failed</strong> — highlighted in the graph with a red glow and zoom-to-focus</li>
+  <li><strong>Why it failed</strong> — error message, stack trace (for AI agents), or human's rejection reason</li>
+  <li><strong>What was the input</strong> — the data that was fed to the failed node from its predecessors</li>
+  <li><strong>Impact assessment</strong> — which downstream nodes are now blocked? How much of the graph is affected? Visualise the "blast radius" with a subtle red wash on all blocked dependents.</li>
+  <li><strong>Recovery options</strong> — Retry this node. Skip and continue. Edit input and retry. Assign to different agent/human. Abort entire run.</li>
+</ul>
+</div>
+
+<p>The recovery options are critical. In a traditional automation tool, failure means "start over." In an orchestration platform, failure is localised. The 35 nodes that completed successfully don't need to re-run. The user fixes the one failure and the graph resumes. This is the DAG engine's superpower — and the run view must surface it clearly.</p>
+
+<h3>Comparing runs</h3>
+<p>Over time, users accumulate runs of the same template. Run comparison becomes valuable: "Why did Tuesday's report take 45 minutes when Monday's took 12?" A side-by-side view showing: node-level duration differences, different execution paths (if conditional), different input contexts. Not essential for v1, but the data model should support it from day one.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- TRIGGER CONFIG UI -->
+<!-- ============================================================ -->
+<section id="config-ui">
+<h2>5. The Trigger Configuration UI</h2>
+
+<p>Setting up a trigger should feel like connecting a pipe — not like configuring a server. The goal is: <strong>30 seconds from "I want this to run on a schedule" to "it's running on a schedule."</strong></p>
+
+<h3>The configuration flow</h3>
+
+<div class="step-flow">
+  <div class="step">
+    <strong>Select a workflow template</strong>
+    <p>Start from a template's settings page. The trigger is bound to a specific template — this is the "what" that will run.</p>
+  </div>
+  <div class="step">
+    <strong>Choose trigger type</strong>
+    <p>Visual selector with icons: Webhook, Schedule, Slack Message, Email, Manual, Chained. Each shows a one-line description. "When a message is posted in a Slack channel." "On a recurring schedule." "When another workflow completes."</p>
+  </div>
+  <div class="step">
+    <strong>Configure trigger-specific settings</strong>
+    <p>This panel changes based on trigger type:
+    <br>• <strong>Schedule:</strong> Visual cron builder. "Every [weekday] at [9:00 AM] [London time]." No raw cron expressions.
+    <br>• <strong>Slack:</strong> Select workspace (connected via Pipedream), choose channel, optional keyword filter.
+    <br>• <strong>Webhook:</strong> Auto-generated URL. Copy it. Optionally set a secret for HMAC verification.
+    <br>• <strong>Email:</strong> Auto-generated inbound address or filter rules on connected inbox.</p>
+  </div>
+  <div class="step">
+    <strong>Map trigger context to workflow inputs</strong>
+    <p>The critical step. Left column: available trigger context fields ("Slack user name", "message text", "channel"). Right column: workflow input variables ("reporter", "task_description", "priority"). Drag to connect — or let AI suggest mappings. For simple cases, auto-map by name similarity.</p>
+  </div>
+  <div class="step">
+    <strong>Set execution permissions</strong>
+    <p>Who does this run execute <em>as</em>? Options: the trigger creator's identity, the triggering user's identity (if applicable, e.g., the Slack user), or a service account. This matters for governance — the audit trail must record who authorised the execution.</p>
+  </div>
+  <div class="step">
+    <strong>Test the trigger</strong>
+    <p>A "Send Test Event" button that simulates a trigger with sample data. The user sees the mapped inputs, confirms they look right, and watches a dry-run execute (or at least validates the first few nodes). This is the confidence moment — "yes, it works."</p>
+  </div>
+</div>
+
+<h3>Where Pipedream auth fits</h3>
+
+<p>Steps 2 and 3 are where Pipedream's value materialises. When a user selects "Slack" as a trigger type, they need to authenticate their Slack workspace. Instead of DeepFlow implementing OAuth from scratch:</p>
+
+<ol>
+  <li>User clicks "Connect Slack"</li>
+  <li>Pipedream's auth popup appears (branded as DeepFlow via white-label or embedded)</li>
+  <li>User authenticates once</li>
+  <li>Pipedream stores the token, handles refresh</li>
+  <li>DeepFlow receives a connection ID — that's all it needs</li>
+</ol>
+
+<p>The user authenticated once. Every future Slack trigger reuses that connection. No re-auth. No token management visible to the user. This is the right UX.</p>
+
+<div class="callout callout-amber">
+<p><strong>Design consideration:</strong> The Pipedream auth popup must feel native. If it opens a Pipedream-branded page, users will be confused: "What is Pipedream? I thought I was using DeepFlow." Explore Pipedream's white-label options, or at minimum add a contextual message: "DeepFlow uses secure authentication via Pipedream to connect your accounts."</p>
+</div>
+
+<h3>Multi-trigger templates</h3>
+<p>A single template can have multiple triggers. "Daily Report" might run on a schedule AND be manually triggerable AND respond to a Slack command. Each trigger is independently configured but creates runs of the same template. The trigger configuration UI should show all active triggers for a template in a list, with the ability to enable/disable, edit, or delete each one independently.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- AGENTS AS TRIGGERS -->
+<!-- ============================================================ -->
+<section id="agents-triggers">
+<h2>6. Agents as Triggers and Agents as Responders</h2>
+
+<p>This is where DeepFlow's architecture gets genuinely interesting — and where the "orchestration platform" identity becomes concrete.</p>
+
+<h3>Agents triggering workflows (chained execution)</h3>
+
+<p>When a task node in Workflow A completes, it can trigger Workflow B. This is the "Chained" trigger type from the taxonomy above. The implications are significant:</p>
+
+<ul>
+  <li><strong>Pipeline orchestration:</strong> Data ingestion → Data validation → Report generation → Report distribution. Four separate templates, each triggered by the previous one's completion. Modular, reusable, independently debuggable.</li>
+  <li><strong>Escalation patterns:</strong> Automated triage workflow identifies a critical issue → triggers the incident response workflow with the triage output as context.</li>
+  <li><strong>Fan-out patterns:</strong> One workflow completes and triggers N workflows in parallel. "Quarterly review complete" → triggers "Update board deck", "File regulatory report", "Send client summaries" simultaneously.</li>
+</ul>
+
+<div class="callout">
+<p><strong>The key design question:</strong> Is a chained execution a new, independent run — or a continuation of the parent run? The answer should be: <strong>a new, independent run with a linked parent.</strong> Each run has its own status, its own audit trail, its own failure handling. But the lineage is recorded: "This run was triggered by Run #4721 of 'Data Validation'." Lineage enables both debugging and compliance.</p>
+</div>
+
+<h3>External events waking sleeping agents</h3>
+
+<p>Not every agent runs to completion in one burst. Some workflows have natural pause points: "Wait for client response", "Wait for data availability", "Wait for market close." When the external event occurs, the agent resumes.</p>
+
+<p>This is architecturally different from a new triggered run. It's a <strong>resume signal</strong>, not a <strong>start signal</strong>. The distinction matters:</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Aspect</th><th>Triggered Run (new)</th><th>Resumed Agent (continuation)</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Creates new graph</strong></td><td>Yes — fresh instantiation</td><td>No — continues existing graph</td></tr>
+    <tr><td><strong>State</strong></td><td>Clean slate + trigger context</td><td>Full prior state preserved</td></tr>
+    <tr><td><strong>Audit trail</strong></td><td>New run ID</td><td>Same run ID, new entries</td></tr>
+    <tr><td><strong>Trigger type</strong></td><td>External event</td><td>External event matching a "wait" condition</td></tr>
+    <tr><td><strong>UX metaphor</strong></td><td>"Starting a new job"</td><td>"Waking up and continuing work"</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>Both are valid. Both need to be supported. The UX must make the distinction clear. A "waiting" node in the graph should visually indicate <em>what</em> it's waiting for and show a clear "resume" action when the condition is met (or allow manual override).</p>
+
+<h3>Agent-to-agent communication within a run</h3>
+
+<p>Within a single execution run, one agent's output becomes another agent's input — this is just dependency resolution, which the DAG engine already handles. But there's a more interesting pattern: <strong>advisory signals</strong>. An agent working on Node 7 discovers something that's relevant to the agent on Node 12 (not a dependency, but useful context). Does DeepFlow support lateral communication between non-dependent nodes?</p>
+
+<p>For v1: no. Lateral communication introduces complexity that isn't justified yet. Dependencies handle the critical path. Advisory signals can be modelled as shared context attached to the run (a "run context" that any node can read/write). But this is a v2+ consideration.</p>
+
+<h3>The meta-workflow: workflows about workflows</h3>
+
+<p>Once triggers and chaining exist, users will inevitably create "meta-workflows" — workflows that manage other workflows. Examples:</p>
+<ul>
+  <li>"Every Monday, check all scheduled workflows and report which ones failed last week"</li>
+  <li>"If any run exceeds its SLA duration, escalate to the team lead"</li>
+  <li>"When 3 runs of the same template fail consecutively, disable the trigger and alert the admin"</li>
+</ul>
+
+<p>This is the orchestration platform reaching maturity: it orchestrates itself. DeepFlow doesn't need to build special-case features for these — if the trigger system is expressive enough and the run data is queryable, users will compose these patterns naturally.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- REQUIREMENTS -->
+<!-- ============================================================ -->
+<section id="requirements">
+<h2>7. Requirements Specification</h2>
+
+<h3>Trigger System</h3>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th style="width:70%">Requirement</th><th>Priority</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Manual trigger (user clicks "Run" with optional parameter form)</td><td><span class="req-priority req-must">Must Have</span></td></tr>
+    <tr><td>Schedule trigger with visual cron builder (no raw expressions)</td><td><span class="req-priority req-must">Must Have</span></td></tr>
+    <tr><td>Webhook trigger with auto-generated URL and HMAC verification</td><td><span class="req-priority req-must">Must Have</span></td></tr>
+    <tr><td>Slack message trigger (specific channel, optional keyword filter)</td><td><span class="req-priority req-must">Must Have</span></td></tr>
+    <tr><td>Trigger context → workflow input mapping UI</td><td><span class="req-priority req-must">Must Have</span></td></tr>
+    <tr><td>Trigger enable/disable toggle without deletion</td><td><span class="req-priority req-must">Must Have</span></td></tr>
+    <tr><td>Email inbound trigger (auto-generated address or inbox filter)</td><td><span class="req-priority req-should">Should Have</span></td></tr>
+    <tr><td>Chained trigger (Workflow A completion → Workflow B start)</td><td><span class="req-priority req-should">Should Have</span></td></tr>
+    <tr><td>Multiple triggers per template</td><td><span class="req-priority req-should">Should Have</span></td></tr>
+    <tr><td>Trigger test mode with simulated event data</td><td><span class="req-priority req-should">Should Have</span></td></tr>
+    <tr><td>Threshold/metric-based triggers</td><td><span class="req-priority req-nice">Nice to Have</span></td></tr>
+    <tr><td>AI-suggested context mapping ("this Slack field looks like it maps to 'description'")</td><td><span class="req-priority req-nice">Nice to Have</span></td></tr>
+    <tr><td>Trigger rate limiting and deduplication</td><td><span class="req-priority req-nice">Nice to Have</span></td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Execution Runs</h3>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th style="width:70%">Requirement</th><th>Priority</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Separate "Runs" view distinct from template gallery</td><td><span class="req-priority req-must">Must Have</span></td></tr>
+    <tr><td>Run list with status, template, trigger source, started, duration, progress</td><td><span class="req-priority req-must">Must Have</span></td></tr>
+    <tr><td>Run detail: live graph view with real-time node status</td><td><span class="req-priority req-must">Must Have</span></td></tr>
+    <tr><td>Run detail: click node to see inputs, outputs, logs, errors</td><td><span class="req-priority req-must">Must Have</span></td></tr>
+    <tr><td>Failed node recovery: retry, skip, reassign, abort run</td><td><span class="req-priority req-must">Must Have</span></td></tr>
+    <tr><td>Run audit trail: trigger metadata, execution identity, timestamps</td><td><span class="req-priority req-must">Must Have</span></td></tr>
+    <tr><td>Home dashboard: active runs, needs attention, recent completions</td><td><span class="req-priority req-must">Must Have</span></td></tr>
+    <tr><td>Run filtering by template, status, trigger type, date range</td><td><span class="req-priority req-should">Should Have</span></td></tr>
+    <tr><td>Re-run with same or modified parameters</td><td><span class="req-priority req-should">Should Have</span></td></tr>
+    <tr><td>Run lineage: link parent → child for chained executions</td><td><span class="req-priority req-should">Should Have</span></td></tr>
+    <tr><td>Blast radius visualisation for failed nodes</td><td><span class="req-priority req-should">Should Have</span></td></tr>
+    <tr><td>Saved filter presets for common run queries</td><td><span class="req-priority req-nice">Nice to Have</span></td></tr>
+    <tr><td>Run comparison: side-by-side duration and path analysis</td><td><span class="req-priority req-nice">Nice to Have</span></td></tr>
+    <tr><td>Execution timeline rail with parallelism visualisation</td><td><span class="req-priority req-nice">Nice to Have</span></td></tr>
+    <tr><td>Run SLA tracking with automatic alerts on breach</td><td><span class="req-priority req-nice">Nice to Have</span></td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Integration Layer</h3>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th style="width:70%">Requirement</th><th>Priority</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Pipedream-powered OAuth for Slack, Google, Microsoft</td><td><span class="req-priority req-must">Must Have</span></td></tr>
+    <tr><td>Connections management page (view, disconnect, re-auth)</td><td><span class="req-priority req-must">Must Have</span></td></tr>
+    <tr><td>Output actions: send Slack message, send email from workflow nodes</td><td><span class="req-priority req-must">Must Have</span></td></tr>
+    <tr><td>White-label or contextualised Pipedream auth experience</td><td><span class="req-priority req-should">Should Have</span></td></tr>
+    <tr><td>Jira integration (read/write tickets)</td><td><span class="req-priority req-should">Should Have</span></td></tr>
+    <tr><td>GitHub integration (read issues, create PRs)</td><td><span class="req-priority req-should">Should Have</span></td></tr>
+    <tr><td>Custom webhook output actions (POST to arbitrary URL)</td><td><span class="req-priority req-should">Should Have</span></td></tr>
+    <tr><td>Agent resume on external event ("wait for" condition)</td><td><span class="req-priority req-should">Should Have</span></td></tr>
+    <tr><td>Integration marketplace browsable from within DeepFlow</td><td><span class="req-priority req-nice">Nice to Have</span></td></tr>
+    <tr><td>Bidirectional sync (e.g., Jira two-way)</td><td><span class="req-priority req-nice">Nice to Have</span></td></tr>
+    <tr><td>Custom integration builder (low-code API connector)</td><td><span class="req-priority req-nice">Nice to Have</span></td></tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SELF-CRITIQUE -->
+<!-- ============================================================ -->
+<section id="critique">
+<h2>Self-Critique</h2>
+
+<h3>Is the trigger model too complex for v1?</h3>
+
+<div class="callout callout-red">
+<p><strong>Honest answer: yes, if you ship everything described above.</strong></p>
+</div>
+
+<p>The full trigger system — seven trigger types, context mapping, execution permissions, chained workflows, agent resume, threshold monitoring — is a 6-month engineering effort at minimum. That's not a v1. That's a v3.</p>
+
+<div class="mvp-box">
+<h3>The MVP trigger system</h3>
+<p>Ship these three trigger types and nothing else:</p>
+<ol>
+  <li><strong>Manual</strong> — user clicks "Run" with optional parameter form. Zero new infrastructure. Validates the entire Runs view and execution lifecycle.</li>
+  <li><strong>Schedule</strong> — cron-based execution. Proves the trigger → template instantiation pipeline works. Most immediately useful for Ravi's "daily report" use case.</li>
+  <li><strong>Webhook</strong> — auto-generated URL, accepts POST. Enables Slack (via Slack's outgoing webhooks), Stripe, GitHub, and any service with webhook support. Maximum flexibility with minimum implementation.</li>
+</ol>
+<p style="margin-top:1rem;color:var(--text-muted);">These three cover 80%+ of trigger use cases. Slack-specific triggers, email triggers, and chained execution can follow once the foundation is proven. Context mapping can start as "pass the entire payload as JSON" and evolve to a visual mapper.</p>
+</div>
+
+<h3>The Pipedream dependency: vendor lock-in risk</h3>
+
+<p>Pipedream is a venture-backed startup. Venture-backed startups can: raise prices, pivot, get acquired, or shut down. Each of these risks is real.</p>
+
+<p><strong>Mitigation strategy:</strong></p>
+<ul>
+  <li><strong>Abstraction layer.</strong> DeepFlow should never call Pipedream APIs directly from application code. An integration service with a clean interface (connect, disconnect, execute action, receive event) means Pipedream can be swapped for an alternative (Nango, Paragon, or a custom implementation) without touching the rest of the codebase.</li>
+  <li><strong>Token portability.</strong> Understand where tokens live. If Pipedream stores OAuth tokens, can they be exported? If not, a migration means re-authenticating every user's connections. That's painful but survivable.</li>
+  <li><strong>Webhook independence.</strong> Webhook triggers don't need Pipedream at all. If DeepFlow accepts HTTP POSTs directly, the simplest and most flexible trigger type is vendor-independent from day one.</li>
+</ul>
+
+<p>The risk is manageable. The alternative — building OAuth for 500 services — is a years-long distraction from the core product. Pipedream is the right bet for now, with the abstraction layer as insurance.</p>
+
+<h3>How do competitors handle this?</h3>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Competitor</th><th>Trigger Model</th><th>DeepFlow Advantage</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Zapier</strong></td>
+      <td>Trigger → Action linear chains. Simple. Powerful for A→B automation. No graph, no parallelism, no governance.</td>
+      <td>DeepFlow's graph enables complex orchestration that Zapier can't express. Zapier is automation; DeepFlow is orchestration.</td>
+    </tr>
+    <tr>
+      <td><strong>n8n</strong></td>
+      <td>Visual workflow builder with branching. Self-hostable. Developer-oriented. Supports complex flows but no human-in-the-loop or governance.</td>
+      <td>DeepFlow adds human/AI mixed execution, approval gates, audit trails. n8n is for developers; DeepFlow is for operators.</td>
+    </tr>
+    <tr>
+      <td><strong>Relevance AI</strong></td>
+      <td>AI agent workflows with tool calling. Closer to DeepFlow's model. Less emphasis on DAG structure and governance.</td>
+      <td>DeepFlow's dependency graph is more structured. Governance and audit are deeper. Template → run separation is cleaner.</td>
+    </tr>
+    <tr>
+      <td><strong>GitHub Actions</strong></td>
+      <td>YAML-defined workflows, triggered by events, runs as separate concept. Excellent execution model but code-centric, not business-user friendly.</td>
+      <td>DeepFlow brings the GitHub Actions mental model to non-technical users — natural language, visual graph, no YAML.</td>
+    </tr>
+    <tr>
+      <td><strong>Make (Integromat)</strong></td>
+      <td>Visual automation with modules and routers. Sophisticated flow control. No AI orchestration or governance.</td>
+      <td>DeepFlow's AI agent integration and governance layer differentiate. Make is powerful for data transformation; DeepFlow is for work orchestration.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>The competitive insight: <strong>none of these tools combine triggers + graph orchestration + human/AI execution + governance</strong> in a single product. Zapier and Make are automation tools (no intelligence). n8n is a developer tool (no business users). Relevance AI has the AI but not the governance. GitHub Actions has the execution model but not the accessibility. DeepFlow sits at the intersection — and the trigger system is what plugs it into the real world.</p>
+
+<h3>Where does "workflow orchestration" end and "iPaaS" begin?</h3>
+
+<p>This is the existential question. iPaaS (Integration Platform as a Service) tools — Zapier, Make, Workato, Tray.io — focus on connecting systems: "when X happens in System A, do Y in System B." Workflow orchestration platforms focus on managing work: "here's a complex process involving multiple steps, people, and agents — execute it with governance."</p>
+
+<p><strong>DeepFlow should not become an iPaaS.</strong></p>
+
+<p>The temptation is real: once you have triggers and integrations, users will ask for data transformation, conditional routing, API mapping, error retry policies, response parsing — the full iPaaS feature set. Each request is reasonable in isolation. In aggregate, they transform DeepFlow from an orchestration platform into an integration tool.</p>
+
+<div class="callout callout-green">
+<p><strong>The boundary rule:</strong> DeepFlow orchestrates <em>work</em>. It delegates <em>integration</em> to Pipedream (or equivalent). If a feature is about connecting System A to System B with data transformation, it belongs in the integration layer. If a feature is about coordinating a multi-step process with humans and AI agents, it belongs in DeepFlow.</p>
+</div>
+
+<p>Concretely:</p>
+<ul>
+  <li><strong>DeepFlow's job:</strong> "When a support email arrives, triage it using AI, create a ticket, assign it to the right team member, track resolution, and notify the customer when done."</li>
+  <li><strong>Pipedream's job:</strong> "Receive the email via IMAP, parse the headers, authenticate to Jira, create the ticket via API, format the Slack notification."</li>
+</ul>
+
+<p>DeepFlow is the brain. Pipedream is the nervous system. Users interact with the brain. The nervous system operates invisibly.</p>
+
+<h3>Open questions for the team</h3>
+
+<div class="rec-grid">
+  <div class="rec-card">
+    <div class="num">Question 01</div>
+    <h4>Should runs be immutable?</h4>
+    <p>Once a run starts, can its graph be modified (add/remove nodes)? Or is the instantiated graph frozen — if you want a different structure, create a new run? Immutability simplifies audit trails but reduces flexibility.</p>
+  </div>
+  <div class="rec-card">
+    <div class="num">Question 02</div>
+    <h4>What happens to run data at scale?</h4>
+    <p>1,000 runs per month × 40 nodes per run × logs and outputs per node = significant storage. Archival strategy? Retention policies? Can users export/delete old runs? This needs a data lifecycle plan.</p>
+  </div>
+  <div class="rec-card">
+    <div class="num">Question 03</div>
+    <h4>How do permissions work across triggers?</h4>
+    <p>If Ravi sets up a webhook trigger, and an external service fires it, the run executes with Ravi's permissions. But what if Ravi leaves the company? Service account model? Trigger ownership transfer? This needs clear governance.</p>
+  </div>
+  <div class="rec-card">
+    <div class="num">Question 04</div>
+    <h4>Real-time or polling for the Runs dashboard?</h4>
+    <p>WebSocket-based real-time updates for run progress, or polling? Real-time is a better UX (watching nodes complete live is compelling) but adds infrastructure cost. The graph engine may already support real-time — confirm and leverage.</p>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- FOOTER -->
+<!-- ============================================================ -->
+<div class="final-note">
+  <p>The trigger and integration system is what transforms DeepFlow from a powerful graph engine into a platform that runs real operations. The MVP is deliberately narrow — manual, schedule, webhook — because the foundation (template → run separation, execution lifecycle, run visualisation) matters more than trigger variety. Build the Runs view first. Make it excellent. Then open the floodgates to every trigger type and integration the market demands.</p>
+  <p style="margin-top:1rem;">The graph engine is built. The governance layer is built. Now connect it to the world.</p>
+  <p style="margin-top:1.5rem;font-style:normal;color:var(--text-dim);font-size:0.75rem;">Prepared by <a href="https://enriched.solutions" style="color:var(--text-dim);">Enriched Solutions</a> · Product Architecture Document</p>
+</div>
+
+</main>
+
+</body>
+</html>
