@@ -1989,6 +1989,93 @@
             height: 10px;
         }
 
+        /* Status symbols — larger, with icons */
+        .df-status-symbol {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all var(--duration-fast) var(--ease-default);
+        }
+
+        .df-status-symbol svg {
+            width: 12px;
+            height: 12px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .df-status-symbol-sm {
+            width: 20px;
+            height: 20px;
+        }
+
+        .df-status-symbol-sm svg {
+            width: 10px;
+            height: 10px;
+        }
+
+        .df-status-symbol-lg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .df-status-symbol-lg svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* States */
+        .df-status-pending {
+            background: var(--status-pending-bg);
+            color: var(--text-tertiary);
+            border: 1.5px solid var(--surface-card-border);
+        }
+
+        .df-status-ready {
+            background: var(--status-warning-bg);
+            color: var(--status-warning);
+            border: 1.5px solid var(--status-warning-border);
+        }
+
+        .df-status-in-progress {
+            background: var(--status-info-bg);
+            color: var(--status-info);
+            border: 1.5px solid var(--status-info-border);
+        }
+
+        .df-status-complete {
+            background: var(--status-success-bg);
+            color: var(--status-success);
+            border: 1.5px solid var(--status-success-border);
+        }
+
+        .df-status-failed {
+            background: var(--status-error-bg);
+            color: var(--status-error);
+            border: 1.5px solid var(--status-error-border);
+        }
+
+        /* Interactive (action buttons) */
+        .df-status-action {
+            cursor: pointer;
+        }
+
+        .df-status-action:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .df-status-action:active {
+            transform: scale(0.95);
+        }
+
         /* Progress bar */
         .df-progress {
             width: 100%;
@@ -3769,11 +3856,122 @@
             </div>
 
             <div class="component-demo">
-                <div class="component-demo-label">Status Dots</div>
+                <div class="component-demo-label">Status Symbols — The Proposed Set</div>
+                <p class="card-text" style="margin-bottom: var(--space-6);">Each status has a unique symbol inside its indicator. Colour + shape = doubly encoded. Works for colourblind users and at small sizes.</p>
+
+                <div class="demo-row" style="margin-bottom: var(--space-8);">
+                    <!-- Pending: hollow circle (empty, nothing started) -->
+                    <div style="display: flex; align-items: center; gap: var(--space-3);">
+                        <div class="df-status-symbol df-status-pending">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" stroke-width="1.5"/></svg>
+                        </div>
+                        <div>
+                            <div style="font-size: var(--text-sm); font-weight: 600; color: var(--text-primary);">Pending</div>
+                            <div style="font-size: 11px; color: var(--text-tertiary);">○ Hollow circle — nothing started yet</div>
+                        </div>
+                    </div>
+
+                    <!-- Ready: play triangle (ready to go, press play) -->
+                    <div style="display: flex; align-items: center; gap: var(--space-3);">
+                        <div class="df-status-symbol df-status-ready">
+                            <svg viewBox="0 0 24 24"><polygon points="9,6 18,12 9,18" fill="currentColor" stroke="none"/></svg>
+                        </div>
+                        <div>
+                            <div style="font-size: var(--text-sm); font-weight: 600; color: var(--text-primary);">Ready</div>
+                            <div style="font-size: 11px; color: var(--text-tertiary);">▶ Play — dependencies met, tap to start</div>
+                        </div>
+                    </div>
+
+                    <!-- In Progress: two pause bars (actively running) -->
+                    <div style="display: flex; align-items: center; gap: var(--space-3);">
+                        <div class="df-status-symbol df-status-in-progress">
+                            <svg viewBox="0 0 24 24"><line x1="9" y1="7" x2="9" y2="17"/><line x1="15" y1="7" x2="15" y2="17"/></svg>
+                        </div>
+                        <div>
+                            <div style="font-size: var(--text-sm); font-weight: 600; color: var(--text-primary);">In Progress</div>
+                            <div style="font-size: 11px; color: var(--text-tertiary);">❚❚ Pause bars — actively running</div>
+                        </div>
+                    </div>
+
+                    <!-- Complete: checkmark (done) -->
+                    <div style="display: flex; align-items: center; gap: var(--space-3);">
+                        <div class="df-status-symbol df-status-complete">
+                            <svg viewBox="0 0 24 24"><polyline points="7 12 10.5 15.5 17 9"/></svg>
+                        </div>
+                        <div>
+                            <div style="font-size: var(--text-sm); font-weight: 600; color: var(--text-primary);">Complete</div>
+                            <div style="font-size: 11px; color: var(--text-tertiary);">✓ Tick — finished successfully</div>
+                        </div>
+                    </div>
+
+                    <!-- Failed: X cross (error) -->
+                    <div style="display: flex; align-items: center; gap: var(--space-3);">
+                        <div class="df-status-symbol df-status-failed">
+                            <svg viewBox="0 0 24 24"><line x1="8" y1="8" x2="16" y2="16"/><line x1="16" y1="8" x2="8" y2="16"/></svg>
+                        </div>
+                        <div>
+                            <div style="font-size: var(--text-sm); font-weight: 600; color: var(--text-primary);">Failed</div>
+                            <div style="font-size: 11px; color: var(--text-tertiary);">✕ Cross — error, needs intervention</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="component-demo-label">Sizes</div>
+                <div class="demo-row" style="margin-bottom: var(--space-8);">
+                    <div style="display: flex; align-items: center; gap: var(--space-3);">
+                        <div class="df-status-symbol df-status-symbol-sm df-status-complete"><svg viewBox="0 0 24 24"><polyline points="7 12 10.5 15.5 17 9"/></svg></div>
+                        <span style="font-size: var(--text-xs); color: var(--text-tertiary);">20px — Cards, table rows</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: var(--space-3);">
+                        <div class="df-status-symbol df-status-complete"><svg viewBox="0 0 24 24"><polyline points="7 12 10.5 15.5 17 9"/></svg></div>
+                        <span style="font-size: var(--text-xs); color: var(--text-tertiary);">24px — Default</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: var(--space-3);">
+                        <div class="df-status-symbol df-status-symbol-lg df-status-complete"><svg viewBox="0 0 24 24"><polyline points="7 12 10.5 15.5 17 9"/></svg></div>
+                        <span style="font-size: var(--text-xs); color: var(--text-tertiary);">32px — Detail panels, headers</span>
+                    </div>
+                </div>
+
+                <div class="component-demo-label">As Action Buttons</div>
+                <p class="card-text" style="margin-bottom: var(--space-4);">Status symbols double as one-tap actions. Hover effect scales them up slightly, signalling interactivity.</p>
+                <div class="demo-row" style="margin-bottom: var(--space-8);">
+                    <div style="display: flex; align-items: center; gap: var(--space-3); padding: var(--space-4); background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-md);">
+                        <div class="df-status-symbol df-status-symbol-lg df-status-ready df-status-action" title="Start task">
+                            <svg viewBox="0 0 24 24"><polygon points="9,6 18,12 9,18" fill="currentColor" stroke="none"/></svg>
+                        </div>
+                        <div>
+                            <div style="font-size: var(--text-sm); font-weight: 600; color: var(--text-primary);">Risk Assessment</div>
+                            <div style="font-size: 11px; color: var(--text-tertiary);">Tap ▶ to start this task</div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: var(--space-3); padding: var(--space-4); background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-md);">
+                        <div class="df-status-symbol df-status-symbol-lg df-status-in-progress df-status-action" title="Mark as complete">
+                            <svg viewBox="0 0 24 24"><polyline points="7 12 10.5 15.5 17 9" style="stroke: var(--status-success); opacity: 0.4;"/><line x1="9" y1="7" x2="9" y2="17"/><line x1="15" y1="7" x2="15" y2="17"/></svg>
+                        </div>
+                        <div>
+                            <div style="font-size: var(--text-sm); font-weight: 600; color: var(--text-primary);">Data Collection</div>
+                            <div style="font-size: 11px; color: var(--text-tertiary);">In progress — tap ✓ to mark complete</div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: var(--space-3); padding: var(--space-4); background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-md);">
+                        <div class="df-status-symbol df-status-symbol-lg df-status-complete">
+                            <svg viewBox="0 0 24 24"><polyline points="7 12 10.5 15.5 17 9"/></svg>
+                        </div>
+                        <div>
+                            <div style="font-size: var(--text-sm); font-weight: 600; color: var(--text-primary);">Board Approval</div>
+                            <div style="font-size: 11px; color: var(--text-tertiary);">Done ✓ — no further action</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="component-demo-label">Legacy: Simple Status Dots</div>
+                <p class="card-text" style="margin-bottom: var(--space-4);">Still used in ultra-compact contexts (minimap, breadcrumb badges, inline mentions) where 8px is all you have.</p>
                 <div class="demo-row" style="margin-bottom: var(--space-6);">
                     <div style="display: flex; align-items: center; gap: var(--space-2);"><div class="df-status-dot" style="background: var(--status-success);"></div><span style="font-size: var(--text-sm); color: var(--text-secondary);">Complete</span></div>
                     <div style="display: flex; align-items: center; gap: var(--space-2);"><div class="df-status-dot" style="background: var(--status-info);"></div><span style="font-size: var(--text-sm); color: var(--text-secondary);">In Progress</span></div>
-                    <div style="display: flex; align-items: center; gap: var(--space-2);"><div class="df-status-dot" style="background: var(--status-warning);"></div><span style="font-size: var(--text-sm); color: var(--text-secondary);">Needs Attention</span></div>
+                    <div style="display: flex; align-items: center; gap: var(--space-2);"><div class="df-status-dot" style="background: var(--status-warning);"></div><span style="font-size: var(--text-sm); color: var(--text-secondary);">Ready</span></div>
                     <div style="display: flex; align-items: center; gap: var(--space-2);"><div class="df-status-dot" style="background: var(--status-error);"></div><span style="font-size: var(--text-sm); color: var(--text-secondary);">Failed</span></div>
                     <div style="display: flex; align-items: center; gap: var(--space-2);"><div class="df-status-dot" style="background: var(--status-pending);"></div><span style="font-size: var(--text-sm); color: var(--text-secondary);">Pending</span></div>
                 </div>
@@ -3840,13 +4038,38 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-title">When to Use What</div>
-                <p class="card-text">
-                    <strong style="color: var(--text-primary);">Status dot:</strong> Individual task status in compact contexts (table rows, card headers, node indicators).<br>
-                    <strong style="color: var(--text-primary);">Progress bar:</strong> Workflow or phase completion as a percentage. Use the brand gradient for normal progress, status colours for complete (green) or blocked (red).<br>
-                    <strong style="color: var(--text-primary);">Health meter:</strong> Dashboard-level project health. Five segments representing overall workflow health. For James (exec persona) and Ravi's (solo CEO) command centre view.
-                </p>
+            <div class="card-grid card-grid-2">
+                <div class="card">
+                    <div class="card-title">Symbol Set Rationale</div>
+                    <p class="card-text">
+                        <strong style="color: var(--text-primary);">○ Pending:</strong> Hollow circle — empty, nothing there yet.<br>
+                        <strong style="color: var(--text-primary);">▶ Ready:</strong> Play button — "press play to start." Universal media metaphor.<br>
+                        <strong style="color: var(--text-primary);">❚❚ In Progress:</strong> Pause bars — actively running, like a media player mid-track.<br>
+                        <strong style="color: var(--text-primary);">✓ Complete:</strong> Checkmark — done. The most universal symbol of completion.<br>
+                        <strong style="color: var(--text-primary);">✕ Failed:</strong> Cross — error. Universally understood as "something went wrong."
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">When to Use What</div>
+                    <p class="card-text">
+                        <strong style="color: var(--text-primary);">Status symbols (20-32px):</strong> Primary format. Task cards, graph nodes, list rows, detail panels. Always prefer symbols over dots when space allows.<br>
+                        <strong style="color: var(--text-primary);">Status dots (8px):</strong> Ultra-compact only — minimaps, inline mentions, breadcrumb badges.<br>
+                        <strong style="color: var(--text-primary);">Progress bars:</strong> Workflow/phase completion percentage. Brand gradient for normal, status colours for complete/blocked.<br>
+                        <strong style="color: var(--text-primary);">Health meters:</strong> Dashboard-level project health for James and Ravi's command centre.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">As Action Buttons</div>
+                    <p class="card-text">
+                        Status symbols double as quick-action buttons. A "Ready" task shows ▶ — tap it to start. An "In Progress" task shows ❚❚ — tap it to mark complete (the tick briefly previews on hover). This is the primary way Sarah interacts with tasks: see the status, tap to advance it. One gesture, zero menus.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Why Not Just Dots?</div>
+                    <p class="card-text">
+                        Dots rely solely on colour for meaning. Symbols encode status in <strong style="color: var(--text-primary);">colour + shape</strong> simultaneously. This means: colourblind accessibility out of the box, distinction from property pills (which use coloured dots), and a natural transition from passive indicator to interactive button.
+                    </p>
+                </div>
             </div>
         </section>
 
