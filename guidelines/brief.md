@@ -237,7 +237,127 @@ interface FiltersStore {
 
 ---
 
-## 4. Internationalisation (i18n)
+## 4. Navigation
+
+### The Problem
+"Back" can mean five different things in DeepFlow:
+1. Browser back button → previous URL in `window.history`
+2. Drill up in graph → L3 → L2 → L1
+3. Close Workspace → return to parent graph with node selected
+4. Breadcrumb click → jump to a specific level
+5. Project switch → entirely different data context
+
+If these aren't unified, users will click browser-back and get something unexpected. The rule: **every meaningful navigation state change is a URL change.** Browser back always does what the user expects.
+
+### URL Structure
+```
+/                                           → Dashboard
+/projects                                   → Gallery
+/projects/:projectId                        → Graph View (L1 root)
+/projects/:projectId?view=list              → List View (same project)
+/projects/:projectId?view=kanban            → Kanban View (same project)
+/projects/:projectId/node/:nodeId           → Drilled into a node (L2/L3 graph)
+/projects/:projectId/task/:taskId           → Workspace (leaf-node editor)
+/settings                                   → Settings
+/settings/:section                          → Settings sub-section
+```
+
+### Navigation History — What Goes in the URL vs What Doesn't
+
+| State | In URL? | Why |
+|-------|---------|-----|
+| Current project | ✅ `/projects/:projectId` | Shareable, bookmarkable |
+| View type (graph/list/kanban) | ✅ `?view=list` | Shareable. But also persisted per-project in IndexedDB as default |
+| Drill level (which node you're inside) | ✅ `/node/:nodeId` | Browser back = drill up. Shareable deep links |
+| Workspace (open task) | ✅ `/task/:taskId` | Shareable. Browser back = return to graph |
+| Selected node (clicked, not drilled) | ❌ Zustand only | Transient. Selecting a node shouldn't pollute history |
+| Panel sizes | ❌ IndexedDB | Preference, not navigation |
+| Filters / sort | ❌ Zustand + IndexedDB | Persisted locally, not in URL (too noisy). Exception: shared filter links could use query params in future |
+| Chat scroll position | ❌ Transient | Resets on navigation |
+| Graph viewport (zoom, pan) | ❌ Zustand only | Transient. Restored from memory when returning to a level |
+
+### What "Back" Does in Each Context
+
+| You're in | Browser Back goes to | Breadcrumb shows |
+|-----------|---------------------|------------------|
+| Dashboard | Browser's previous page (external) | Dashboard |
+| Gallery | Dashboard | Projects |
+| Graph L1 (project root) | Gallery (or Dashboard if entered directly) | All Projects › [Project] |
+| Graph L2 (drilled into node) | Graph L1 | All Projects › [Project] › [Node] |
+| Graph L3 (drilled deeper) | Graph L2 | All Projects › [Project] › [L2 Node] › [L3 Node] |
+| Workspace (leaf task) | Parent graph level (with node selected) | All Projects › [Project] › … › [Task] |
+| List/Kanban view | Same as if you were in Graph at that level | Same breadcrumbs, view switcher changes |
+| Settings | Whatever was open before Settings | Settings › [Section] |
+
+### Drill-Down as Navigation
+
+Each drill pushes a new history entry:
+```
+User opens project       → /projects/abc                  (history: 1 entry)
+Drills into "Capital"    → /projects/abc/node/capital-123  (history: 2 entries)
+Drills into "Risk Assess"→ /projects/abc/node/risk-456    (history: 3 entries)
+Opens leaf task          → /projects/abc/task/task-789     (history: 4 entries)
+
+Browser back (×1)        → /projects/abc/node/risk-456    (back to L3 graph)
+Browser back (×2)        → /projects/abc/node/capital-123  (back to L2 graph)
+Browser back (×3)        → /projects/abc                  (back to L1 root)
+```
+
+Breadcrumb clicks are different — they **replace** history (not push), so clicking "ICAAP 2026" from L3 takes you to L1 without adding intermediate entries. This prevents the "back trap" where users have to click back through every breadcrumb level.
+
+### View Switching (Graph ↔ List ↔ Kanban)
+
+Switching views within the same project **replaces** the current history entry (not push). Rationale: the user is looking at the same data differently. Browser back should go to the previous *location*, not the previous *view*.
+
+```
+User on Graph View       → /projects/abc
+Switches to List         → /projects/abc?view=list         (replaces, not pushes)
+Browser back             → Gallery (not Graph View)
+```
+
+The last-used view per project is persisted in IndexedDB, so re-opening a project returns to the user's preferred view.
+
+### Graph Viewport Restoration
+
+When the user drills down and then comes back (via back button or breadcrumb), the graph should restore:
+- Same zoom level
+- Same pan position
+- Same selected node (if any)
+
+This is stored in the Zustand `graph` store as a **viewport stack** — each drill level saves its viewport state. On drill-up, the previous viewport is restored with a smooth animation.
+
+```typescript
+// stores/graph.ts
+interface ViewportEntry {
+  nodeId: string          // the node we drilled into
+  viewport: { x: number; y: number; zoom: number }
+  selectedNodeId: string | null
+}
+
+interface GraphStore {
+  viewportStack: ViewportEntry[]   // pushed on drill-down, popped on drill-up
+  // ...
+}
+```
+
+### Deep Links & Sharing
+
+Every URL is shareable. If User B opens a link from User A:
+- `/projects/abc/node/risk-456` → opens project, drills into the correct node
+- `/projects/abc/task/task-789` → opens Workspace for that task
+- Auth required — Keycloak login redirects back to the deep link after auth
+- Org context inferred from the project (if user has access). If not: "You don't have access to this project" screen
+
+### Implementation
+- **React Router v7** handles all routing. `loader` functions fetch project/tree data on navigation
+- **`useNavigate`** for programmatic navigation (drill-down, workspace open)
+- **`history.replaceState`** for view switches and breadcrumb jumps
+- **`history.pushState`** for drills and workspace entry
+- **Zustand `graph.viewportStack`** for viewport restoration (not in URL — too complex to serialise)
+
+---
+
+## 5. Internationalisation (i18n)
 
 ### Strategy
 - **Library:** react-intl (FormatJS)
@@ -269,7 +389,7 @@ interface FiltersStore {
 
 ---
 
-## 5. Keyboard Navigation
+## 6. Keyboard Navigation
 
 ### Global Shortcuts
 | Key | Action |
@@ -317,7 +437,7 @@ interface FiltersStore {
 
 ---
 
-## 6. Accessibility (a11y)
+## 7. Accessibility (a11y)
 
 ### Standards
 - **Target:** WCAG 2.2 Level AA
@@ -342,7 +462,7 @@ interface FiltersStore {
 
 ---
 
-## 7. Responsive Behaviour
+## 8. Responsive Behaviour
 
 ### Breakpoints
 | Breakpoint | Range | Layout |
@@ -377,7 +497,7 @@ Many users run laptops with multiple windows at ~1024px. A small viewport with a
 
 ---
 
-## 8. Component Architecture
+## 9. Component Architecture
 
 ### Shell (always rendered)
 ```
@@ -431,7 +551,7 @@ The shell uses **react-resizable-panels** for a flexible, resizable panel layout
 
 ---
 
-## 9. Data Flow
+## 10. Data Flow
 
 ### API Layer
 - **Direct API calls:** Fetch client with Keycloak token interceptor. No BFF — SPA talks directly to backend API
@@ -477,7 +597,7 @@ The shell uses **react-resizable-panels** for a flexible, resizable panel layout
 
 ---
 
-## 10. Performance Budget
+## 11. Performance Budget
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
@@ -496,7 +616,7 @@ The shell uses **react-resizable-panels** for a flexible, resizable panel layout
 
 ---
 
-## 11. Testing Strategy
+## 12. Testing Strategy
 
 | Layer | Tool | Coverage |
 |-------|------|----------|
@@ -509,7 +629,7 @@ The shell uses **react-resizable-panels** for a flexible, resizable panel layout
 
 ---
 
-## 12. Design Tokens → Code
+## 13. Design Tokens → Code
 
 The [design guidelines](index.html) define tokens. Map them to Tailwind + CSS vars:
 
@@ -563,7 +683,7 @@ The [design guidelines](index.html) define tokens. Map them to Tailwind + CSS va
 
 ---
 
-## 13. Decisions (Resolved)
+## 14. Decisions (Resolved)
 
 | # | Question | Decision |
 |---|----------|----------|
@@ -578,7 +698,7 @@ The [design guidelines](index.html) define tokens. Map them to Tailwind + CSS va
 
 ---
 
-## 14. Phasing
+## 15. Phasing
 
 ### Phase 1 — Shell + Core Views (4–6 weeks)
 - [ ] Auth (Keycloak + next-auth)
