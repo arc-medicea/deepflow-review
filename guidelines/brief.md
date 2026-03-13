@@ -714,6 +714,40 @@ Floating toolbar above the graph canvas (top-centre or top-right). Always visibl
 
 **Undo/Redo scope:** Covers both layout changes (node position) and data changes (status updates, reparenting, property edits, Flow, Fuse, Delete). The API supports undo — each action returns a revert operation. Undo stack is per-session (cleared on navigation away from project). Maximum depth: 50 actions.
 
+### Graph Manipulation — Adding Nodes, Edges, Quick Actions
+
+#### Adding Nodes
+| Method | Behaviour |
+|--------|-----------|
+| **Double-click empty canvas** | Creates a new unconnected node at that position. Inline rename immediately active |
+| **Plus button on edge** | Inserts a new node between two connected nodes. The edge arrow (▸) becomes a + button on hover. Click → new node appears mid-edge, inheriting both connections |
+| **Chat** | "Add a data validation step after Risk Assessment" → AI creates and connects the node |
+| **Right-click canvas** | Context menu: "Add node here" |
+
+#### Edges (Dependencies)
+**Connection ports:** Small dots appear on all four sides of a node on hover. Drag from a port to another node to create an edge (dependency).
+
+| Action | Result |
+|--------|--------|
+| Drag from port to another node | Creates a dependency edge |
+| Click an edge | Selects it (highlighted blue). Toolbar shows "Delete edge" (trash icon). Delete key also works |
+| Drag port from expanded container's edge to a child inside | Edge flows from parent's port through container boundary to child node |
+| Right-click edge | Context menu: Delete, Change type (if multiple edge types supported) |
+
+**Edge-as-plus-button:** When not hovered, edges show a small directional arrow (▸) at their midpoint. On hover, the arrow transforms into a **+** button. Click to insert a new node between the two connected nodes.
+
+#### Hover Action Bar
+On hover, a slim floating action bar appears **below the node** (3–4 icon buttons). Disappears on mouse-out. Only the highest-frequency actions — everything else in detail panel or right-click menu.
+
+| Button | Shown when | Action |
+|--------|-----------|--------|
+| **▶ Start** | Status is pending or ready | Sets status to in-progress |
+| **✓ Done** | Status is in-progress | Sets status to complete |
+| **↻ Rerun** | Status is complete or failed | Resets to pending and re-triggers |
+| **⏎ Open** | Always (parent or leaf) | Drill into subflow (parent) or open Workspace (leaf) |
+
+**Why hover, not always-visible:** Keeps the graph clean. The detail panel handles everything else (reassign, priority, properties, delete). Hover actions are for speed — "mark as done" is hover → click, not click → panel → dropdown → select.
+
 ### Inline Node Expansion (Parent → Container)
 
 Parent nodes can be **expanded inline** on the graph canvas, transforming from a stacked card into a container that renders its child sub-graph inside.
