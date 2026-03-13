@@ -1,0 +1,2586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepFlow — Mobile Experience</title>
+
+    <!-- Euclid Circular B — Self-hosted -->
+    <style>
+        @font-face {
+            font-family: 'Euclid Circular B';
+            src: url('fonts/EuclidCircularB-Light.ttf') format('truetype');
+            font-weight: 300;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Euclid Circular B';
+            src: url('fonts/EuclidCircularB-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Euclid Circular B';
+            src: url('fonts/EuclidCircularB-Medium.ttf') format('truetype');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Euclid Circular B';
+            src: url('fonts/EuclidCircularB-SemiBold.ttf') format('truetype');
+            font-weight: 600;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Euclid Circular B';
+            src: url('fonts/EuclidCircularB-Bold.ttf') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+    </style>
+
+    <style>
+        /* ============================================
+           DEEPFLOW MOBILE EXPERIENCE SPEC
+           Inherits design system from index.html
+           ============================================ */
+
+        :root {
+            --brand-cyan: #00D4F5;
+            --brand-blue: #2244FF;
+            --brand-mid: #0099FF;
+            --brand-gradient: linear-gradient(135deg, #00E5FF 0%, #0099FF 45%, #2244FF 100%);
+            --brand-gradient-horizontal: linear-gradient(90deg, #00E5FF 0%, #0099FF 45%, #2244FF 100%);
+            --brand-gradient-vertical: linear-gradient(180deg, #00E5FF 0%, #0099FF 45%, #2244FF 100%);
+            --brand-gradient-subtle: linear-gradient(135deg, rgba(0,153,255,0.06) 0%, rgba(34,68,255,0.03) 100%);
+            --brand-solid: #0077DD;
+            --brand-solid-hover: #0066CC;
+            --brand-solid-active: #005BB5;
+
+            --neutral-950: #FFFFFF;
+            --neutral-900: #F8F9FB;
+            --neutral-850: #F1F3F6;
+            --neutral-800: #E4E7ED;
+            --neutral-700: #D0D4DC;
+            --neutral-600: #A0A6B4;
+            --neutral-500: #6B7280;
+            --neutral-400: #4B5563;
+            --neutral-300: #374151;
+            --neutral-200: #1F2937;
+            --neutral-100: #111827;
+            --neutral-50: #0A0F1A;
+            --white: #FFFFFF;
+
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-tertiary: #6B7280;
+            --text-inverse: #FFFFFF;
+
+            --surface-page: #FFFFFF;
+            --surface-raised: #F8F9FB;
+            --surface-overlay: #FFFFFF;
+            --surface-nav: rgba(255, 255, 255, 0.9);
+            --surface-card: #FFFFFF;
+            --surface-card-border: #E4E7ED;
+            --surface-hover: #F1F3F6;
+
+            --status-success: #059669;
+            --status-success-bg: rgba(5, 150, 105, 0.08);
+            --status-success-border: rgba(5, 150, 105, 0.2);
+            --status-warning: #D97706;
+            --status-warning-bg: rgba(217, 119, 6, 0.08);
+            --status-warning-border: rgba(217, 119, 6, 0.2);
+            --status-error: #DC2626;
+            --status-error-bg: rgba(220, 38, 38, 0.08);
+            --status-error-border: rgba(220, 38, 38, 0.2);
+            --status-info: #2563EB;
+            --status-info-bg: rgba(37, 99, 235, 0.08);
+            --status-info-border: rgba(37, 99, 235, 0.2);
+            --status-pending: #9CA3AF;
+            --status-pending-bg: rgba(156, 163, 175, 0.12);
+
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+            --shadow-glow: 0 0 20px rgba(0,119,221,0.1);
+            --shadow-brand: 0 4px 20px rgba(0,119,221,0.2);
+
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --space-6: 24px;
+            --space-8: 32px;
+            --space-10: 40px;
+            --space-12: 48px;
+            --space-16: 64px;
+            --space-20: 80px;
+            --space-24: 96px;
+
+            --text-xs: 0.75rem;
+            --text-sm: 0.8125rem;
+            --text-base: 0.875rem;
+            --text-md: 1rem;
+            --text-lg: 1.125rem;
+            --text-xl: 1.25rem;
+            --text-2xl: 1.5rem;
+            --text-3xl: 1.875rem;
+            --text-4xl: 2.25rem;
+            --text-5xl: 3rem;
+
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+
+            --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+            --duration-fast: 150ms;
+            --duration-normal: 250ms;
+            --duration-slow: 400ms;
+        }
+
+        [data-theme="dark"] {
+            --brand-solid: #0099FF;
+            --brand-solid-hover: #00AAFF;
+            --brand-solid-active: #0088EE;
+            --neutral-950: #0A0A0F;
+            --neutral-900: #111118;
+            --neutral-850: #16161F;
+            --neutral-800: #1C1C27;
+            --neutral-700: #2A2A3A;
+            --neutral-600: #3D3D52;
+            --neutral-500: #5C5C73;
+            --neutral-400: #8585A0;
+            --neutral-300: #ABABBD;
+            --neutral-200: #D0D0DB;
+            --neutral-100: #E8E8EF;
+            --neutral-50: #F4F4F7;
+            --white: #FFFFFF;
+            --text-primary: #E8E8EF;
+            --text-secondary: #ABABBD;
+            --text-tertiary: #8585A0;
+            --text-inverse: #0A0A0F;
+            --surface-page: #0A0A0F;
+            --surface-raised: #111118;
+            --surface-overlay: #1C1C27;
+            --surface-nav: rgba(10, 10, 15, 0.85);
+            --surface-card: #111118;
+            --surface-card-border: #1C1C27;
+            --surface-hover: #16161F;
+            --status-success: #34D399;
+            --status-success-bg: rgba(52, 211, 153, 0.12);
+            --status-success-border: rgba(52, 211, 153, 0.3);
+            --status-warning: #FBBF24;
+            --status-warning-bg: rgba(251, 191, 36, 0.12);
+            --status-warning-border: rgba(251, 191, 36, 0.3);
+            --status-error: #F87171;
+            --status-error-bg: rgba(248, 113, 113, 0.12);
+            --status-error-border: rgba(248, 113, 113, 0.3);
+            --status-info: #60A5FA;
+            --status-info-bg: rgba(96, 165, 250, 0.12);
+            --status-info-border: rgba(96, 165, 250, 0.3);
+            --status-pending: #5C5C73;
+            --status-pending-bg: rgba(92, 92, 115, 0.12);
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.25);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.3);
+            --shadow-glow: 0 0 20px rgba(0,153,255,0.15);
+            --shadow-brand: 0 4px 20px rgba(0,153,255,0.25);
+        }
+
+        /* ============================================
+           BASE STYLES
+           ============================================ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Euclid Circular B', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+            background: var(--surface-page);
+            color: var(--text-secondary);
+            font-size: var(--text-base);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background var(--duration-normal) var(--ease-default),
+                        color var(--duration-normal) var(--ease-default);
+        }
+
+        ::selection {
+            background: rgba(0, 119, 221, 0.2);
+            color: var(--text-primary);
+        }
+
+        /* ============================================
+           THEME TOGGLE
+           ============================================ */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            background: var(--surface-raised);
+            border: 1px solid var(--surface-card-border);
+            border-radius: var(--radius-full);
+            padding: 3px;
+            cursor: pointer;
+        }
+        .theme-toggle-option {
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
+            font-weight: 500;
+            color: var(--text-tertiary);
+            transition: all var(--duration-fast) var(--ease-default);
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+        .theme-toggle-option.active {
+            background: var(--brand-solid);
+            color: white;
+        }
+
+        /* ============================================
+           NAVIGATION
+           ============================================ */
+        .nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: var(--surface-nav);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--surface-card-border);
+        }
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-8);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+        .nav-brand img {
+            height: 28px;
+            width: auto;
+            filter: brightness(0);
+        }
+        [data-theme="dark"] .nav-brand img {
+            filter: brightness(1);
+        }
+        .nav-divider {
+            width: 1px;
+            height: 24px;
+            background: var(--surface-card-border);
+        }
+        .nav-subtitle {
+            font-size: var(--text-sm);
+            font-weight: 500;
+            color: var(--text-tertiary);
+        }
+        .nav-links {
+            display: flex;
+            gap: var(--space-1);
+            list-style: none;
+        }
+        .nav-links a {
+            display: block;
+            padding: var(--space-2) var(--space-3);
+            color: var(--text-tertiary);
+            text-decoration: none;
+            font-size: var(--text-sm);
+            font-weight: 500;
+            border-radius: var(--radius-md);
+            transition: color var(--duration-fast) var(--ease-default),
+                        background var(--duration-fast) var(--ease-default);
+        }
+        .nav-links a:hover {
+            color: var(--text-primary);
+            background: var(--surface-hover);
+        }
+        .nav-links a.active {
+            color: var(--brand-solid);
+            background: rgba(0,119,221,0.06);
+        }
+        @media (max-width: 900px) {
+            .nav-links { display: none; }
+        }
+
+        /* ============================================
+           HERO
+           ============================================ */
+        .hero {
+            padding: 140px var(--space-8) var(--space-16);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1000px;
+            height: 700px;
+            background: radial-gradient(ellipse, rgba(0,119,221,0.05) 0%, rgba(34,68,255,0.02) 40%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero h1 {
+            font-size: var(--text-5xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: var(--space-6);
+        }
+        .hero h1 .gradient-text {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-sub {
+            font-size: var(--text-lg);
+            color: var(--text-tertiary);
+            max-width: 640px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-4);
+            background: var(--surface-raised);
+            border: 1px solid var(--surface-card-border);
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            color: var(--text-tertiary);
+            margin-bottom: var(--space-8);
+        }
+        .hero-badge-dot {
+            width: 6px; height: 6px;
+            background: var(--brand-solid);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* ============================================
+           LAYOUT
+           ============================================ */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-8);
+        }
+        .section {
+            padding: var(--space-24) 0;
+            border-top: 1px solid var(--surface-card-border);
+        }
+        .section-header { margin-bottom: var(--space-12); }
+        .section-number {
+            font-size: var(--text-sm);
+            font-weight: 600;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-3);
+        }
+        .section-title {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            margin-bottom: var(--space-4);
+        }
+        .section-desc {
+            font-size: var(--text-md);
+            color: var(--text-tertiary);
+            max-width: 700px;
+            line-height: 1.7;
+        }
+
+        /* ============================================
+           CARDS
+           ============================================ */
+        .card {
+            background: var(--surface-card);
+            border: 1px solid var(--surface-card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-8);
+            transition: border-color var(--duration-normal) var(--ease-default);
+        }
+        .card:hover { border-color: var(--neutral-600); }
+        .card-title {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-3);
+        }
+        .card-text {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        .card-grid { display: grid; gap: var(--space-6); }
+        .card-grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .card-grid-3 { grid-template-columns: repeat(3, 1fr); }
+        @media (max-width: 768px) {
+            .card-grid-2, .card-grid-3 { grid-template-columns: 1fr; }
+        }
+
+        /* ============================================
+           UTILITIES
+           ============================================ */
+        .mt-4 { margin-top: var(--space-4); }
+        .mt-6 { margin-top: var(--space-6); }
+        .mt-8 { margin-top: var(--space-8); }
+        .mb-4 { margin-bottom: var(--space-4); }
+        .mb-6 { margin-bottom: var(--space-6); }
+        .mb-8 { margin-bottom: var(--space-8); }
+        .mb-12 { margin-bottom: var(--space-12); }
+        .text-muted { color: var(--text-tertiary); }
+        .text-sm { font-size: var(--text-sm); }
+
+        code {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.9em;
+            background: var(--surface-raised);
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+            color: var(--brand-solid);
+            border: 1px solid var(--surface-card-border);
+        }
+
+        /* ============================================
+           PHONE FRAME MOCKUPS
+           ============================================ */
+        .phone-showcase {
+            display: flex;
+            gap: var(--space-8);
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: var(--space-8) 0;
+        }
+
+        .phone-frame-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            border-radius: 40px;
+            border: 6px solid var(--neutral-200);
+            background: var(--surface-page);
+            overflow: hidden;
+            position: relative;
+            box-shadow: var(--shadow-lg), 0 0 0 2px var(--neutral-300);
+            flex-shrink: 0;
+        }
+
+        [data-theme="dark"] .phone-frame {
+            border-color: #2A2A3A;
+            box-shadow: var(--shadow-lg), 0 0 0 2px #1C1C27;
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 34px;
+            background: var(--neutral-200);
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
+        }
+
+        [data-theme="dark"] .phone-notch {
+            background: #1C1C27;
+        }
+
+        .phone-status-bar {
+            height: 54px;
+            padding: 14px 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+            position: relative;
+            z-index: 5;
+        }
+
+        .phone-status-bar .time { margin-left: 4px; }
+        .phone-status-bar .icons {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            font-size: 11px;
+        }
+
+        .phone-screen {
+            height: calc(100% - 54px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .phone-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .phone-label {
+            font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .phone-label-desc {
+            font-size: var(--text-xs);
+            color: var(--text-tertiary);
+            text-align: center;
+            max-width: 375px;
+        }
+
+        /* ============================================
+           MOBILE TAB BAR
+           ============================================ */
+        .tab-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            height: 83px;
+            padding-bottom: 20px;
+            background: var(--surface-nav);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--surface-card-border);
+            flex-shrink: 0;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 6px 0;
+            min-width: 60px;
+        }
+
+        .tab-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .tab-icon svg {
+            width: 22px;
+            height: 22px;
+            stroke: var(--text-tertiary);
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .tab-item.active .tab-icon svg {
+            stroke: var(--brand-solid);
+        }
+
+        .tab-label {
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--text-tertiary);
+        }
+
+        .tab-item.active .tab-label {
+            color: var(--brand-solid);
+            font-weight: 600;
+        }
+
+        .tab-badge {
+            position: absolute;
+            top: -4px;
+            right: -8px;
+            min-width: 16px;
+            height: 16px;
+            padding: 0 4px;
+            background: var(--status-error);
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ============================================
+           MOBILE-SPECIFIC SCREEN COMPONENTS
+           ============================================ */
+
+        /* Mobile header bar */
+        .mobile-header {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--surface-card-border);
+            background: var(--surface-page);
+        }
+
+        .mobile-header-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .mobile-header-icon {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+        }
+
+        .mobile-header-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--text-secondary);
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Dashboard cards */
+        .dash-greeting {
+            padding: 20px 16px 8px;
+        }
+
+        .dash-greeting-text {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        .dash-greeting-sub {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+
+        .dash-summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 12px 16px;
+        }
+
+        .dash-summary-card {
+            padding: 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--surface-card-border);
+            background: var(--surface-card);
+        }
+
+        .dash-summary-number {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .dash-summary-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .dash-summary-card.urgent {
+            border-color: var(--status-error-border);
+            background: var(--status-error-bg);
+        }
+
+        .dash-summary-card.urgent .dash-summary-number {
+            color: var(--status-error);
+        }
+
+        .dash-summary-card.warning {
+            border-color: var(--status-warning-border);
+            background: var(--status-warning-bg);
+        }
+
+        .dash-summary-card.warning .dash-summary-number {
+            color: var(--status-warning);
+        }
+
+        /* Section header in mobile */
+        .mobile-section-header {
+            padding: 16px 16px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mobile-section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .mobile-section-link {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--brand-solid);
+        }
+
+        /* Health meter */
+        .health-row {
+            padding: 0 16px;
+            margin-bottom: 10px;
+        }
+
+        .health-project {
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--surface-card-border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .health-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            flex: 1;
+            min-width: 0;
+        }
+
+        .health-bar {
+            display: flex;
+            gap: 2px;
+            width: 80px;
+            flex-shrink: 0;
+        }
+
+        .health-seg {
+            flex: 1;
+            height: 6px;
+            border-radius: 1px;
+            background: var(--surface-card-border);
+        }
+
+        .health-seg.g { background: var(--status-success); }
+        .health-seg.y { background: var(--status-warning); }
+        .health-seg.r { background: var(--status-error); }
+
+        .health-pct {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            width: 36px;
+            text-align: right;
+        }
+
+        /* Task list items */
+        .task-list-item {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--surface-card-border);
+            position: relative;
+        }
+
+        .task-status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .task-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .task-meta-row {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 2px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .task-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #3B82F6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .task-avatar.hex {
+            border-radius: 0;
+            clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+        }
+
+        .task-action-btn {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Chat bubbles */
+        .chat-container {
+            flex: 1;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+
+        .chat-bubble {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .chat-bubble.user {
+            align-self: flex-end;
+            background: var(--brand-solid);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-bubble.ai {
+            align-self: flex-start;
+            background: var(--surface-raised);
+            border: 1px solid var(--surface-card-border);
+            color: var(--text-primary);
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-task-preview {
+            margin-top: 8px;
+            padding: 10px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--surface-card-border);
+            background: var(--surface-card);
+        }
+
+        .chat-task-preview-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .chat-task-preview-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .chat-task-preview-meta {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        /* Chat input */
+        .chat-input-bar {
+            padding: 8px 12px 28px;
+            background: var(--surface-page);
+            border-top: 1px solid var(--surface-card-border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 22px;
+            border: 1px solid var(--surface-card-border);
+            background: var(--surface-raised);
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .chat-mic-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--brand-gradient);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-brand);
+        }
+
+        .chat-mic-btn svg {
+            width: 20px;
+            height: 20px;
+            stroke: white;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .chat-send-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--brand-solid);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .chat-send-btn svg {
+            width: 18px;
+            height: 18px;
+            stroke: white;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Notification items */
+        .notif-item {
+            padding: 14px 16px;
+            display: flex;
+            gap: 12px;
+            border-bottom: 1px solid var(--surface-card-border);
+        }
+
+        .notif-item.unread {
+            background: rgba(0, 119, 221, 0.03);
+        }
+
+        .notif-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 16px;
+        }
+
+        .notif-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notif-text {
+            font-size: 13px;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+
+        .notif-text strong {
+            font-weight: 600;
+        }
+
+        .notif-time {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 2px;
+        }
+
+        .notif-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .notif-action-btn {
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 600;
+            font-family: inherit;
+            border: none;
+            cursor: pointer;
+        }
+
+        .notif-action-primary {
+            background: var(--brand-solid);
+            color: white;
+        }
+
+        .notif-action-secondary {
+            background: var(--surface-raised);
+            color: var(--text-secondary);
+            border: 1px solid var(--surface-card-border);
+        }
+
+        /* Swipe gesture demo */
+        .swipe-demo {
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--surface-card-border);
+        }
+
+        .swipe-behind-right {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 80px;
+            background: var(--status-success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .swipe-behind-left {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 160px;
+            display: flex;
+            gap: 0;
+        }
+
+        .swipe-behind-left > div {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .swipe-surface {
+            background: var(--surface-card);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Task detail stacked view */
+        .task-detail-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--surface-card-border);
+        }
+
+        .task-detail-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .task-detail-project {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .task-detail-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--surface-card-border);
+            padding: 0 16px;
+            overflow-x: auto;
+        }
+
+        .task-detail-tab {
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+        }
+
+        .task-detail-tab.active {
+            color: var(--brand-solid);
+            border-bottom-color: var(--brand-solid);
+        }
+
+        /* Annotation blocks */
+        .annotation {
+            background: var(--surface-raised);
+            border-left: 3px solid var(--brand-solid);
+            padding: var(--space-4) var(--space-5);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            margin: var(--space-6) 0;
+        }
+
+        .annotation-title {
+            font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--brand-solid);
+            margin-bottom: var(--space-2);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .annotation p {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Decision callout */
+        .decision-card {
+            background: var(--surface-card);
+            border: 2px solid var(--brand-solid);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            margin: var(--space-6) 0;
+        }
+
+        .decision-label {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: 3px 10px;
+            background: rgba(0,119,221,0.08);
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--brand-solid);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: var(--space-3);
+        }
+
+        .decision-title {
+            font-size: var(--text-lg);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+
+        .decision-text {
+            font-size: var(--text-base);
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Responsive table */
+        .breakpoint-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--space-4) 0;
+        }
+
+        .breakpoint-table th {
+            text-align: left;
+            padding: var(--space-3) var(--space-4);
+            font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--surface-card-border);
+            background: var(--surface-raised);
+        }
+
+        .breakpoint-table td {
+            padding: var(--space-3) var(--space-4);
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--surface-card-border);
+        }
+
+        .breakpoint-table tr:last-child td { border-bottom: none; }
+
+        .check { color: var(--status-success); }
+        .cross { color: var(--status-error); }
+        .adapt { color: var(--status-info); }
+
+        /* Voice animation */
+        .voice-bars {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 24px;
+        }
+
+        .voice-bar {
+            width: 3px;
+            background: var(--brand-solid);
+            border-radius: 2px;
+            animation: voicePulse 0.8s ease-in-out infinite;
+        }
+
+        .voice-bar:nth-child(1) { height: 8px; animation-delay: 0s; }
+        .voice-bar:nth-child(2) { height: 16px; animation-delay: 0.1s; }
+        .voice-bar:nth-child(3) { height: 24px; animation-delay: 0.2s; }
+        .voice-bar:nth-child(4) { height: 12px; animation-delay: 0.3s; }
+        .voice-bar:nth-child(5) { height: 20px; animation-delay: 0.4s; }
+
+        @keyframes voicePulse {
+            0%, 100% { transform: scaleY(0.4); }
+            50% { transform: scaleY(1); }
+        }
+
+        /* Thumb zone diagram */
+        .thumb-zone {
+            width: 200px;
+            height: 400px;
+            border-radius: 30px;
+            border: 2px solid var(--surface-card-border);
+            position: relative;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .thumb-zone-area {
+            position: absolute;
+            left: 0;
+            right: 0;
+        }
+
+        .thumb-zone-easy {
+            bottom: 0;
+            height: 40%;
+            background: rgba(5, 150, 105, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--status-success);
+        }
+
+        .thumb-zone-ok {
+            bottom: 40%;
+            height: 30%;
+            background: rgba(217, 119, 6, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--status-warning);
+        }
+
+        .thumb-zone-hard {
+            top: 0;
+            height: 30%;
+            background: rgba(220, 38, 38, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--status-error);
+        }
+
+        /* Footer */
+        .footer {
+            padding: var(--space-12) 0;
+            border-top: 1px solid var(--surface-card-border);
+            text-align: center;
+        }
+        .footer p { font-size: var(--text-sm); color: var(--text-tertiary); }
+        .footer a { color: var(--brand-solid); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: var(--text-3xl); }
+            .phone-showcase { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================
+         NAVIGATION
+         ========================================== -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-brand">
+                <img src="assets/iconmark-white.png" alt="DeepFlow" style="height: 28px; width: auto;">
+                <span class="nav-divider"></span>
+                <span class="nav-subtitle">Mobile Experience</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Guidelines</a></li>
+                <li><a href="mobile.html" class="active">Mobile</a></li>
+            </ul>
+            <div class="theme-toggle" role="radiogroup" aria-label="Theme switcher">
+                <button class="theme-toggle-option active" data-theme-value="light" aria-checked="true" role="radio">☀️ Light</button>
+                <button class="theme-toggle-option" data-theme-value="dark" aria-checked="false" role="radio">🌙 Dark</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==========================================
+         HERO
+         ========================================== -->
+    <header class="hero">
+        <div class="container">
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                Mobile Experience Specification
+            </div>
+            <h1>DeepFlow on <span class="gradient-text">Mobile</span></h1>
+            <p class="hero-sub">
+                Chat and voice first. A native mobile experience designed for operations managers checking status on the go, solo founders between meetings, and executives who need one-tap clarity.
+            </p>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- ==========================================
+             01. MOBILE PHILOSOPHY
+             ========================================== -->
+        <section id="philosophy" class="section">
+            <div class="section-header">
+                <div class="section-number">01</div>
+                <h2 class="section-title">Mobile Philosophy</h2>
+                <p class="section-desc">Mobile DeepFlow isn't a shrunken desktop — it's a purpose-built command interface where chat and voice are the primary interaction model.</p>
+            </div>
+
+            <div class="decision-card">
+                <div class="decision-label">🎯 Core Decision</div>
+                <div class="decision-title">Chat-First, Not Dashboard-First</div>
+                <div class="decision-text">
+                    Ali asked: "What is the mobile experience? Chat and voice first?" — <strong style="color: var(--text-primary)">Yes.</strong> On mobile, the AI chat is the primary creation and control interface. Users speak or type natural language commands to create tasks, check status, and advance workflows. The dashboard exists for visual scanning, but chat is how you <em>do things</em>.
+                    <br><br>
+                    <strong style="color: var(--text-primary)">Default landing view: Chat.</strong> This is the AI-native choice. Ravi opens his phone between meetings and says "What needs attention today?" — DeepFlow responds with a summary. Sarah types "Mark Data Collection as complete" — done. James says "Approve the ICAAP submission" — confirmed. The dashboard is one tap away for visual scanning, but the chat is the universal remote.
+                </div>
+            </div>
+
+            <div class="card-grid card-grid-3 mt-8">
+                <div class="card">
+                    <div class="card-title">📱 Triage, Not Create</div>
+                    <p class="card-text">Mobile users check status, advance tasks, and approve gates. Complex workflow creation happens on desktop. Mobile is optimised for fast reads and quick actions.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title">🗣️ Voice as First-Class</div>
+                    <p class="card-text">Between meetings, in a taxi, walking to lunch — voice input isn't an afterthought. The microphone button is always visible in chat, and AI reads back summaries aloud.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title">👆 One-Hand Friendly</div>
+                    <p class="card-text">Critical actions live in the bottom 60% of the screen — the thumb zone. The tab bar, chat input, and quick actions are all reachable with one thumb.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             02. NAVIGATION
+             ========================================== -->
+        <section id="navigation" class="section">
+            <div class="section-header">
+                <div class="section-number">02</div>
+                <h2 class="section-title">Mobile Navigation</h2>
+                <p class="section-desc">A persistent bottom tab bar — not a hamburger menu. Five destinations, always visible, always one tap away. Inspired by the apps people already understand.</p>
+            </div>
+
+            <div class="annotation">
+                <div class="annotation-title">💡 UX Decision</div>
+                <p>Hamburger menus hide navigation and increase cognitive load. A bottom tab bar keeps all top-level destinations visible and within the thumb zone. Research consistently shows bottom tabs outperform hamburgers for engagement and discoverability (Nielsen Norman Group, 2019).</p>
+            </div>
+
+            <!-- Tab bar mockup -->
+            <div class="phone-showcase">
+                <div class="phone-frame-wrapper">
+                    <div class="phone-frame">
+                        <div class="phone-notch"></div>
+                        <div class="phone-status-bar">
+                            <span class="time">9:41</span>
+                            <span class="icons">
+                                <svg width="16" height="12" viewBox="0 0 16 12" fill="var(--text-primary)"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="4.5" y="5" width="3" height="7" rx="0.5"/><rect x="9" y="2" width="3" height="10" rx="0.5"/><rect x="13.5" y="0" width="2.5" height="12" rx="0.5"/></svg>
+                                <svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="var(--text-primary)" stroke-width="1"><rect x="0.5" y="0.5" width="19" height="11" rx="2"/><rect x="20.5" y="3.5" width="1.5" height="5" rx="0.5" fill="var(--text-primary)"/><rect x="2" y="2" width="14" height="8" rx="1" fill="var(--status-success)"/></svg>
+                            </span>
+                        </div>
+                        <div class="phone-screen">
+                            <div class="phone-content" style="background: var(--surface-page);">
+                                <div style="padding: 20px 16px; text-align: center; color: var(--text-tertiary); font-size: 13px; margin-top: 200px;">
+                                    <div style="font-size: 32px; margin-bottom: 12px;">📱</div>
+                                    <strong style="color: var(--text-primary); font-size: 15px; display: block; margin-bottom: 4px;">Bottom Tab Bar</strong>
+                                    5 destinations · Always visible · Thumb-friendly
+                                </div>
+                            </div>
+                            <div class="tab-bar">
+                                <div class="tab-item">
+                                    <div class="tab-icon">
+                                        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="4" rx="1"/><rect x="14" y="10" width="7" height="11" rx="1"/><rect x="3" y="13" width="7" height="8" rx="1"/></svg>
+                                    </div>
+                                    <span class="tab-label">Dashboard</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon">
+                                        <svg viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
+                                    </div>
+                                    <span class="tab-label">Projects</span>
+                                </div>
+                                <div class="tab-item active">
+                                    <div class="tab-icon">
+                                        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                    </div>
+                                    <span class="tab-label">Chat</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon">
+                                        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                                        <span class="tab-badge">3</span>
+                                    </div>
+                                    <span class="tab-label">Notifications</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon">
+                                        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                    </div>
+                                    <span class="tab-label">Profile</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="phone-label">Tab Bar — Active State: Chat</div>
+                    <div class="phone-label-desc">Notification badge shows unread count. Active tab uses brand blue.</div>
+                </div>
+            </div>
+
+            <div class="card-grid card-grid-2 mt-8">
+                <div class="card">
+                    <div class="card-title">Tab Definitions</div>
+                    <p class="card-text">
+                        <strong style="color: var(--text-primary);">Dashboard</strong> — Morning check view: what needs attention today<br>
+                        <strong style="color: var(--text-primary);">Projects</strong> — Browse all projects, drill into task lists<br>
+                        <strong style="color: var(--text-primary);">Chat</strong> — AI conversation (default landing) ★<br>
+                        <strong style="color: var(--text-primary);">Notifications</strong> — Grouped alerts with quick actions<br>
+                        <strong style="color: var(--text-primary);">Profile</strong> — Settings, preferences, dark mode toggle
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Touch Target Sizing</div>
+                    <p class="card-text">
+                        Each tab area: <strong style="color: var(--text-primary);">minimum 44 × 44px</strong> (Apple HIG / WCAG 2.5.5). The tab bar is 83px tall including safe area inset for gesture-nav devices. Icons are 22px with 10px padding — comfortable for any finger size.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             03. CHAT & VOICE
+             ========================================== -->
+        <section id="chat-voice" class="section">
+            <div class="section-header">
+                <div class="section-number">03</div>
+                <h2 class="section-title">Chat & Voice</h2>
+                <p class="section-desc">The primary mobile interaction model. Chat is how you talk to DeepFlow — creating tasks, checking status, advancing workflows, all through natural language. Voice makes it hands-free.</p>
+            </div>
+
+            <div class="phone-showcase">
+                <!-- Chat View -->
+                <div class="phone-frame-wrapper">
+                    <div class="phone-frame">
+                        <div class="phone-notch"></div>
+                        <div class="phone-status-bar">
+                            <span class="time">9:41</span>
+                            <span class="icons">
+                                <svg width="16" height="12" viewBox="0 0 16 12" fill="var(--text-primary)"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="4.5" y="5" width="3" height="7" rx="0.5"/><rect x="9" y="2" width="3" height="10" rx="0.5"/><rect x="13.5" y="0" width="2.5" height="12" rx="0.5"/></svg>
+                                <svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="var(--text-primary)" stroke-width="1"><rect x="0.5" y="0.5" width="19" height="11" rx="2"/><rect x="20.5" y="3.5" width="1.5" height="5" rx="0.5" fill="var(--text-primary)"/><rect x="2" y="2" width="14" height="8" rx="1" fill="var(--status-success)"/></svg>
+                            </span>
+                        </div>
+                        <div class="phone-screen">
+                            <div class="mobile-header">
+                                <div class="mobile-header-title">DeepFlow AI</div>
+                                <div class="mobile-header-icon">
+                                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                                </div>
+                            </div>
+                            <div class="chat-container" style="background: var(--surface-page);">
+                                <div class="chat-bubble ai">
+                                    Good morning, Ravi. Here's your summary:<br><br>
+                                    <strong>3 tasks</strong> need attention today.<br>
+                                    <strong>1 approval</strong> is waiting on you.<br>
+                                    <strong>2 AI tasks</strong> completed overnight.
+                                </div>
+
+                                <div class="chat-bubble user">
+                                    What's blocked?
+                                </div>
+
+                                <div class="chat-bubble ai">
+                                    <strong>1 blocked task:</strong>
+                                    <div class="chat-task-preview">
+                                        <div class="chat-task-preview-header">
+                                            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--status-error); flex-shrink: 0;"></div>
+                                            <div class="chat-task-preview-name">Draft ICAAP Report</div>
+                                        </div>
+                                        <div class="chat-task-preview-meta">Blocked by: Risk Assessment (Molly B.) · Due in 3 days</div>
+                                    </div>
+                                    Shall I notify Molly or reassign?
+                                </div>
+
+                                <div class="chat-bubble user">
+                                    Mark Data Collection as complete
+                                </div>
+
+                                <div class="chat-bubble ai">
+                                    ✓ <strong>Data Collection</strong> marked as complete.<br>
+                                    <span style="font-size: 12px; color: var(--text-tertiary);">This unblocks: Risk Assessment → now Ready</span>
+                                </div>
+                            </div>
+                            <div class="chat-input-bar">
+                                <input class="chat-input" placeholder="Ask DeepFlow..." readonly>
+                                <button class="chat-mic-btn" title="Voice input">
+                                    <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                                </button>
+                                <button class="chat-send-btn" title="Send">
+                                    <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                                </button>
+                            </div>
+                            <div class="tab-bar">
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="4" rx="1"/><rect x="14" y="10" width="7" height="11" rx="1"/><rect x="3" y="13" width="7" height="8" rx="1"/></svg></div>
+                                    <span class="tab-label">Dashboard</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg></div>
+                                    <span class="tab-label">Projects</span>
+                                </div>
+                                <div class="tab-item active">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                                    <span class="tab-label">Chat</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="tab-badge">3</span></div>
+                                    <span class="tab-label">Notifications</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                                    <span class="tab-label">Profile</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="phone-label">Chat — Task Management via Conversation</div>
+                    <div class="phone-label-desc">Natural language to check status, advance tasks, and get summaries. Inline task card previews provide visual context.</div>
+                </div>
+
+                <!-- Voice Active -->
+                <div class="phone-frame-wrapper">
+                    <div class="phone-frame">
+                        <div class="phone-notch"></div>
+                        <div class="phone-status-bar">
+                            <span class="time">9:42</span>
+                            <span class="icons">
+                                <svg width="16" height="12" viewBox="0 0 16 12" fill="var(--text-primary)"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="4.5" y="5" width="3" height="7" rx="0.5"/><rect x="9" y="2" width="3" height="10" rx="0.5"/><rect x="13.5" y="0" width="2.5" height="12" rx="0.5"/></svg>
+                                <svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="var(--text-primary)" stroke-width="1"><rect x="0.5" y="0.5" width="19" height="11" rx="2"/><rect x="20.5" y="3.5" width="1.5" height="5" rx="0.5" fill="var(--text-primary)"/><rect x="2" y="2" width="14" height="8" rx="1" fill="var(--status-success)"/></svg>
+                            </span>
+                        </div>
+                        <div class="phone-screen">
+                            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; background: var(--surface-page);">
+                                <div style="width: 120px; height: 120px; border-radius: 50%; background: var(--brand-gradient); display: flex; align-items: center; justify-content: center; margin-bottom: 32px; box-shadow: 0 0 60px rgba(0,153,255,0.3);">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                                </div>
+
+                                <div class="voice-bars" style="margin-bottom: 24px;">
+                                    <div class="voice-bar"></div>
+                                    <div class="voice-bar"></div>
+                                    <div class="voice-bar"></div>
+                                    <div class="voice-bar"></div>
+                                    <div class="voice-bar"></div>
+                                </div>
+
+                                <div style="font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">Listening...</div>
+                                <div style="font-size: 14px; color: var(--text-tertiary); line-height: 1.5;">
+                                    "Set up a new ICAAP workflow for Q2"
+                                </div>
+
+                                <div style="margin-top: 40px; display: flex; gap: 16px;">
+                                    <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--status-error-bg); border: 1px solid var(--status-error-border); display: flex; align-items: center; justify-content: center;">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--status-error)" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                    </div>
+                                    <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--status-success-bg); border: 1px solid var(--status-success-border); display: flex; align-items: center; justify-content: center;">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--status-success)" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-bar">
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="4" rx="1"/><rect x="14" y="10" width="7" height="11" rx="1"/><rect x="3" y="13" width="7" height="8" rx="1"/></svg></div>
+                                    <span class="tab-label">Dashboard</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg></div>
+                                    <span class="tab-label">Projects</span>
+                                </div>
+                                <div class="tab-item active">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                                    <span class="tab-label">Chat</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+                                    <span class="tab-label">Notifications</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                                    <span class="tab-label">Profile</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="phone-label">Voice Input — Hands-Free Mode</div>
+                    <div class="phone-label-desc">Full-screen voice capture with live transcription. Cancel / confirm buttons sized for easy one-hand use (56px targets).</div>
+                </div>
+            </div>
+
+            <div class="annotation mt-8">
+                <div class="annotation-title">💡 Voice Design Decisions</div>
+                <p>
+                    <strong>Voice Input:</strong> Tap the microphone in chat to enter voice mode. Speech is transcribed in real-time and sent as a chat message. Great for Ravi between client meetings — "What's the status of the Q2 ICAAP project?" without touching the keyboard.<br><br>
+                    <strong>Voice Output:</strong> AI responses can be read aloud via text-to-speech. Toggle in settings or per-response. Particularly useful for status summaries — Ravi hears "3 tasks complete, 1 blocked, 1 awaiting your approval" while walking to his next meeting.<br><br>
+                    <strong>Conversation Context:</strong> Chat maintains context across the session. "Mark that as complete" refers to the last-mentioned task. "Assign it to Sarah" — DeepFlow knows what "it" is.
+                </p>
+            </div>
+
+            <h3 class="card-title mt-8 mb-4">Chat Capabilities on Mobile</h3>
+            <div class="card-grid card-grid-2">
+                <div class="card">
+                    <div class="card-title">Create & Assign</div>
+                    <p class="card-text">
+                        "Set up a new ICAAP workflow for Q2" → DeepFlow generates the task graph and confirms<br><br>
+                        "Create a task: Review the Basel III amendments, assign to Molly, due Friday" → Task created with all parameters
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Status & Summaries</div>
+                    <p class="card-text">
+                        "What needs attention?" → Summary of blocked, overdue, and awaiting-approval tasks<br><br>
+                        "How's the ICAAP project?" → Health overview with completion percentage and blockers
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Advance & Control</div>
+                    <p class="card-text">
+                        "Mark Data Collection as complete" → Status updated, downstream tasks unblocked<br><br>
+                        "Approve the board submission" → Approval recorded with timestamp and attribution
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Inline Task Previews</div>
+                    <p class="card-text">
+                        When the AI references a task, it renders as an interactive card within the chat bubble — showing status dot, task name, assignee, and due date. Tap to open the full task detail view.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             04. DASHBOARD
+             ========================================== -->
+        <section id="dashboard" class="section">
+            <div class="section-header">
+                <div class="section-number">04</div>
+                <h2 class="section-title">Dashboard — Command Centre</h2>
+                <p class="section-desc">Ravi's "morning check" view. What needs attention today? Summary cards, project health, and one-tap drill-down. Designed for 30-second scanning.</p>
+            </div>
+
+            <div class="phone-showcase">
+                <div class="phone-frame-wrapper">
+                    <div class="phone-frame">
+                        <div class="phone-notch"></div>
+                        <div class="phone-status-bar">
+                            <span class="time">8:15</span>
+                            <span class="icons">
+                                <svg width="16" height="12" viewBox="0 0 16 12" fill="var(--text-primary)"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="4.5" y="5" width="3" height="7" rx="0.5"/><rect x="9" y="2" width="3" height="10" rx="0.5"/><rect x="13.5" y="0" width="2.5" height="12" rx="0.5"/></svg>
+                                <svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="var(--text-primary)" stroke-width="1"><rect x="0.5" y="0.5" width="19" height="11" rx="2"/><rect x="20.5" y="3.5" width="1.5" height="5" rx="0.5" fill="var(--text-primary)"/><rect x="2" y="2" width="14" height="8" rx="1" fill="var(--status-success)"/></svg>
+                            </span>
+                        </div>
+                        <div class="phone-screen">
+                            <div class="phone-content" style="background: var(--surface-page);">
+                                <div class="dash-greeting">
+                                    <div class="dash-greeting-text">Good morning, Ravi</div>
+                                    <div class="dash-greeting-sub">Thursday 13 March · 3 projects active</div>
+                                </div>
+
+                                <!-- Summary Cards -->
+                                <div class="dash-summary-grid">
+                                    <div class="dash-summary-card urgent">
+                                        <div class="dash-summary-number">2</div>
+                                        <div class="dash-summary-label">Blocked</div>
+                                    </div>
+                                    <div class="dash-summary-card warning">
+                                        <div class="dash-summary-number">1</div>
+                                        <div class="dash-summary-label">Awaiting Approval</div>
+                                    </div>
+                                    <div class="dash-summary-card">
+                                        <div class="dash-summary-number">5</div>
+                                        <div class="dash-summary-label">Due Today</div>
+                                    </div>
+                                    <div class="dash-summary-card">
+                                        <div class="dash-summary-number">8</div>
+                                        <div class="dash-summary-label">Completed This Week</div>
+                                    </div>
+                                </div>
+
+                                <!-- Project Health -->
+                                <div class="mobile-section-header">
+                                    <div class="mobile-section-title">Project Health</div>
+                                    <div class="mobile-section-link">View all</div>
+                                </div>
+
+                                <div class="health-row">
+                                    <div class="health-project">
+                                        <div class="health-name">ICAAP Q2</div>
+                                        <div class="health-bar">
+                                            <div class="health-seg g"></div>
+                                            <div class="health-seg g"></div>
+                                            <div class="health-seg g"></div>
+                                            <div class="health-seg y"></div>
+                                            <div class="health-seg"></div>
+                                        </div>
+                                        <div class="health-pct">68%</div>
+                                    </div>
+                                    <div class="health-project">
+                                        <div class="health-name">Basel III Reporting</div>
+                                        <div class="health-bar">
+                                            <div class="health-seg g"></div>
+                                            <div class="health-seg g"></div>
+                                            <div class="health-seg r"></div>
+                                            <div class="health-seg"></div>
+                                            <div class="health-seg"></div>
+                                        </div>
+                                        <div class="health-pct">42%</div>
+                                    </div>
+                                    <div class="health-project">
+                                        <div class="health-name">Client Onboarding</div>
+                                        <div class="health-bar">
+                                            <div class="health-seg g"></div>
+                                            <div class="health-seg g"></div>
+                                            <div class="health-seg g"></div>
+                                            <div class="health-seg g"></div>
+                                            <div class="health-seg g"></div>
+                                        </div>
+                                        <div class="health-pct">95%</div>
+                                    </div>
+                                </div>
+
+                                <!-- Needs Attention -->
+                                <div class="mobile-section-header">
+                                    <div class="mobile-section-title">Needs Attention</div>
+                                </div>
+
+                                <div class="task-list-item">
+                                    <div class="task-status-dot" style="background: var(--status-error);"></div>
+                                    <div class="task-info">
+                                        <div class="task-name">Draft ICAAP Report</div>
+                                        <div class="task-meta-row">Blocked · Due 16 Mar</div>
+                                    </div>
+                                    <div class="task-avatar" style="background: #8B5CF6;">MB</div>
+                                </div>
+                                <div class="task-list-item">
+                                    <div class="task-status-dot" style="background: var(--status-warning);"></div>
+                                    <div class="task-info">
+                                        <div class="task-name">Board Approval Gate</div>
+                                        <div class="task-meta-row">1 of 3 approvals · ICAAP Q2</div>
+                                    </div>
+                                    <div class="task-action-btn">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--status-success)" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-bar">
+                                <div class="tab-item active">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="4" rx="1"/><rect x="14" y="10" width="7" height="11" rx="1"/><rect x="3" y="13" width="7" height="8" rx="1"/></svg></div>
+                                    <span class="tab-label">Dashboard</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg></div>
+                                    <span class="tab-label">Projects</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                                    <span class="tab-label">Chat</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="tab-badge">3</span></div>
+                                    <span class="tab-label">Notifications</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                                    <span class="tab-label">Profile</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="phone-label">Dashboard — Morning Check</div>
+                    <div class="phone-label-desc">Summary cards with semantic colour. Blocked/approval cards use status backgrounds. Tap any card to filter the full task list.</div>
+                </div>
+            </div>
+
+            <div class="annotation mt-8">
+                <div class="annotation-title">💡 Dashboard Design Decisions</div>
+                <p>
+                    <strong>Information hierarchy:</strong> Greeting → Summary cards (2×2 grid) → Project health bars → Tasks needing attention. This mirrors Ravi's thought process: "Am I on track?" → "Which projects?" → "What specifically?"<br><br>
+                    <strong>Tappable summary cards:</strong> Each card acts as a filter shortcut. Tap "2 Blocked" to see only blocked tasks across all projects. Tap a project health row to enter that project.<br><br>
+                    <strong>Approval quick-action:</strong> The checkmark on approval tasks lets James approve directly from the dashboard without drilling into the task detail view. One tap. Done.
+                </p>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             05. TASK MANAGEMENT
+             ========================================== -->
+        <section id="tasks" class="section">
+            <div class="section-header">
+                <div class="section-number">05</div>
+                <h2 class="section-title">Task Management on Mobile</h2>
+                <p class="section-desc">Swipe gestures for speed. Stacked views for detail. Every touch target is 44px minimum. Mobile task management is about fast triage, not deep editing.</p>
+            </div>
+
+            <div class="phone-showcase">
+                <!-- Task List with Swipe -->
+                <div class="phone-frame-wrapper">
+                    <div class="phone-frame">
+                        <div class="phone-notch"></div>
+                        <div class="phone-status-bar">
+                            <span class="time">10:23</span>
+                            <span class="icons">
+                                <svg width="16" height="12" viewBox="0 0 16 12" fill="var(--text-primary)"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="4.5" y="5" width="3" height="7" rx="0.5"/><rect x="9" y="2" width="3" height="10" rx="0.5"/><rect x="13.5" y="0" width="2.5" height="12" rx="0.5"/></svg>
+                                <svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="var(--text-primary)" stroke-width="1"><rect x="0.5" y="0.5" width="19" height="11" rx="2"/><rect x="20.5" y="3.5" width="1.5" height="5" rx="0.5" fill="var(--text-primary)"/><rect x="2" y="2" width="14" height="8" rx="1" fill="var(--status-success)"/></svg>
+                            </span>
+                        </div>
+                        <div class="phone-screen">
+                            <div class="mobile-header">
+                                <div class="mobile-header-icon">
+                                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                                </div>
+                                <div class="mobile-header-title">ICAAP Q2</div>
+                                <div class="mobile-header-icon">
+                                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                </div>
+                            </div>
+                            <div class="phone-content" style="background: var(--surface-page);">
+                                <!-- Swipe demo item -->
+                                <div style="padding: 12px 16px 4px;">
+                                    <div style="font-size: 11px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.04em;">Swipe right → Advance status</div>
+                                </div>
+                                <div style="padding: 4px 16px;">
+                                    <div class="swipe-demo">
+                                        <div class="swipe-behind-right">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                        </div>
+                                        <div class="swipe-surface" style="transform: translateX(-30px);">
+                                            <div class="task-status-dot" style="background: var(--status-info);"></div>
+                                            <div class="task-info">
+                                                <div class="task-name">Risk Assessment</div>
+                                                <div class="task-meta-row">In Progress · Molly B.</div>
+                                            </div>
+                                            <div class="task-avatar" style="background: #8B5CF6;">MB</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Normal task items -->
+                                <div class="task-list-item">
+                                    <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--status-success-bg); border: 1.5px solid var(--status-success); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--status-success)" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    </div>
+                                    <div class="task-info">
+                                        <div class="task-name" style="text-decoration: line-through; color: var(--text-tertiary);">Data Collection</div>
+                                        <div class="task-meta-row">Complete · Ali P.</div>
+                                    </div>
+                                    <div class="task-avatar" style="background: #3B82F6;">AP</div>
+                                </div>
+
+                                <div class="task-list-item">
+                                    <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--status-info-bg); border: 1.5px solid var(--status-info); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--status-info)" stroke-width="3" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                    </div>
+                                    <div class="task-info">
+                                        <div class="task-name">Risk Assessment</div>
+                                        <div class="task-meta-row">In Progress · Due 14 Mar</div>
+                                    </div>
+                                    <div class="task-avatar" style="background: #8B5CF6;">MB</div>
+                                </div>
+
+                                <div class="task-list-item">
+                                    <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--status-info-bg); border: 1.5px solid var(--status-info); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--status-info)" stroke-width="3" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                    </div>
+                                    <div class="task-info">
+                                        <div class="task-name">Run Capital Model</div>
+                                        <div class="task-meta-row">In Progress · AI Agent</div>
+                                    </div>
+                                    <div class="task-avatar hex" style="background: var(--brand-gradient);">DF</div>
+                                </div>
+
+                                <div class="task-list-item">
+                                    <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--status-warning-bg); border: 1.5px solid var(--status-warning); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--status-warning)" stroke-width="3" stroke-linecap="round"><circle cx="12" cy="12" r="1"/></svg>
+                                    </div>
+                                    <div class="task-info">
+                                        <div class="task-name">Gather Market Data</div>
+                                        <div class="task-meta-row">Ready · AI Agent</div>
+                                    </div>
+                                    <div class="task-avatar hex" style="background: linear-gradient(135deg, #14B8A6, #0D9488);">DB</div>
+                                </div>
+
+                                <div class="task-list-item">
+                                    <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--status-pending-bg); border: 1.5px solid var(--neutral-600); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <div style="width: 6px; height: 6px; border-radius: 50%; background: var(--neutral-600);"></div>
+                                    </div>
+                                    <div class="task-info">
+                                        <div class="task-name">Draft Report</div>
+                                        <div class="task-meta-row">Pending · Unassigned</div>
+                                    </div>
+                                </div>
+
+                                <div class="task-list-item">
+                                    <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--status-pending-bg); border: 1.5px solid var(--neutral-600); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <div style="width: 6px; height: 6px; border-radius: 50%; background: var(--neutral-600);"></div>
+                                    </div>
+                                    <div class="task-info">
+                                        <div class="task-name">Internal Review</div>
+                                        <div class="task-meta-row">Pending · Jonathan G.</div>
+                                    </div>
+                                    <div class="task-avatar" style="background: #F59E0B;">JG</div>
+                                </div>
+
+                                <div class="task-list-item">
+                                    <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--status-pending-bg); border: 1.5px solid var(--neutral-600); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <div style="width: 6px; height: 6px; border-radius: 50%; background: var(--neutral-600);"></div>
+                                    </div>
+                                    <div class="task-info">
+                                        <div class="task-name">Board Approval</div>
+                                        <div class="task-meta-row">Pending · 0/3 approvals</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-bar">
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="4" rx="1"/><rect x="14" y="10" width="7" height="11" rx="1"/><rect x="3" y="13" width="7" height="8" rx="1"/></svg></div>
+                                    <span class="tab-label">Dashboard</span>
+                                </div>
+                                <div class="tab-item active">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg></div>
+                                    <span class="tab-label">Projects</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                                    <span class="tab-label">Chat</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+                                    <span class="tab-label">Notifications</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                                    <span class="tab-label">Profile</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="phone-label">Task List with Swipe Gestures</div>
+                    <div class="phone-label-desc">Status symbols are tappable (44px targets). Swipe right to advance. Circle avatars = human, hexagon = AI agent.</div>
+                </div>
+
+                <!-- Task Detail -->
+                <div class="phone-frame-wrapper">
+                    <div class="phone-frame">
+                        <div class="phone-notch"></div>
+                        <div class="phone-status-bar">
+                            <span class="time">10:24</span>
+                            <span class="icons">
+                                <svg width="16" height="12" viewBox="0 0 16 12" fill="var(--text-primary)"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="4.5" y="5" width="3" height="7" rx="0.5"/><rect x="9" y="2" width="3" height="10" rx="0.5"/><rect x="13.5" y="0" width="2.5" height="12" rx="0.5"/></svg>
+                                <svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="var(--text-primary)" stroke-width="1"><rect x="0.5" y="0.5" width="19" height="11" rx="2"/><rect x="20.5" y="3.5" width="1.5" height="5" rx="0.5" fill="var(--text-primary)"/><rect x="2" y="2" width="14" height="8" rx="1" fill="var(--status-success)"/></svg>
+                            </span>
+                        </div>
+                        <div class="phone-screen">
+                            <div class="mobile-header">
+                                <div class="mobile-header-icon">
+                                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                                </div>
+                                <div class="mobile-header-title">Task Detail</div>
+                                <div class="mobile-header-icon">
+                                    <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                                </div>
+                            </div>
+                            <div class="phone-content" style="background: var(--surface-page);">
+                                <div class="task-detail-header">
+                                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                                        <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--status-info-bg); border: 2px solid var(--status-info); display: flex; align-items: center; justify-content: center;">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--status-info)" stroke-width="3" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                        </div>
+                                        <span style="font-size: 12px; font-weight: 600; color: var(--status-info); background: var(--status-info-bg); border: 1px solid var(--status-info-border); padding: 2px 10px; border-radius: 20px;">In Progress</span>
+                                    </div>
+                                    <div class="task-detail-title">Risk Assessment</div>
+                                    <div class="task-detail-project">ICAAP Q2 → Data Analysis Phase</div>
+
+                                    <div style="display: flex; gap: 12px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--surface-card-border);">
+                                        <div style="flex: 1;">
+                                            <div style="font-size: 10px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.04em;">Assignee</div>
+                                            <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+                                                <div class="task-avatar" style="width: 24px; height: 24px; font-size: 9px; background: #8B5CF6;">MB</div>
+                                                <span style="font-size: 13px; font-weight: 500; color: var(--text-primary);">Molly Buckwald</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 10px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.04em;">Due</div>
+                                            <div style="font-size: 13px; font-weight: 500; color: var(--text-primary); margin-top: 6px;">14 Mar 2026</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tabs -->
+                                <div class="task-detail-tabs">
+                                    <div class="task-detail-tab active">Sub-tasks</div>
+                                    <div class="task-detail-tab">Comments</div>
+                                    <div class="task-detail-tab">History</div>
+                                    <div class="task-detail-tab">Resources</div>
+                                </div>
+
+                                <!-- Sub-tasks content -->
+                                <div style="padding: 4px 0;">
+                                    <div class="task-list-item">
+                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: var(--status-success-bg); border: 1.5px solid var(--status-success); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--status-success)" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                        </div>
+                                        <div class="task-info">
+                                            <div class="task-name" style="font-size: 13px;">Identify risk categories</div>
+                                            <div class="task-meta-row">Complete</div>
+                                        </div>
+                                    </div>
+                                    <div class="task-list-item">
+                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: var(--status-info-bg); border: 1.5px solid var(--status-info); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="var(--status-info)" stroke-width="3" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                        </div>
+                                        <div class="task-info">
+                                            <div class="task-name" style="font-size: 13px;">Quantify exposure per category</div>
+                                            <div class="task-meta-row">In Progress</div>
+                                        </div>
+                                    </div>
+                                    <div class="task-list-item">
+                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: var(--status-pending-bg); border: 1.5px solid var(--neutral-600); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                            <div style="width: 4px; height: 4px; border-radius: 50%; background: var(--neutral-600);"></div>
+                                        </div>
+                                        <div class="task-info">
+                                            <div class="task-name" style="font-size: 13px;">Document mitigation strategies</div>
+                                            <div class="task-meta-row">Pending</div>
+                                        </div>
+                                    </div>
+                                    <div class="task-list-item">
+                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: var(--status-pending-bg); border: 1.5px solid var(--neutral-600); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                            <div style="width: 4px; height: 4px; border-radius: 50%; background: var(--neutral-600);"></div>
+                                        </div>
+                                        <div class="task-info">
+                                            <div class="task-name" style="font-size: 13px;">Peer review assessment</div>
+                                            <div class="task-meta-row">Pending · Jonathan G.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bottom action bar -->
+                            <div style="padding: 10px 16px 28px; background: var(--surface-page); border-top: 1px solid var(--surface-card-border); display: flex; gap: 10px; flex-shrink: 0;">
+                                <button style="flex: 1; padding: 12px; border-radius: var(--radius-md); background: var(--brand-solid); color: white; font-size: 14px; font-weight: 600; font-family: inherit; border: none; cursor: pointer;">Mark as Complete ✓</button>
+                                <button style="padding: 12px 16px; border-radius: var(--radius-md); background: var(--surface-raised); color: var(--text-secondary); font-size: 14px; font-weight: 600; font-family: inherit; border: 1px solid var(--surface-card-border); cursor: pointer;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align: middle;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="phone-label">Task Detail — Stacked View</div>
+                    <div class="phone-label-desc">Full-screen with tabs for Sub-tasks, Comments, History. Primary action pinned to bottom. Chat button opens task-specific AI conversation.</div>
+                </div>
+            </div>
+
+            <h3 class="card-title mt-8 mb-4">Gesture & Interaction Reference</h3>
+            <div class="card-grid card-grid-3">
+                <div class="card">
+                    <div class="card-title">Swipe Right → Advance</div>
+                    <p class="card-text">
+                        Swipe a task row to the right to advance its status: <strong style="color: var(--text-primary);">Ready → In Progress → Complete</strong>. Green checkmark revealed behind the row. Release to confirm, or swipe back to cancel.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Swipe Left → Options</div>
+                    <p class="card-text">
+                        Swipe left reveals contextual actions: <strong style="color: var(--text-primary);">Reassign, Snooze, Flag</strong>. Colour-coded action buttons (blue, amber, red). Never more than 3 options — keep it quick.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Tap Status Symbol</div>
+                    <p class="card-text">
+                        Each status symbol is a 24px interactive target within a 44px touch area. Tap to advance: <strong style="color: var(--text-primary);">● → ▶ → ✓</strong>. Long-press for status picker with all options.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             06. NOTIFICATIONS
+             ========================================== -->
+        <section id="notifications" class="section">
+            <div class="section-header">
+                <div class="section-number">06</div>
+                <h2 class="section-title">Notifications</h2>
+                <p class="section-desc">Push notifications bring DeepFlow to you. The notification centre groups by project with quick-action buttons — approve, view, or dismiss without opening the full app.</p>
+            </div>
+
+            <div class="phone-showcase">
+                <div class="phone-frame-wrapper">
+                    <div class="phone-frame">
+                        <div class="phone-notch"></div>
+                        <div class="phone-status-bar">
+                            <span class="time">14:07</span>
+                            <span class="icons">
+                                <svg width="16" height="12" viewBox="0 0 16 12" fill="var(--text-primary)"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="4.5" y="5" width="3" height="7" rx="0.5"/><rect x="9" y="2" width="3" height="10" rx="0.5"/><rect x="13.5" y="0" width="2.5" height="12" rx="0.5"/></svg>
+                                <svg width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="var(--text-primary)" stroke-width="1"><rect x="0.5" y="0.5" width="19" height="11" rx="2"/><rect x="20.5" y="3.5" width="1.5" height="5" rx="0.5" fill="var(--text-primary)"/><rect x="2" y="2" width="14" height="8" rx="1" fill="var(--status-success)"/></svg>
+                            </span>
+                        </div>
+                        <div class="phone-screen">
+                            <div class="mobile-header">
+                                <div class="mobile-header-title">Notifications</div>
+                                <div style="font-size: 13px; font-weight: 500; color: var(--brand-solid); padding: 8px;">Mark all read</div>
+                            </div>
+                            <div class="phone-content" style="background: var(--surface-page);">
+                                <!-- Project group -->
+                                <div style="padding: 12px 16px 6px;">
+                                    <div style="font-size: 11px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em;">ICAAP Q2</div>
+                                </div>
+
+                                <div class="notif-item unread">
+                                    <div class="notif-icon" style="background: var(--status-warning-bg); color: var(--status-warning);">⏳</div>
+                                    <div class="notif-body">
+                                        <div class="notif-text"><strong>Board Approval</strong> is awaiting your sign-off. 1 of 3 approvals received.</div>
+                                        <div class="notif-time">12 minutes ago</div>
+                                        <div class="notif-actions">
+                                            <button class="notif-action-btn notif-action-primary">Approve</button>
+                                            <button class="notif-action-btn notif-action-secondary">View</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="notif-item unread">
+                                    <div class="notif-icon" style="background: var(--status-success-bg); color: var(--status-success);">✓</div>
+                                    <div class="notif-body">
+                                        <div class="notif-text"><strong>Run Capital Model</strong> completed by DeepFlow AI. Output ready for review.</div>
+                                        <div class="notif-time">47 minutes ago</div>
+                                        <div class="notif-actions">
+                                            <button class="notif-action-btn notif-action-secondary">View Output</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="notif-item">
+                                    <div class="notif-icon" style="background: var(--status-error-bg); color: var(--status-error);">⚠</div>
+                                    <div class="notif-body">
+                                        <div class="notif-text"><strong>Draft Report</strong> is now blocked. Waiting on Risk Assessment.</div>
+                                        <div class="notif-time">2 hours ago</div>
+                                    </div>
+                                </div>
+
+                                <!-- Another project group -->
+                                <div style="padding: 16px 16px 6px;">
+                                    <div style="font-size: 11px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em;">Basel III Reporting</div>
+                                </div>
+
+                                <div class="notif-item">
+                                    <div class="notif-icon" style="background: var(--status-info-bg); color: var(--status-info);">→</div>
+                                    <div class="notif-body">
+                                        <div class="notif-text"><strong>Data Validation</strong> was assigned to you by Sarah Chen.</div>
+                                        <div class="notif-time">3 hours ago</div>
+                                    </div>
+                                <div class="notif-item">
+                                    <div class="notif-icon" style="background: var(--status-success-bg); color: var(--status-success);">✓</div>
+                                    <div class="notif-body">
+                                        <div class="notif-text"><strong>Regulatory Mapping</strong> marked complete by Molly Buckwald.</div>
+                                        <div class="notif-time">Yesterday</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-bar">
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="4" rx="1"/><rect x="14" y="10" width="7" height="11" rx="1"/><rect x="3" y="13" width="7" height="8" rx="1"/></svg></div>
+                                    <span class="tab-label">Dashboard</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg></div>
+                                    <span class="tab-label">Projects</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                                    <span class="tab-label">Chat</span>
+                                </div>
+                                <div class="tab-item active">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="tab-badge">3</span></div>
+                                    <span class="tab-label">Notifications</span>
+                                </div>
+                                <div class="tab-item">
+                                    <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                                    <span class="tab-label">Profile</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="phone-label">Notification Centre</div>
+                    <div class="phone-label-desc">Grouped by project. Quick-action buttons on approval notifications. Unread items have subtle blue tint.</div>
+                </div>
+            </div>
+
+            <h3 class="card-title mt-8 mb-4">Push Notification Strategy</h3>
+            <div class="card-grid card-grid-2">
+                <div class="card">
+                    <div class="card-title">What Triggers a Push</div>
+                    <p class="card-text">
+                        <strong style="color: var(--status-error);">🔴 Immediate:</strong> Task blocked, AI execution failed, approval request<br>
+                        <strong style="color: var(--status-warning);">🟡 Timely:</strong> Task assigned to you, status change on watched task, due date approaching<br>
+                        <strong style="color: var(--status-success);">🟢 Batched:</strong> AI task completions, team activity summaries (grouped hourly)
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Push → Quick Action</div>
+                    <p class="card-text">
+                        iOS and Android support actionable notifications. "Board Approval needs your sign-off" shows two buttons: <strong style="color: var(--text-primary);">Approve</strong> and <strong style="color: var(--text-primary);">View</strong>. Approve works without opening the app — James taps from his lock screen and moves on.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             07. RESPONSIVE BREAKPOINTS
+             ========================================== -->
+        <section id="breakpoints" class="section">
+            <div class="section-header">
+                <div class="section-number">07</div>
+                <h2 class="section-title">Responsive Breakpoints</h2>
+                <p class="section-desc">Three tiers — phone, tablet, desktop. Each tier isn't just smaller; it's a fundamentally different interaction model.</p>
+            </div>
+
+            <div class="card mb-8" style="overflow-x: auto;">
+                <table class="breakpoint-table">
+                    <thead>
+                        <tr>
+                            <th>Breakpoint</th>
+                            <th>Width</th>
+                            <th>Layout Model</th>
+                            <th>Navigation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong style="color: var(--text-primary);">📱 Mobile</strong></td>
+                            <td><code>&lt; 640px</code></td>
+                            <td>Single-column, stacked views</td>
+                            <td>Bottom tab bar</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: var(--text-primary);">📋 Tablet</strong></td>
+                            <td><code>640–1024px</code></td>
+                            <td>Two-column where useful (list + detail)</td>
+                            <td>Sidebar (collapsible) + tab bar optional</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: var(--text-primary);">🖥️ Desktop</strong></td>
+                            <td><code>&gt; 1024px</code></td>
+                            <td>Three-panel workspace, graph canvas</td>
+                            <td>Top nav + sidebar</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="card-title mb-4">What Changes Per Breakpoint</h3>
+            <div class="card mb-8" style="overflow-x: auto;">
+                <table class="breakpoint-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>📱 Mobile</th>
+                            <th>📋 Tablet</th>
+                            <th>🖥️ Desktop</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Graph canvas</td>
+                            <td><span class="cross">✗ Hidden</span></td>
+                            <td><span class="adapt">↔ Simplified</span></td>
+                            <td><span class="check">✓ Full</span></td>
+                        </tr>
+                        <tr>
+                            <td>Task list</td>
+                            <td><span class="check">✓ Full-screen</span></td>
+                            <td><span class="check">✓ Left panel</span></td>
+                            <td><span class="check">✓ Embedded</span></td>
+                        </tr>
+                        <tr>
+                            <td>Task detail</td>
+                            <td><span class="adapt">↔ Stacked (push view)</span></td>
+                            <td><span class="check">✓ Right panel</span></td>
+                            <td><span class="check">✓ Side panel</span></td>
+                        </tr>
+                        <tr>
+                            <td>Kanban board</td>
+                            <td><span class="adapt">↔ Horizontal scroll</span></td>
+                            <td><span class="check">✓ Full</span></td>
+                            <td><span class="check">✓ Full</span></td>
+                        </tr>
+                        <tr>
+                            <td>AI Chat</td>
+                            <td><span class="check">✓ Full-screen tab</span></td>
+                            <td><span class="adapt">↔ Floating panel</span></td>
+                            <td><span class="adapt">↔ Centre panel</span></td>
+                        </tr>
+                        <tr>
+                            <td>Voice input</td>
+                            <td><span class="check">✓ Primary</span></td>
+                            <td><span class="check">✓ Available</span></td>
+                            <td><span class="adapt">↔ Available</span></td>
+                        </tr>
+                        <tr>
+                            <td>Bottom tab bar</td>
+                            <td><span class="check">✓ Always visible</span></td>
+                            <td><span class="adapt">↔ Optional</span></td>
+                            <td><span class="cross">✗ Not shown</span></td>
+                        </tr>
+                        <tr>
+                            <td>Swipe gestures</td>
+                            <td><span class="check">✓ Primary</span></td>
+                            <td><span class="check">✓ Supported</span></td>
+                            <td><span class="cross">✗ Not applicable</span></td>
+                        </tr>
+                        <tr>
+                            <td>3D layer navigator</td>
+                            <td><span class="cross">✗ Hidden</span></td>
+                            <td><span class="cross">✗ Hidden</span></td>
+                            <td><span class="check">✓ Full</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="annotation">
+                <div class="annotation-title">💡 Key Adaptation: Graph View</div>
+                <p>
+                    The graph canvas — DeepFlow's core differentiator — is <strong>not shown on mobile phones</strong>. Complex dependency graphs don't translate to 375px screens. Instead, mobile users interact with the graph through the task list (which surfaces dependency information) and the AI chat (which can answer "what depends on this?" or "what's blocking the report?"). On tablets, a simplified, read-only graph with pinch-to-zoom is available.
+                </p>
+            </div>
+
+            <h3 class="card-title mt-8 mb-4">Mobile-Only Features</h3>
+            <div class="card-grid card-grid-3">
+                <div class="card">
+                    <div class="card-title">🗣️ Voice Input</div>
+                    <p class="card-text">While available on all platforms, voice is the star on mobile. The prominent microphone button and full-screen voice mode are mobile-first designs.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title">👆 Swipe Gestures</div>
+                    <p class="card-text">Swipe-to-advance and swipe-for-options are touch-native patterns that have no desktop equivalent. They're the fastest path on mobile.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title">🔔 Push Notifications</div>
+                    <p class="card-text">Lock-screen actionable notifications with Approve/View buttons. This is where James does 80% of his DeepFlow interactions.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             08. ACCESSIBILITY
+             ========================================== -->
+        <section id="accessibility" class="section">
+            <div class="section-header">
+                <div class="section-number">08</div>
+                <h2 class="section-title">Accessibility & Ergonomics</h2>
+                <p class="section-desc">Touch targets, thumb zones, contrast ratios, and motion preferences. A professional tool must be usable by everyone.</p>
+            </div>
+
+            <div class="card-grid card-grid-2 mb-8">
+                <div class="card" style="text-align: center;">
+                    <div class="card-title mb-6">Thumb Zone Map</div>
+                    <div class="thumb-zone">
+                        <div class="thumb-zone-hard">Hard to reach</div>
+                        <div class="thumb-zone-ok">Stretch zone</div>
+                        <div class="thumb-zone-easy">Easy — Natural thumb arc</div>
+                    </div>
+                    <p class="text-sm text-muted mt-4">Primary actions (tab bar, chat input, task actions) live in the bottom 40% — the natural thumb arc for one-handed use.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Touch Target Rules</div>
+                    <p class="card-text mb-6">
+                        All interactive elements meet minimum sizing:
+                    </p>
+                    <p class="card-text">
+                        <strong style="color: var(--text-primary);">44 × 44px</strong> — Apple Human Interface Guidelines minimum<br><br>
+                        <strong style="color: var(--text-primary);">48 × 48px</strong> — Preferred for primary actions (tab bar items, CTA buttons)<br><br>
+                        <strong style="color: var(--text-primary);">8px minimum gap</strong> — Between adjacent touch targets to prevent mistouch<br><br>
+                        <strong style="color: var(--text-primary);">Status symbols:</strong> Visual size is 24px, but the tappable area extends to 44px with invisible padding<br><br>
+                        <strong style="color: var(--text-primary);">Task list rows:</strong> Full row is tappable (minimum 56px height), not just the text
+                    </p>
+                </div>
+            </div>
+
+            <div class="card-grid card-grid-2">
+                <div class="card">
+                    <div class="card-title">Contrast & Readability</div>
+                    <p class="card-text">
+                        All text meets <strong style="color: var(--text-primary);">WCAG AA</strong> contrast ratios (4.5:1 for body text, 3:1 for large text). Status colours are never conveyed by colour alone — always paired with shape (dots, icons) and text labels.<br><br>
+                        In bright outdoor conditions (Ravi checking his phone outside a café), the light theme provides excellent readability. Dark mode available for preference and low-light.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Motion & Reduced Motion</div>
+                    <p class="card-text">
+                        All animations respect <code>prefers-reduced-motion</code>. When enabled:<br><br>
+                        • Voice waveform animation → static bars<br>
+                        • Swipe gestures → still functional, no spring/bounce<br>
+                        • Notification badge pulse → solid badge<br>
+                        • Page transitions → instant cut, no slide<br><br>
+                        Functionality is never gated behind animation.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             09. PERSONA SCENARIOS
+             ========================================== -->
+        <section id="scenarios" class="section">
+            <div class="section-header">
+                <div class="section-number">09</div>
+                <h2 class="section-title">Persona Scenarios</h2>
+                <p class="section-desc">How each persona actually uses DeepFlow on mobile — grounding the design in real behaviour.</p>
+            </div>
+
+            <div class="card-grid card-grid-3">
+                <div class="card" style="border-top: 3px solid var(--brand-solid);">
+                    <div style="font-size: 32px; margin-bottom: 12px;">👩‍💼</div>
+                    <div class="card-title">Sarah — Ops Manager</div>
+                    <p class="card-text mb-4" style="font-size: var(--text-sm);"><strong style="color: var(--text-primary);">8:45 AM, commute:</strong> Opens Dashboard. Sees 2 blocked tasks. Taps to see details. Swipes "Gather Market Data" to In Progress — DataBot can start.</p>
+                    <p class="card-text mb-4" style="font-size: var(--text-sm);"><strong style="color: var(--text-primary);">11:30 AM, between meetings:</strong> Gets push notification: "AI completed Capital Model." Taps "View Output" from lock screen, reviews the summary, approves.</p>
+                    <p class="card-text" style="font-size: var(--text-sm);"><strong style="color: var(--text-primary);">Primary mobile path:</strong> Dashboard → Task List → Swipe actions</p>
+                </div>
+                <div class="card" style="border-top: 3px solid var(--brand-solid);">
+                    <div style="font-size: 32px; margin-bottom: 12px;">👨‍💼</div>
+                    <div class="card-title">Ravi — Solo CEO</div>
+                    <p class="card-text mb-4" style="font-size: var(--text-sm);"><strong style="color: var(--text-primary);">7:30 AM, morning coffee:</strong> Opens Chat (default). Says "What needs attention today?" DeepFlow reads back: "3 tasks due, 1 blocked, 1 approval waiting." Ravi sips coffee.</p>
+                    <p class="card-text mb-4" style="font-size: var(--text-sm);"><strong style="color: var(--text-primary);">1:15 PM, walking to client:</strong> Voice: "Set up a new client onboarding workflow for Apex Ltd." DeepFlow creates it from his template. Done.</p>
+                    <p class="card-text" style="font-size: var(--text-sm);"><strong style="color: var(--text-primary);">Primary mobile path:</strong> Chat (voice) → Dashboard for visual check</p>
+                </div>
+                <div class="card" style="border-top: 3px solid var(--brand-solid);">
+                    <div style="font-size: 32px; margin-bottom: 12px;">👔</div>
+                    <div class="card-title">James — VP Exec</div>
+                    <p class="card-text mb-4" style="font-size: var(--text-sm);"><strong style="color: var(--text-primary);">Throughout the day:</strong> Push notification: "Board Approval needs your sign-off." Taps "Approve" on lock screen. Done in 2 seconds. Never opens the app.</p>
+                    <p class="card-text mb-4" style="font-size: var(--text-sm);"><strong style="color: var(--text-primary);">5:00 PM, end of day:</strong> Opens Dashboard. Scans project health bars. All green except Basel III (42%). Taps to see what's behind. 30 seconds total.</p>
+                    <p class="card-text" style="font-size: var(--text-sm);"><strong style="color: var(--text-primary);">Primary mobile path:</strong> Push notifications → Dashboard (brief)</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ==========================================
+         FOOTER
+         ========================================== -->
+    <footer class="footer">
+        <div class="container">
+            <p>DeepFlow Mobile Experience Specification · Prepared by <a href="https://enriched.solutions" target="_blank">Enriched Solutions</a></p>
+            <p style="margin-top: var(--space-2);">Part of the <a href="index.html">DeepFlow Design Guidelines</a></p>
+        </div>
+    </footer>
+
+    <!-- ==========================================
+         THEME TOGGLE SCRIPT
+         ========================================== -->
+    <script>
+        const toggleBtns = document.querySelectorAll('.theme-toggle-option');
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const theme = btn.dataset.themeValue;
+                document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : '');
+                toggleBtns.forEach(b => {
+                    b.classList.toggle('active', b === btn);
+                    b.setAttribute('aria-checked', b === btn ? 'true' : 'false');
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

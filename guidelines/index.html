@@ -2373,6 +2373,768 @@
             margin-right: 2px;
             font-family: 'SF Mono', 'Fira Code', monospace;
         }
+
+        /* ============================================
+           20. FORM INPUTS
+           ============================================ */
+
+        .df-form-group {
+            margin-bottom: var(--space-5);
+        }
+
+        .df-label {
+            display: block;
+            font-size: var(--text-sm);
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+
+        .df-label-optional {
+            font-weight: 400;
+            color: var(--text-tertiary);
+            font-size: var(--text-xs);
+            margin-left: var(--space-1);
+        }
+
+        .df-input,
+        .df-textarea,
+        .df-select {
+            width: 100%;
+            font-family: inherit;
+            font-size: var(--text-base);
+            color: var(--text-primary);
+            background: var(--surface-card);
+            border: 1px solid var(--surface-card-border);
+            border-radius: var(--radius-md);
+            padding: var(--space-2) var(--space-3);
+            transition: border-color var(--duration-fast) var(--ease-default),
+                        box-shadow var(--duration-fast) var(--ease-default);
+            outline: none;
+        }
+
+        .df-input::placeholder,
+        .df-textarea::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .df-input:focus,
+        .df-textarea:focus,
+        .df-select:focus {
+            border-color: var(--brand-solid);
+            box-shadow: 0 0 0 3px rgba(0, 119, 221, 0.12);
+        }
+
+        [data-theme="dark"] .df-input:focus,
+        [data-theme="dark"] .df-textarea:focus,
+        [data-theme="dark"] .df-select:focus {
+            box-shadow: 0 0 0 3px rgba(0, 153, 255, 0.15);
+        }
+
+        .df-input.df-input-error,
+        .df-textarea.df-input-error,
+        .df-select.df-input-error {
+            border-color: var(--status-error);
+            box-shadow: 0 0 0 3px var(--status-error-bg);
+        }
+
+        .df-input:disabled,
+        .df-textarea:disabled,
+        .df-select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: var(--surface-raised);
+        }
+
+        .df-input-error-msg {
+            font-size: var(--text-xs);
+            color: var(--status-error);
+            margin-top: var(--space-1);
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+        }
+
+        .df-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .df-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        .df-input-search {
+            padding-left: 36px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 12px center;
+        }
+
+        .df-form-demo {
+            background: var(--surface-card);
+            border: 1px solid var(--surface-card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            max-width: 480px;
+        }
+
+        .df-form-demo-title {
+            font-size: var(--text-md);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-5);
+            padding-bottom: var(--space-3);
+            border-bottom: 1px solid var(--surface-card-border);
+        }
+
+        .df-form-actions {
+            display: flex;
+            gap: var(--space-3);
+            justify-content: flex-end;
+            margin-top: var(--space-6);
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--surface-card-border);
+        }
+
+        /* ============================================
+           21. TABLES
+           ============================================ */
+
+        .df-table-wrapper {
+            overflow-x: auto;
+            border: 1px solid var(--surface-card-border);
+            border-radius: var(--radius-lg);
+            background: var(--surface-card);
+        }
+
+        .df-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: var(--text-sm);
+        }
+
+        .df-table th {
+            text-align: left;
+            font-weight: 600;
+            font-size: var(--text-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-tertiary);
+            padding: var(--space-3) var(--space-4);
+            border-bottom: 1px solid var(--surface-card-border);
+            background: var(--surface-raised);
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .df-table th:hover {
+            color: var(--text-primary);
+        }
+
+        .df-table th .df-sort-icon {
+            display: inline-block;
+            margin-left: var(--space-1);
+            opacity: 0.4;
+            font-size: 10px;
+        }
+
+        .df-table th.df-sorted .df-sort-icon {
+            opacity: 1;
+            color: var(--brand-solid);
+        }
+
+        .df-table td {
+            padding: var(--space-3) var(--space-4);
+            border-bottom: 1px solid var(--surface-card-border);
+            color: var(--text-secondary);
+            vertical-align: middle;
+        }
+
+        .df-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .df-table tr:hover td {
+            background: var(--surface-hover);
+        }
+
+        .df-table .df-table-task-name {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .df-table .df-table-assignee {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .df-table .df-table-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: var(--radius-full);
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .df-table .df-table-priority {
+            display: inline-block;
+            font-size: var(--text-xs);
+            font-weight: 500;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+        }
+
+        .df-table .df-priority-high {
+            background: var(--status-error-bg);
+            color: var(--status-error);
+        }
+
+        .df-table .df-priority-medium {
+            background: var(--status-warning-bg);
+            color: var(--status-warning);
+        }
+
+        .df-table .df-priority-low {
+            background: var(--status-info-bg);
+            color: var(--status-info);
+        }
+
+        .df-table .df-table-status-symbol {
+            font-size: var(--text-md);
+            line-height: 1;
+        }
+
+        .df-table .df-table-expand {
+            cursor: pointer;
+            color: var(--text-tertiary);
+            font-size: var(--text-xs);
+            margin-right: var(--space-1);
+            display: inline-block;
+            transition: transform var(--duration-fast) var(--ease-default);
+        }
+
+        .df-table .df-table-expand.expanded {
+            transform: rotate(90deg);
+        }
+
+        .df-table .df-table-child td {
+            padding-left: var(--space-10);
+        }
+
+        .df-table .df-table-child .df-table-task-name {
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+
+        /* ============================================
+           22. SIDEBAR NAVIGATION
+           ============================================ */
+
+        .df-sidebar-demo {
+            display: flex;
+            gap: var(--space-8);
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .df-sidebar {
+            background: var(--surface-card);
+            border: 1px solid var(--surface-card-border);
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            height: 480px;
+        }
+
+        .df-sidebar-collapsed {
+            width: 56px;
+        }
+
+        .df-sidebar-expanded {
+            width: 240px;
+        }
+
+        .df-sidebar-section {
+            padding: var(--space-2);
+        }
+
+        .df-sidebar-section-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-tertiary);
+            padding: var(--space-2) var(--space-3);
+            margin-top: var(--space-2);
+        }
+
+        .df-sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: background var(--duration-fast) var(--ease-default),
+                        color var(--duration-fast) var(--ease-default);
+            white-space: nowrap;
+            text-decoration: none;
+        }
+
+        .df-sidebar-item:hover {
+            background: var(--surface-hover);
+            color: var(--text-primary);
+        }
+
+        .df-sidebar-item.active {
+            background: rgba(0, 119, 221, 0.08);
+            color: var(--brand-solid);
+        }
+
+        [data-theme="dark"] .df-sidebar-item.active {
+            background: rgba(0, 153, 255, 0.1);
+        }
+
+        .df-sidebar-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-md);
+            flex-shrink: 0;
+        }
+
+        .df-sidebar-switcher {
+            padding: var(--space-3);
+            border-bottom: 1px solid var(--surface-card-border);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .df-sidebar-switcher-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-md);
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-sm);
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .df-sidebar-switcher-info {
+            overflow: hidden;
+        }
+
+        .df-sidebar-switcher-name {
+            font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .df-sidebar-switcher-plan {
+            font-size: var(--text-xs);
+            color: var(--text-tertiary);
+        }
+
+        .df-sidebar-spacer {
+            flex: 1;
+        }
+
+        .df-sidebar-divider {
+            height: 1px;
+            background: var(--surface-card-border);
+            margin: var(--space-2) var(--space-2);
+        }
+
+        .df-sidebar-project-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: var(--radius-full);
+            flex-shrink: 0;
+        }
+
+        .df-sidebar-collapsed .df-sidebar-section-label,
+        .df-sidebar-collapsed .df-sidebar-switcher-info,
+        .df-sidebar-collapsed .df-sidebar-item span:not(.df-sidebar-icon) {
+            display: none;
+        }
+
+        .df-sidebar-collapsed .df-sidebar-item {
+            justify-content: center;
+            padding: var(--space-2);
+        }
+
+        .df-sidebar-collapsed .df-sidebar-switcher {
+            justify-content: center;
+        }
+
+        .df-sidebar-collapsed .df-sidebar-switcher-avatar {
+            width: 28px;
+            height: 28px;
+            font-size: var(--text-xs);
+        }
+
+        /* ============================================
+           23. TABS
+           ============================================ */
+
+        .df-tabs {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            border-bottom: 1px solid var(--surface-card-border);
+        }
+
+        .df-tab {
+            padding: var(--space-3) var(--space-4);
+            font-size: var(--text-sm);
+            font-weight: 500;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: color var(--duration-fast) var(--ease-default),
+                        border-color var(--duration-fast) var(--ease-default);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            white-space: nowrap;
+            text-decoration: none;
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            font-family: inherit;
+        }
+
+        .df-tab:hover {
+            color: var(--text-primary);
+        }
+
+        .df-tab.active {
+            color: var(--brand-solid);
+            border-bottom-color: var(--brand-solid);
+            font-weight: 600;
+        }
+
+        .df-tab.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .df-tab-badge {
+            font-size: 10px;
+            font-weight: 600;
+            background: var(--surface-raised);
+            border: 1px solid var(--surface-card-border);
+            color: var(--text-tertiary);
+            padding: 1px 6px;
+            border-radius: var(--radius-full);
+            line-height: 1.4;
+        }
+
+        .df-tab.active .df-tab-badge {
+            background: rgba(0, 119, 221, 0.08);
+            border-color: rgba(0, 119, 221, 0.15);
+            color: var(--brand-solid);
+        }
+
+        /* ============================================
+           24. TOASTS & NOTIFICATIONS
+           ============================================ */
+
+        .df-toast-stack {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+            max-width: 420px;
+        }
+
+        .df-toast {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            background: var(--surface-card);
+            border: 1px solid var(--surface-card-border);
+            box-shadow: var(--shadow-md);
+            font-size: var(--text-sm);
+            position: relative;
+        }
+
+        .df-toast-icon {
+            font-size: var(--text-md);
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .df-toast-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .df-toast-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .df-toast-message {
+            color: var(--text-secondary);
+            font-size: var(--text-xs);
+        }
+
+        .df-toast-action {
+            color: var(--brand-solid);
+            font-size: var(--text-xs);
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: var(--space-1);
+            display: inline-block;
+        }
+
+        .df-toast-action:hover {
+            text-decoration: underline;
+        }
+
+        .df-toast-dismiss {
+            position: absolute;
+            top: var(--space-2);
+            right: var(--space-2);
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            font-size: var(--text-sm);
+            padding: 2px;
+            line-height: 1;
+            border-radius: var(--radius-sm);
+            transition: background var(--duration-fast) var(--ease-default);
+        }
+
+        .df-toast-dismiss:hover {
+            background: var(--surface-hover);
+            color: var(--text-primary);
+        }
+
+        .df-toast-success { border-left: 3px solid var(--status-success); }
+        .df-toast-error   { border-left: 3px solid var(--status-error); }
+        .df-toast-info    { border-left: 3px solid var(--status-info); }
+        .df-toast-warning { border-left: 3px solid var(--status-warning); }
+
+        .df-toast-success .df-toast-icon { color: var(--status-success); }
+        .df-toast-error .df-toast-icon   { color: var(--status-error); }
+        .df-toast-info .df-toast-icon    { color: var(--status-info); }
+        .df-toast-warning .df-toast-icon { color: var(--status-warning); }
+
+        /* ============================================
+           25. EMPTY STATES
+           ============================================ */
+
+        .df-empty {
+            text-align: center;
+            padding: var(--space-12) var(--space-6);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .df-empty-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto var(--space-5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            background: var(--surface-raised);
+            border: 1px solid var(--surface-card-border);
+            border-radius: var(--radius-xl);
+        }
+
+        .df-empty-heading {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+
+        .df-empty-desc {
+            font-size: var(--text-sm);
+            color: var(--text-tertiary);
+            margin-bottom: var(--space-6);
+            line-height: 1.6;
+        }
+
+        .df-empty-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-5);
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            transition: opacity var(--duration-fast) var(--ease-default);
+        }
+
+        .df-empty-cta:hover {
+            opacity: 0.9;
+        }
+
+        .df-empty-cta-primary {
+            background: var(--brand-gradient);
+            color: white;
+        }
+
+        .df-empty-cta-secondary {
+            background: var(--surface-raised);
+            color: var(--text-primary);
+            border: 1px solid var(--surface-card-border);
+        }
+
+        .df-empty-cta-secondary:hover {
+            background: var(--surface-hover);
+        }
+
+        .df-empty-variants {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-6);
+        }
+
+        @media (max-width: 900px) {
+            .df-empty-variants { grid-template-columns: 1fr; }
+        }
+
+        .df-empty-variant-card {
+            background: var(--surface-card);
+            border: 1px solid var(--surface-card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+        }
+
+        /* ============================================
+           26. LOADING STATES — SKELETON SCREENS
+           ============================================ */
+
+        @keyframes df-shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .df-skeleton {
+            background: linear-gradient(
+                90deg,
+                var(--surface-raised) 25%,
+                var(--surface-hover) 37%,
+                var(--surface-raised) 63%
+            );
+            background-size: 200% 100%;
+            animation: df-shimmer 1.8s ease-in-out infinite;
+            border-radius: var(--radius-md);
+        }
+
+        .df-skeleton-line {
+            height: 12px;
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--space-2);
+        }
+
+        .df-skeleton-line-short {
+            width: 60%;
+        }
+
+        .df-skeleton-line-medium {
+            width: 80%;
+        }
+
+        .df-skeleton-circle {
+            border-radius: var(--radius-full);
+        }
+
+        .df-skeleton-card {
+            background: var(--surface-card);
+            border: 1px solid var(--surface-card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            width: 280px;
+        }
+
+        .df-skeleton-card-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
+        }
+
+        .df-skeleton-table-row {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            padding: var(--space-3) var(--space-4);
+            border-bottom: 1px solid var(--surface-card-border);
+        }
+
+        .df-skeleton-node {
+            width: 180px;
+            height: 72px;
+            background: var(--surface-card);
+            border: 1px solid var(--surface-card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: var(--space-2);
+        }
+
+        .df-skeleton-demos {
+            display: flex;
+            gap: var(--space-8);
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .df-skeleton-demo-label {
+            font-size: var(--text-xs);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-tertiary);
+            margin-bottom: var(--space-3);
+        }
+
     </style>
 </head>
 <body>
@@ -2406,6 +3168,14 @@
                 <li><a href="#task-cards">Cards</a></li>
                 <li><a href="#graph-nodes">Nodes</a></li>
                 <li><a href="#breadcrumbs">Breadcrumbs</a></li>
+                <li><a href="#forms">Forms</a></li>
+                <li><a href="#tables">Tables</a></li>
+                <li><a href="#sidebar-nav">Sidebar</a></li>
+                <li><a href="#tabs">Tabs</a></li>
+                <li><a href="#toasts">Toasts</a></li>
+                <li style="color: var(--surface-card-border);">|</li>
+                <li><a href="views.html" style="color: var(--brand-solid);">View Layouts →</a></li>
+                <li><a href="mobile.html" style="color: var(--brand-solid);">📱 Mobile</a></li>
             </ul>
             <div class="theme-toggle" role="radiogroup" aria-label="Theme switcher">
                 <button class="theme-toggle-option active" data-theme-value="light" aria-checked="true" role="radio">☀️ Light</button>
@@ -2468,7 +3238,20 @@
                         <li><a href="#status-indicators"><span class="idx-num">17</span> Status Indicators</a></li>
                         <li><a href="#breadcrumbs"><span class="idx-num">18</span> Breadcrumbs</a></li>
                         <li><a href="#pills"><span class="idx-num">19</span> Custom Property Pills</a></li>
+                        <li><a href="#forms"><span class="idx-num">20</span> Form Inputs</a></li>
+                        <li><a href="#tables"><span class="idx-num">21</span> Tables</a></li>
+                        <li><a href="#sidebar-nav"><span class="idx-num">22</span> Sidebar Navigation</a></li>
+                        <li><a href="#tabs"><span class="idx-num">23</span> Tabs</a></li>
+                        <li><a href="#toasts"><span class="idx-num">24</span> Toasts & Notifications</a></li>
+                        <li><a href="#empty-states"><span class="idx-num">25</span> Empty States</a></li>
+                        <li><a href="#loading-states"><span class="idx-num">26</span> Loading States</a></li>
                     </ul>
+                    <div style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--surface-card-border);">
+                        <div class="section-index-group-title">Phase 3 — View Layouts</div>
+                        <ul class="section-index-list">
+                            <li><a href="views.html"><span class="idx-num">→</span> View Layout Specification</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -4251,6 +5034,580 @@
             </div>
         </section>
 
+        <!-- ==========================================
+             20. FORM INPUTS
+             ========================================== -->
+        <section id="forms" class="section">
+            <div class="section-header">
+                <div class="section-number">20</div>
+                <h2 class="section-title">Form Inputs</h2>
+                <p class="section-desc">Text fields, textareas, selects, and search inputs. Every form control uses the same border/focus/error system for consistency across the platform.</p>
+            </div>
+
+            <div class="component-demo">
+                <div class="component-demo-label">Input States</div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-6);">
+                    <div class="df-form-group">
+                        <label class="df-label">Default</label>
+                        <input type="text" class="df-input" placeholder="Enter task name…">
+                    </div>
+                    <div class="df-form-group">
+                        <label class="df-label">Focused</label>
+                        <input type="text" class="df-input" value="Capital Modelling" style="border-color: var(--brand-solid); box-shadow: 0 0 0 3px rgba(0,119,221,0.12);">
+                    </div>
+                    <div class="df-form-group">
+                        <label class="df-label">Error</label>
+                        <input type="text" class="df-input df-input-error" value="">
+                        <div class="df-input-error-msg">⚠ Task name is required</div>
+                    </div>
+                    <div class="df-form-group">
+                        <label class="df-label">Disabled</label>
+                        <input type="text" class="df-input" value="Locked task" disabled>
+                    </div>
+                </div>
+
+                <div class="component-demo-label">Other Input Types</div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-6);">
+                    <div class="df-form-group">
+                        <label class="df-label">Textarea</label>
+                        <textarea class="df-textarea" placeholder="Describe the task scope…"></textarea>
+                    </div>
+                    <div class="df-form-group">
+                        <label class="df-label">Select / Dropdown</label>
+                        <select class="df-select">
+                            <option>Select assignee…</option>
+                            <option>Sarah Chen</option>
+                            <option>David Okafor</option>
+                            <option>Emily Zhao</option>
+                        </select>
+                    </div>
+                    <div class="df-form-group">
+                        <label class="df-label">Search</label>
+                        <input type="text" class="df-input df-input-search" placeholder="Search tasks…">
+                    </div>
+                </div>
+
+                <div class="component-demo-label">Realistic Demo — Edit Task</div>
+                <div class="df-form-demo">
+                    <div class="df-form-demo-title">Edit Task</div>
+                    <div class="df-form-group">
+                        <label class="df-label">Task Name</label>
+                        <input type="text" class="df-input" value="Run Capital Adequacy Model">
+                    </div>
+                    <div class="df-form-group">
+                        <label class="df-label">Description <span class="df-label-optional">(optional)</span></label>
+                        <textarea class="df-textarea">Execute the capital modelling process for ICAAP 2026. Requires validated input data from the Risk Assessment workflow.</textarea>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+                        <div class="df-form-group">
+                            <label class="df-label">Assignee</label>
+                            <select class="df-select">
+                                <option>Sarah Chen</option>
+                                <option>David Okafor</option>
+                                <option>Emily Zhao</option>
+                            </select>
+                        </div>
+                        <div class="df-form-group">
+                            <label class="df-label">Due Date</label>
+                            <input type="text" class="df-input" value="2026-03-28">
+                        </div>
+                    </div>
+                    <div class="df-form-group">
+                        <label class="df-label">Priority</label>
+                        <select class="df-select">
+                            <option>High</option>
+                            <option>Medium</option>
+                            <option>Low</option>
+                        </select>
+                    </div>
+                    <div class="df-form-actions">
+                        <button class="btn btn-secondary" style="padding: var(--space-2) var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--surface-card-border); background: var(--surface-card); color: var(--text-secondary); font-size: var(--text-sm); cursor: pointer; font-family: inherit;">Cancel</button>
+                        <button class="btn btn-primary" style="padding: var(--space-2) var(--space-4); border-radius: var(--radius-md); border: none; background: var(--brand-solid); color: white; font-size: var(--text-sm); font-weight: 600; cursor: pointer; font-family: inherit;">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-grid card-grid-2">
+                <div class="card">
+                    <div class="card-title">Focus Ring</div>
+                    <p class="card-text">
+                        All inputs use a 3px <code>box-shadow</code> ring in <code>--brand-solid</code> at 12% opacity on focus. This is visible in both light and dark mode without being distracting. Never rely solely on border-colour for focus indication.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Error Pattern</div>
+                    <p class="card-text">
+                        Error state replaces the focus ring with <code>--status-error</code> border and background glow. Always pair with a text message below the field — colour alone isn't accessible. Error messages use the ⚠ icon prefix for scanability.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             21. TABLES
+             ========================================== -->
+        <section id="tables" class="section">
+            <div class="section-header">
+                <div class="section-number">21</div>
+                <h2 class="section-title">Tables</h2>
+                <p class="section-desc">List view for managing large task sets. Sortable columns, inline status, and expandable parent-child rows — how Sarah manages 50+ tasks without losing context.</p>
+            </div>
+
+            <div class="component-demo">
+                <div class="component-demo-label">Task List Table</div>
+                <div class="df-table-wrapper">
+                    <table class="df-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 48px;">Status</th>
+                                <th class="df-sorted">Task Name <span class="df-sort-icon">▲</span></th>
+                                <th>Assignee</th>
+                                <th>Due Date</th>
+                                <th>Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="df-table-status-symbol" style="color: var(--status-success);">✓</span></td>
+                                <td><span class="df-table-task-name"><span class="df-table-expand expanded" onclick="this.classList.toggle('expanded')">▸</span>ICAAP Document Production</span></td>
+                                <td><div class="df-table-assignee"><span class="df-table-avatar">SC</span> Sarah Chen</div></td>
+                                <td>2026-04-15</td>
+                                <td><span class="df-table-priority df-priority-high">High</span></td>
+                            </tr>
+                            <tr class="df-table-child">
+                                <td><span class="df-table-status-symbol" style="color: var(--status-success);">✓</span></td>
+                                <td><span class="df-table-task-name">Gather Risk Data</span></td>
+                                <td><div class="df-table-assignee"><span class="df-table-avatar">DO</span> David Okafor</div></td>
+                                <td>2026-03-20</td>
+                                <td><span class="df-table-priority df-priority-medium">Medium</span></td>
+                            </tr>
+                            <tr class="df-table-child">
+                                <td><span class="df-table-status-symbol" style="color: var(--brand-solid);">▶</span></td>
+                                <td><span class="df-table-task-name">Run Capital Model</span></td>
+                                <td><div class="df-table-assignee"><span class="df-table-avatar">SC</span> Sarah Chen</div></td>
+                                <td>2026-03-28</td>
+                                <td><span class="df-table-priority df-priority-high">High</span></td>
+                            </tr>
+                            <tr class="df-table-child">
+                                <td><span class="df-table-status-symbol" style="color: var(--status-pending);">○</span></td>
+                                <td><span class="df-table-task-name">Draft Executive Summary</span></td>
+                                <td><div class="df-table-assignee"><span class="df-table-avatar">EZ</span> Emily Zhao</div></td>
+                                <td>2026-04-10</td>
+                                <td><span class="df-table-priority df-priority-low">Low</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="df-table-status-symbol" style="color: var(--brand-solid);">▶</span></td>
+                                <td><span class="df-table-task-name">Risk Assessment Review</span></td>
+                                <td><div class="df-table-assignee"><span class="df-table-avatar">DO</span> David Okafor</div></td>
+                                <td>2026-03-25</td>
+                                <td><span class="df-table-priority df-priority-high">High</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="df-table-status-symbol" style="color: var(--status-warning);">⏸</span></td>
+                                <td><span class="df-table-task-name">Stress Testing Scenarios</span></td>
+                                <td><div class="df-table-assignee"><span class="df-table-avatar">SC</span> Sarah Chen</div></td>
+                                <td>2026-04-01</td>
+                                <td><span class="df-table-priority df-priority-medium">Medium</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="df-table-status-symbol" style="color: var(--status-pending);">○</span></td>
+                                <td><span class="df-table-task-name">Board Presentation Prep</span></td>
+                                <td><div class="df-table-assignee"><span class="df-table-avatar">EZ</span> Emily Zhao</div></td>
+                                <td>2026-04-20</td>
+                                <td><span class="df-table-priority df-priority-low">Low</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card-grid card-grid-2">
+                <div class="card">
+                    <div class="card-title">Sortable Columns</div>
+                    <p class="card-text">
+                        Column headers are interactive. Click to sort ascending, click again for descending. The active sort column shows a highlighted arrow icon in <code>--brand-solid</code>. Default sort: task name alphabetical. Users can sort by any column.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Parent-Child Expansion</div>
+                    <p class="card-text">
+                        Parent tasks with children show a ▸ expand toggle. When expanded, children are indented with extra left padding. Child rows use lighter text weight to visually subordinate them. Collapse state persists per session.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             22. SIDEBAR NAVIGATION
+             ========================================== -->
+        <section id="sidebar-nav" class="section">
+            <div class="section-header">
+                <div class="section-number">22</div>
+                <h2 class="section-title">Sidebar Navigation</h2>
+                <p class="section-desc">Primary application navigation. Collapses to 56px icon-only mode for maximum canvas space, expands to 240px when users need labels and project lists.</p>
+            </div>
+
+            <div class="component-demo">
+                <div class="component-demo-label">Collapsed (56px) & Expanded (240px)</div>
+                <div class="df-sidebar-demo">
+                    <!-- Collapsed Sidebar -->
+                    <div class="df-sidebar df-sidebar-collapsed">
+                        <div class="df-sidebar-switcher">
+                            <div class="df-sidebar-switcher-avatar">D</div>
+                        </div>
+                        <div class="df-sidebar-section">
+                            <a class="df-sidebar-item" title="Dashboard"><span class="df-sidebar-icon">📊</span></a>
+                            <a class="df-sidebar-item active" title="Projects"><span class="df-sidebar-icon">📁</span></a>
+                            <a class="df-sidebar-item" title="Workflows"><span class="df-sidebar-icon">🔀</span></a>
+                            <a class="df-sidebar-item" title="Templates"><span class="df-sidebar-icon">📋</span></a>
+                            <a class="df-sidebar-item" title="Team"><span class="df-sidebar-icon">👥</span></a>
+                        </div>
+                        <div class="df-sidebar-spacer"></div>
+                        <div class="df-sidebar-divider"></div>
+                        <div class="df-sidebar-section">
+                            <a class="df-sidebar-item" title="Settings"><span class="df-sidebar-icon">⚙️</span></a>
+                        </div>
+                    </div>
+
+                    <!-- Expanded Sidebar -->
+                    <div class="df-sidebar df-sidebar-expanded">
+                        <div class="df-sidebar-switcher">
+                            <div class="df-sidebar-switcher-avatar">D</div>
+                            <div class="df-sidebar-switcher-info">
+                                <div class="df-sidebar-switcher-name">DeepFlow</div>
+                                <div class="df-sidebar-switcher-plan">Enterprise</div>
+                            </div>
+                        </div>
+                        <div class="df-sidebar-section">
+                            <a class="df-sidebar-item"><span class="df-sidebar-icon">📊</span> <span>Dashboard</span></a>
+                            <a class="df-sidebar-item active"><span class="df-sidebar-icon">📁</span> <span>Projects</span></a>
+                            <a class="df-sidebar-item"><span class="df-sidebar-icon">🔀</span> <span>Workflows</span></a>
+                            <a class="df-sidebar-item"><span class="df-sidebar-icon">📋</span> <span>Templates</span></a>
+                            <a class="df-sidebar-item"><span class="df-sidebar-icon">👥</span> <span>Team</span></a>
+                        </div>
+                        <div class="df-sidebar-divider"></div>
+                        <div class="df-sidebar-section">
+                            <div class="df-sidebar-section-label">Projects</div>
+                            <a class="df-sidebar-item"><span class="df-sidebar-icon"><span class="df-sidebar-project-dot" style="background: var(--status-success);"></span></span> <span>ICAAP 2026</span></a>
+                            <a class="df-sidebar-item"><span class="df-sidebar-icon"><span class="df-sidebar-project-dot" style="background: var(--status-info);"></span></span> <span>Risk Assessment</span></a>
+                            <a class="df-sidebar-item"><span class="df-sidebar-icon"><span class="df-sidebar-project-dot" style="background: var(--status-warning);"></span></span> <span>Capital Modelling</span></a>
+                        </div>
+                        <div class="df-sidebar-spacer"></div>
+                        <div class="df-sidebar-divider"></div>
+                        <div class="df-sidebar-section">
+                            <a class="df-sidebar-item"><span class="df-sidebar-icon">⚙️</span> <span>Settings</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-grid card-grid-2">
+                <div class="card">
+                    <div class="card-title">Collapse Behaviour</div>
+                    <p class="card-text">
+                        Collapsed state hides all labels and shows only icons (20×20 centred). The workspace switcher shrinks to a 28px avatar. Tooltips appear on hover in collapsed mode. Users toggle via a chevron button at the sidebar footer or via keyboard shortcut <code>[</code>.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Active State</div>
+                    <p class="card-text">
+                        The active nav item uses <code>--brand-solid</code> text colour with a subtle 8% opacity background tint. This is visible but doesn't compete with the main canvas. The project list uses coloured dots (8px) from status colours to identify workspaces at a glance.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             23. TABS
+             ========================================== -->
+        <section id="tabs" class="section">
+            <div class="section-header">
+                <div class="section-number">23</div>
+                <h2 class="section-title">Tabs</h2>
+                <p class="section-desc">Horizontal tab navigation for task detail panels, settings pages, and any multi-section content. Active state uses the brand underline pattern.</p>
+            </div>
+
+            <div class="component-demo">
+                <div class="component-demo-label">Task Detail Tabs</div>
+                <div style="margin-bottom: var(--space-6);">
+                    <div class="df-tabs">
+                        <button class="df-tab active">Overview</button>
+                        <button class="df-tab">Sub-tasks <span class="df-tab-badge">4</span></button>
+                        <button class="df-tab">Resources <span class="df-tab-badge">2</span></button>
+                        <button class="df-tab">Comments</button>
+                        <button class="df-tab disabled">History</button>
+                    </div>
+                </div>
+
+                <div class="component-demo-label">Tab States</div>
+                <div style="display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start;">
+                    <div>
+                        <div style="font-size: var(--text-xs); color: var(--text-tertiary); margin-bottom: var(--space-2); font-weight: 500;">Active</div>
+                        <div style="border-bottom: 1px solid var(--surface-card-border); display: inline-flex;">
+                            <button class="df-tab active" style="margin-bottom: -1px;">Overview</button>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size: var(--text-xs); color: var(--text-tertiary); margin-bottom: var(--space-2); font-weight: 500;">Hover</div>
+                        <div style="border-bottom: 1px solid var(--surface-card-border); display: inline-flex;">
+                            <button class="df-tab" style="color: var(--text-primary); margin-bottom: -1px;">Sub-tasks</button>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size: var(--text-xs); color: var(--text-tertiary); margin-bottom: var(--space-2); font-weight: 500;">Inactive</div>
+                        <div style="border-bottom: 1px solid var(--surface-card-border); display: inline-flex;">
+                            <button class="df-tab" style="margin-bottom: -1px;">Comments</button>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size: var(--text-xs); color: var(--text-tertiary); margin-bottom: var(--space-2); font-weight: 500;">Disabled</div>
+                        <div style="border-bottom: 1px solid var(--surface-card-border); display: inline-flex;">
+                            <button class="df-tab disabled" style="margin-bottom: -1px;">History</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-grid card-grid-2">
+                <div class="card">
+                    <div class="card-title">Underline Pattern</div>
+                    <p class="card-text">
+                        The active tab uses a 2px bottom border in <code>--brand-solid</code>. This sits flush against the tab bar's bottom border, replacing it visually. Font weight increases to 600 on active to reinforce selection. Tabs use <code>margin-bottom: -1px</code> to overlap the container border.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Count Badges</div>
+                    <p class="card-text">
+                        Tabs with quantifiable content (Sub-tasks, Resources) show a count badge. Inactive badges use neutral styling; active badges adopt the brand colour family. Badges update in real-time as items are added or completed.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             24. TOASTS & NOTIFICATIONS
+             ========================================== -->
+        <section id="toasts" class="section">
+            <div class="section-header">
+                <div class="section-number">24</div>
+                <h2 class="section-title">Toasts &amp; Notifications</h2>
+                <p class="section-desc">Transient feedback messages. Appear bottom-right, auto-dismiss after 5 seconds (errors persist until dismissed). Action-oriented copy tells users what happened and what to do next.</p>
+            </div>
+
+            <div class="component-demo">
+                <div class="component-demo-label">Toast Stack</div>
+                <div class="df-toast-stack">
+                    <div class="df-toast df-toast-success">
+                        <span class="df-toast-icon">✓</span>
+                        <div class="df-toast-content">
+                            <div class="df-toast-title">Task completed</div>
+                            <div class="df-toast-message">"Run Capital Model" marked as done</div>
+                            <a class="df-toast-action" href="#">View workflow →</a>
+                        </div>
+                        <button class="df-toast-dismiss">✕</button>
+                    </div>
+
+                    <div class="df-toast df-toast-error">
+                        <span class="df-toast-icon">✕</span>
+                        <div class="df-toast-content">
+                            <div class="df-toast-title">Execution failed</div>
+                            <div class="df-toast-message">Capital Model v3 timed out after 120s</div>
+                            <a class="df-toast-action" href="#">Retry or reassign →</a>
+                        </div>
+                        <button class="df-toast-dismiss">✕</button>
+                    </div>
+
+                    <div class="df-toast df-toast-info">
+                        <span class="df-toast-icon">ℹ</span>
+                        <div class="df-toast-content">
+                            <div class="df-toast-title">New comment</div>
+                            <div class="df-toast-message">David Okafor commented on "Risk Assessment Review"</div>
+                            <a class="df-toast-action" href="#">View comment →</a>
+                        </div>
+                        <button class="df-toast-dismiss">✕</button>
+                    </div>
+
+                    <div class="df-toast df-toast-warning">
+                        <span class="df-toast-icon">⚠</span>
+                        <div class="df-toast-content">
+                            <div class="df-toast-title">Approaching deadline</div>
+                            <div class="df-toast-message">"Gather Risk Data" is due in 2 days — still in progress</div>
+                            <a class="df-toast-action" href="#">Open task →</a>
+                        </div>
+                        <button class="df-toast-dismiss">✕</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-grid card-grid-2">
+                <div class="card">
+                    <div class="card-title">Hierarchy &amp; Persistence</div>
+                    <p class="card-text">
+                        Success and info toasts auto-dismiss after 5 seconds. Warning toasts persist for 8 seconds. Error toasts persist until manually dismissed — errors demand attention. The left border colour encodes severity instantly via <code>--status-*</code> tokens.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Action Links</div>
+                    <p class="card-text">
+                        Every toast should offer a relevant next action: "View workflow", "Retry or reassign", "Open task". This turns notifications from passive alerts into navigation shortcuts. Links use <code>--brand-solid</code> and underline on hover.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             25. EMPTY STATES
+             ========================================== -->
+        <section id="empty-states" class="section">
+            <div class="section-header">
+                <div class="section-number">25</div>
+                <h2 class="section-title">Empty States</h2>
+                <p class="section-desc">What users see when there's nothing to show. Three variants cover onboarding, zero results, and errors — each with a clear call to action.</p>
+            </div>
+
+            <div class="component-demo">
+                <div class="component-demo-label">Empty State Variants</div>
+                <div class="df-empty-variants">
+                    <!-- Onboarding -->
+                    <div class="df-empty-variant-card">
+                        <div class="df-empty">
+                            <div class="df-empty-icon">🚀</div>
+                            <div class="df-empty-heading">Start your first workflow</div>
+                            <div class="df-empty-desc">Create a workflow to orchestrate your ICAAP tasks. Connect steps, assign team members, and let DeepFlow handle the dependencies.</div>
+                            <button class="df-empty-cta df-empty-cta-primary">+ New Workflow</button>
+                        </div>
+                    </div>
+
+                    <!-- Zero Results -->
+                    <div class="df-empty-variant-card">
+                        <div class="df-empty">
+                            <div class="df-empty-icon">🔍</div>
+                            <div class="df-empty-heading">No tasks match your filters</div>
+                            <div class="df-empty-desc">Try adjusting your search terms or removing some filters to see more results.</div>
+                            <button class="df-empty-cta df-empty-cta-secondary">Clear Filters</button>
+                        </div>
+                    </div>
+
+                    <!-- Error -->
+                    <div class="df-empty-variant-card">
+                        <div class="df-empty">
+                            <div class="df-empty-icon">⚠️</div>
+                            <div class="df-empty-heading">Something went wrong</div>
+                            <div class="df-empty-desc">We couldn't load your workflow data. This is usually temporary — try again in a moment.</div>
+                            <button class="df-empty-cta df-empty-cta-secondary">Retry</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-grid card-grid-2">
+                <div class="card">
+                    <div class="card-title">Onboarding vs. Zero Results</div>
+                    <p class="card-text">
+                        First-time/onboarding states use a gradient CTA button to maximise conversion — getting users to take their first action is critical. Zero-result states use a secondary button since the user already knows how to act; they just need to adjust their query.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Error Recovery</div>
+                    <p class="card-text">
+                        Error states always include a retry action. The copy is empathetic ("This is usually temporary") rather than blaming the user. The icon area (64×64 rounded square) uses the raised surface with a border — never a raw emoji floating in space.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             26. LOADING STATES
+             ========================================== -->
+        <section id="loading-states" class="section">
+            <div class="section-header">
+                <div class="section-number">26</div>
+                <h2 class="section-title">Loading States</h2>
+                <p class="section-desc">Skeleton screens with a shimmer animation replace content during loading. They hint at the layout to come, reducing perceived wait time and preventing layout shift.</p>
+            </div>
+
+            <div class="component-demo">
+                <div class="component-demo-label">Skeleton Screens</div>
+                <div class="df-skeleton-demos">
+                    <!-- Skeleton Task Card -->
+                    <div>
+                        <div class="df-skeleton-demo-label">Task Card</div>
+                        <div class="df-skeleton-card">
+                            <div class="df-skeleton-card-header">
+                                <div class="df-skeleton df-skeleton-circle" style="width: 28px; height: 28px;"></div>
+                                <div style="flex: 1;">
+                                    <div class="df-skeleton df-skeleton-line" style="width: 70%; height: 10px; margin-bottom: 6px;"></div>
+                                    <div class="df-skeleton df-skeleton-line" style="width: 40%; height: 8px; margin-bottom: 0;"></div>
+                                </div>
+                            </div>
+                            <div class="df-skeleton df-skeleton-line" style="width: 100%;"></div>
+                            <div class="df-skeleton df-skeleton-line" style="width: 85%;"></div>
+                            <div class="df-skeleton df-skeleton-line" style="width: 60%; margin-bottom: var(--space-3);"></div>
+                            <div style="display: flex; gap: var(--space-2);">
+                                <div class="df-skeleton" style="width: 56px; height: 20px; border-radius: var(--radius-full);"></div>
+                                <div class="df-skeleton" style="width: 48px; height: 20px; border-radius: var(--radius-full);"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skeleton Table Row -->
+                    <div>
+                        <div class="df-skeleton-demo-label">Table Row</div>
+                        <div style="background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-lg); overflow: hidden; width: 380px;">
+                            <div class="df-skeleton-table-row">
+                                <div class="df-skeleton df-skeleton-circle" style="width: 20px; height: 20px;"></div>
+                                <div class="df-skeleton df-skeleton-line" style="width: 140px; height: 10px; margin-bottom: 0;"></div>
+                                <div class="df-skeleton df-skeleton-circle" style="width: 24px; height: 24px;"></div>
+                                <div class="df-skeleton df-skeleton-line" style="width: 70px; height: 10px; margin-bottom: 0;"></div>
+                                <div class="df-skeleton" style="width: 48px; height: 18px; border-radius: var(--radius-full);"></div>
+                            </div>
+                            <div class="df-skeleton-table-row">
+                                <div class="df-skeleton df-skeleton-circle" style="width: 20px; height: 20px;"></div>
+                                <div class="df-skeleton df-skeleton-line" style="width: 120px; height: 10px; margin-bottom: 0;"></div>
+                                <div class="df-skeleton df-skeleton-circle" style="width: 24px; height: 24px;"></div>
+                                <div class="df-skeleton df-skeleton-line" style="width: 70px; height: 10px; margin-bottom: 0;"></div>
+                                <div class="df-skeleton" style="width: 56px; height: 18px; border-radius: var(--radius-full);"></div>
+                            </div>
+                            <div class="df-skeleton-table-row" style="border-bottom: none;">
+                                <div class="df-skeleton df-skeleton-circle" style="width: 20px; height: 20px;"></div>
+                                <div class="df-skeleton df-skeleton-line" style="width: 160px; height: 10px; margin-bottom: 0;"></div>
+                                <div class="df-skeleton df-skeleton-circle" style="width: 24px; height: 24px;"></div>
+                                <div class="df-skeleton df-skeleton-line" style="width: 70px; height: 10px; margin-bottom: 0;"></div>
+                                <div class="df-skeleton" style="width: 40px; height: 18px; border-radius: var(--radius-full);"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skeleton Graph Node -->
+                    <div>
+                        <div class="df-skeleton-demo-label">Graph Node</div>
+                        <div class="df-skeleton-node">
+                            <div style="display: flex; align-items: center; gap: var(--space-2);">
+                                <div class="df-skeleton df-skeleton-circle" style="width: 16px; height: 16px;"></div>
+                                <div class="df-skeleton df-skeleton-line" style="width: 100px; height: 10px; margin-bottom: 0;"></div>
+                            </div>
+                            <div class="df-skeleton df-skeleton-line" style="width: 80%; height: 8px; margin-bottom: 0;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-grid card-grid-2">
+                <div class="card">
+                    <div class="card-title">Shimmer Animation</div>
+                    <p class="card-text">
+                        The shimmer uses a <code>linear-gradient</code> sweeping from <code>--surface-raised</code> through <code>--surface-hover</code> and back, animated via <code>background-position</code>. Duration is 1.8s with <code>ease-in-out</code> for a natural, non-anxious feel. Works identically in both themes.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Layout Fidelity</div>
+                    <p class="card-text">
+                        Skeleton shapes should closely match the real content dimensions — circles for avatars, short lines for labels, longer lines for descriptions. This prevents layout shift when data arrives and gives users a mental model of what's loading. Use the same border-radius and spacing as the real component.
+                    </p>
+                </div>
+            </div>
+        </section>
+
     </div>
 
     <!-- ==========================================
@@ -4259,10 +5616,10 @@
     <footer class="footer">
         <div class="container">
             <p style="margin-bottom: var(--space-2);">
-                <strong style="color: var(--text-primary);">DeepFlow Design Guidelines</strong> · v2.0 · Foundations + Component Library
+                <strong style="color: var(--text-primary);">DeepFlow Design Guidelines</strong> · v2.1 · Foundations + Component Library (Complete)
             </p>
             <p>
-                Prepared by <a href="https://enriched.solutions">Enriched Solutions</a> · Phase 2b: Tables, Modals, Forms, Empty States — coming next
+                Prepared by <a href="https://enriched.solutions">Enriched Solutions</a> · Phase 2 complete: 26 sections covering foundations, components, and interaction patterns
             </p>
         </div>
     </footer>
