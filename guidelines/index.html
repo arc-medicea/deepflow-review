@@ -2351,19 +2351,89 @@
         }
         [data-theme="dark"] .df-pill-teal .df-pill-indicator { background: #2DD4BF; }
 
-        .df-pill-orange {
-            background: rgba(249, 115, 22, 0.08);
-            color: #EA580C;
-            border: 1px solid rgba(249, 115, 22, 0.18);
+        .df-pill-cyan {
+            background: rgba(6, 182, 212, 0.08);
+            color: #0891B2;
+            border: 1px solid rgba(6, 182, 212, 0.18);
         }
-        .df-pill-orange .df-pill-indicator { background: #F97316; }
+        .df-pill-cyan .df-pill-indicator { background: #06B6D4; }
 
-        [data-theme="dark"] .df-pill-orange {
-            background: rgba(251, 146, 60, 0.12);
-            color: #FB923C;
-            border-color: rgba(251, 146, 60, 0.20);
+        [data-theme="dark"] .df-pill-cyan {
+            background: rgba(34, 211, 238, 0.12);
+            color: #22D3EE;
+            border-color: rgba(34, 211, 238, 0.20);
         }
-        [data-theme="dark"] .df-pill-orange .df-pill-indicator { background: #FB923C; }
+        [data-theme="dark"] .df-pill-cyan .df-pill-indicator { background: #22D3EE; }
+
+        .df-pill-lime {
+            background: rgba(132, 204, 22, 0.08);
+            color: #65A30D;
+            border: 1px solid rgba(132, 204, 22, 0.18);
+        }
+        .df-pill-lime .df-pill-indicator { background: #84CC16; }
+
+        [data-theme="dark"] .df-pill-lime {
+            background: rgba(163, 230, 53, 0.12);
+            color: #A3E635;
+            border-color: rgba(163, 230, 53, 0.20);
+        }
+        [data-theme="dark"] .df-pill-lime .df-pill-indicator { background: #A3E635; }
+
+        .df-pill-rose {
+            background: rgba(251, 113, 133, 0.08);
+            color: #E11D48;
+            border: 1px solid rgba(251, 113, 133, 0.18);
+        }
+        .df-pill-rose .df-pill-indicator { background: #FB7185; }
+
+        [data-theme="dark"] .df-pill-rose {
+            background: rgba(251, 113, 133, 0.12);
+            color: #FB7185;
+            border-color: rgba(251, 113, 133, 0.20);
+        }
+        [data-theme="dark"] .df-pill-rose .df-pill-indicator { background: #FB7185; }
+
+        .df-pill-lavender {
+            background: rgba(167, 139, 250, 0.08);
+            color: #7C3AED;
+            border: 1px solid rgba(167, 139, 250, 0.18);
+        }
+        .df-pill-lavender .df-pill-indicator { background: #A78BFA; }
+
+        [data-theme="dark"] .df-pill-lavender {
+            background: rgba(167, 139, 250, 0.12);
+            color: #A78BFA;
+            border-color: rgba(167, 139, 250, 0.20);
+        }
+        [data-theme="dark"] .df-pill-lavender .df-pill-indicator { background: #A78BFA; }
+
+        .df-pill-fuchsia {
+            background: rgba(217, 70, 239, 0.08);
+            color: #C026D3;
+            border: 1px solid rgba(217, 70, 239, 0.18);
+        }
+        .df-pill-fuchsia .df-pill-indicator { background: #D946EF; }
+
+        [data-theme="dark"] .df-pill-fuchsia {
+            background: rgba(232, 121, 249, 0.12);
+            color: #E879F9;
+            border-color: rgba(232, 121, 249, 0.20);
+        }
+        [data-theme="dark"] .df-pill-fuchsia .df-pill-indicator { background: #E879F9; }
+
+        .df-pill-mint {
+            background: rgba(45, 212, 191, 0.08);
+            color: #0D9488;
+            border: 1px solid rgba(45, 212, 191, 0.18);
+        }
+        .df-pill-mint .df-pill-indicator { background: #2DD4BF; }
+
+        [data-theme="dark"] .df-pill-mint {
+            background: rgba(45, 212, 191, 0.12);
+            color: #2DD4BF;
+            border-color: rgba(45, 212, 191, 0.20);
+        }
+        [data-theme="dark"] .df-pill-mint .df-pill-indicator { background: #2DD4BF; }
 
         /* Pills on cards */
         .df-task-card-pills {
@@ -5119,15 +5189,23 @@
             </div>
 
             <div class="component-demo">
-                <div class="component-demo-label">The Property Pill Palette</div>
-                <p class="card-text" style="margin-bottom: var(--space-4);">Six muted tones, carefully chosen to avoid overlap with the five status colours (green, blue, amber, red, gray). These are softer, more pastel — they carry metadata, not urgency.</p>
-                <div class="demo-row" style="margin-bottom: var(--space-8);">
+                <div class="component-demo-label">The Property Pill Palette — 12 Colours</div>
+                <p class="card-text" style="margin-bottom: var(--space-4);">Twelve muted tones, carefully chosen to avoid overlap with the six status colours (gray, blue, yellow, amber, green, red). These are softer, more pastel — they carry metadata, not urgency.</p>
+                <div class="demo-row" style="margin-bottom: var(--space-3); flex-wrap: wrap;">
                     <span class="df-pill df-pill-slate"><span class="df-pill-indicator"></span> Low</span>
                     <span class="df-pill df-pill-teal"><span class="df-pill-indicator"></span> Medium</span>
                     <span class="df-pill df-pill-violet"><span class="df-pill-indicator"></span> High</span>
                     <span class="df-pill df-pill-pink"><span class="df-pill-indicator"></span> Critical</span>
                     <span class="df-pill df-pill-indigo"><span class="df-pill-indicator"></span> Engineering</span>
-                    <span class="df-pill df-pill-orange"><span class="df-pill-indicator"></span> Client-Facing</span>
+                    <span class="df-pill df-pill-cyan"><span class="df-pill-indicator"></span> Client-Facing</span>
+                </div>
+                <div class="demo-row" style="margin-bottom: var(--space-8); flex-wrap: wrap;">
+                    <span class="df-pill df-pill-lime"><span class="df-pill-indicator"></span> Automation</span>
+                    <span class="df-pill df-pill-rose"><span class="df-pill-indicator"></span> Urgent</span>
+                    <span class="df-pill df-pill-lavender"><span class="df-pill-indicator"></span> Design</span>
+                    <span class="df-pill df-pill-fuchsia"><span class="df-pill-indicator"></span> Marketing</span>
+                    <span class="df-pill df-pill-mint"><span class="df-pill-indicator"></span> Operations</span>
+                    <span class="df-pill df-pill-slate"><span class="df-pill-indicator"></span> Backlog</span>
                 </div>
 
                 <div class="component-demo-label">On a Task Card</div>
@@ -5140,7 +5218,7 @@
                         </div>
                         <div class="df-task-card-pills">
                             <span class="df-pill df-pill-violet"><span class="df-pill-indicator"></span> High</span>
-                            <span class="df-pill df-pill-orange"><span class="df-pill-indicator"></span> Client-Facing</span>
+                            <span class="df-pill df-pill-cyan"><span class="df-pill-indicator"></span> Client-Facing</span>
                         </div>
                         <div class="df-task-card-meta">
                             <div class="df-task-card-meta-left">

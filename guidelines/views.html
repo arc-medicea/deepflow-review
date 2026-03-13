@@ -1426,6 +1426,636 @@
     <div class="ann" style="margin-top:24px"><strong>Key Decision: No Graph on Mobile.</strong> Dependency graphs with 20+ nodes are illegible at 375px. Mobile defaults to List View — same data, mobile-appropriate format. Users can browse, update status, and chat with AI. Graph editing is a desktop activity.</div>
 </section>
 
+<!-- =============================================
+     10. ALTERNATIVE LAYOUT — CHAT-FIRST DESKTOP
+     ============================================= -->
+<section id="chat-layouts" class="section">
+    <div class="section-header">
+        <div class="section-number">Layout Options</div>
+        <h2 class="section-title">Desktop Layout — Chat Panel Variants</h2>
+        <p class="section-desc">Two layout strategies for the desktop experience. Option A treats chat as a floating overlay (default). Option B pins the chat panel permanently open for conversation-first users. Users can toggle between layouts, or the system defaults based on usage pattern.</p>
+    </div>
+
+    <!-- OPTION A -->
+    <h3 style="font-size:1.125rem;font-weight:700;color:var(--tp);margin-bottom:8px">Layout Option A — Chat as Overlay</h3>
+    <p style="font-size:0.875rem;color:var(--tt);margin-bottom:16px">The default layout. Chat floats over the graph canvas and can be dismissed. Maximum canvas space for graph-heavy work.</p>
+
+    <div class="wf-wrap">
+        <div class="wf-chrome">
+            <span class="wd wd-r"></span><span class="wd wd-y"></span><span class="wd wd-g"></span>
+            <span class="wf-chrome-title">Layout Option A — Chat Overlay · 1200px</span>
+        </div>
+        <div class="wf-scroll">
+            <div class="wf-screen" style="height:420px">
+                <!-- Sidebar 56px collapsed -->
+                <div style="position:absolute;left:0;top:0;bottom:0;width:56px;background:var(--so);border-right:1px solid var(--sb);display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:6px;z-index:5">
+                    <div style="width:28px;height:28px;border-radius:var(--r-md);background:var(--brand-gradient);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;margin-bottom:8px">ES</div>
+                    <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:var(--tt);font-size:13px">⊞</div>
+                    <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:rgba(0,119,221,0.08);color:var(--brand-solid);font-size:13px">📁</div>
+                    <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:var(--tt);font-size:13px">⑃</div>
+                    <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:var(--tt);font-size:13px">💬</div>
+                    <div style="margin-top:auto;width:22px;height:22px;border-radius:50%;background:#8B5CF6;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff">SC</div>
+                </div>
+                <!-- Topbar -->
+                <div style="position:absolute;top:0;left:56px;right:360px;height:44px;background:var(--so);border-bottom:1px solid var(--sb);display:flex;align-items:center;padding:0 16px;font-size:12px;z-index:4">
+                    <div class="t-bc"><a href="#">ICAAP 2026</a><span class="sep">›</span><span class="cur">Capital Modelling</span></div>
+                    <div style="margin-left:auto;display:flex;gap:6px">
+                        <div class="t-vs"><button class="t-vb a">Graph</button><button class="t-vb">List</button></div>
+                    </div>
+                </div>
+                <!-- Graph Canvas -->
+                <div style="position:absolute;top:44px;left:56px;right:360px;bottom:0;background:var(--sr);overflow:hidden">
+                    <div class="gv-dots"></div>
+                    <!-- Dimension label -->
+                    <div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:600;color:var(--tt);background:var(--so);padding:2px 12px;border-radius:var(--r-full);border:1px solid var(--sb);z-index:3">Canvas: 784px wide</div>
+                    <!-- Sample nodes -->
+                    <div class="gv-node" style="left:60px;top:60px"><div class="gv-nd" style="background:var(--ok)"></div><span>Data Collection</span></div>
+                    <div class="gv-node sel" style="left:240px;top:120px"><div class="gv-nd" style="background:var(--info)"></div><span>Run Capital Model</span></div>
+                    <div class="gv-node" style="left:240px;top:210px"><div class="gv-nd" style="background:var(--warn)"></div><span>Gather Market Data</span></div>
+                    <div class="gv-node" style="left:440px;top:160px"><div class="gv-nd" style="background:var(--pend)"></div><span>Draft Report</span></div>
+                    <!-- Chat overlay -->
+                    <div style="position:absolute;bottom:12px;right:12px;width:280px;background:var(--so);border:1px solid var(--sb);border-radius:var(--r-lg);box-shadow:var(--shlg);z-index:6;overflow:hidden">
+                        <div style="padding:8px 12px;border-bottom:1px solid var(--sb);display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--tp)"><div style="width:6px;height:6px;border-radius:50%;background:var(--brand-gradient);animation:pulse 2s infinite"></div>DeepFlow AI<span style="margin-left:auto;font-size:10px;color:var(--tt);cursor:pointer">✕</span></div>
+                        <div style="padding:8px;font-size:10px;color:var(--ts);line-height:1.5">
+                            <div style="background:var(--sr);border:1px solid var(--sb);padding:6px 10px;border-radius:10px 10px 10px 3px;margin-bottom:6px">Model running — 72% complete.</div>
+                            <div style="background:var(--brand-solid);color:#fff;padding:6px 10px;border-radius:10px 10px 3px 10px;margin-left:auto;max-width:80%;text-align:right">Show me the output</div>
+                        </div>
+                        <div style="padding:6px 8px;border-top:1px solid var(--sb);display:flex;gap:6px"><input type="text" style="flex:1;border:1px solid var(--sb);background:var(--sr);border-radius:var(--r-sm);padding:4px 8px;font-size:10px;font-family:inherit;outline:none;color:var(--tp)" placeholder="Ask about your workflow…"><div style="width:24px;height:24px;border-radius:var(--r-sm);background:var(--brand-gradient);display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;flex-shrink:0">↑</div></div>
+                    </div>
+                </div>
+                <!-- Detail Panel -->
+                <div style="position:absolute;top:0;right:0;bottom:0;width:360px;background:var(--so);border-left:1px solid var(--sb);z-index:4">
+                    <div style="padding:14px 18px;border-bottom:1px solid var(--sb);display:flex;align-items:center;justify-content:space-between"><span style="font-size:14px;font-weight:600;color:var(--tp)">Run Capital Model</span><span style="font-size:12px;color:var(--tt);cursor:pointer">✕</span></div>
+                    <div style="padding:14px 18px">
+                        <div style="font-size:10px;font-weight:600;color:var(--tt);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Status</div>
+                        <div class="gv-badge" style="background:var(--info-bg);color:var(--info);border:1px solid var(--info-b);margin-bottom:14px"><span class="gv-badge-d" style="background:var(--info)"></span>In Progress</div>
+                        <div style="font-size:10px;font-weight:600;color:var(--tt);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Assignee</div>
+                        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--tp);margin-bottom:14px"><div style="width:24px;height:24px;border-radius:0;clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);background:var(--brand-gradient);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">DF</div>DeepFlow Agent<span class="gv-ai" style="margin-left:auto">AI</span></div>
+                        <div style="font-size:10px;font-weight:600;color:var(--tt);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Description</div>
+                        <div style="font-size:11px;color:var(--ts);line-height:1.6">Execute the internal capital adequacy model using latest risk data…</div>
+                    </div>
+                </div>
+                <!-- Layout label -->
+                <div style="position:absolute;bottom:8px;left:64px;font-size:9px;font-weight:600;color:var(--tt);background:var(--so);padding:2px 10px;border-radius:var(--r-full);border:1px solid var(--sb);z-index:7">[Sidebar 56px] [Graph/List Canvas 784px] [Detail Panel 360px] · Chat floats over canvas</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ann"><strong>🎯 Best for: Sarah (graph-heavy work)</strong> — Sarah spends most of her time manipulating the graph canvas: creating nodes, drawing edges, rearranging layouts. She needs maximum canvas real estate. Chat is an occasional assistant — she opens it, asks a question, closes it. The overlay approach means zero layout shift.</div>
+
+    <!-- OPTION B -->
+    <h3 style="font-size:1.125rem;font-weight:700;color:var(--tp);margin:32px 0 8px">Layout Option B — Chat Always Open</h3>
+    <p style="font-size:0.875rem;color:var(--tt);margin-bottom:16px">The "chat-first desktop" variant. AI chat is permanently visible as a fixed panel between the sidebar and canvas. The canvas shrinks to accommodate. For users who interact with DeepFlow primarily through conversation.</p>
+
+    <div class="wf-wrap">
+        <div class="wf-chrome">
+            <span class="wd wd-r"></span><span class="wd wd-y"></span><span class="wd wd-g"></span>
+            <span class="wf-chrome-title">Layout Option B — Chat Always Open · 1200px</span>
+        </div>
+        <div class="wf-scroll">
+            <div class="wf-screen" style="height:420px">
+                <!-- Sidebar 56px -->
+                <div style="position:absolute;left:0;top:0;bottom:0;width:56px;background:var(--so);border-right:1px solid var(--sb);display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:6px;z-index:5">
+                    <div style="width:28px;height:28px;border-radius:var(--r-md);background:var(--brand-gradient);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;margin-bottom:8px">ES</div>
+                    <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:var(--tt);font-size:13px">⊞</div>
+                    <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:rgba(0,119,221,0.08);color:var(--brand-solid);font-size:13px">📁</div>
+                    <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:var(--tt);font-size:13px">⑃</div>
+                    <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:rgba(0,119,221,0.06);color:var(--brand-solid);font-size:13px">💬</div>
+                    <div style="margin-top:auto;width:22px;height:22px;border-radius:50%;background:#8B5CF6;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff">RM</div>
+                </div>
+                <!-- Chat Panel 320px (always open) -->
+                <div style="position:absolute;left:56px;top:0;bottom:0;width:320px;background:var(--so);border-right:1px solid var(--sb);display:flex;flex-direction:column;z-index:5">
+                    <!-- Chat header -->
+                    <div style="padding:10px 14px;border-bottom:1px solid var(--sb);display:flex;align-items:center;gap:8px">
+                        <div style="width:8px;height:8px;border-radius:50%;background:var(--brand-gradient);animation:pulse 2s infinite"></div>
+                        <span style="font-size:13px;font-weight:600;color:var(--tp)">DeepFlow AI</span>
+                        <span style="margin-left:auto;font-size:10px;color:var(--tt);padding:2px 8px;background:var(--sr);border:1px solid var(--sb);border-radius:var(--r-full)">Capital Modelling</span>
+                    </div>
+                    <!-- Chat messages -->
+                    <div style="flex:1;padding:12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;font-size:11px;line-height:1.5">
+                        <div style="align-self:flex-start;background:var(--sr);border:1px solid var(--sb);padding:8px 12px;border-radius:12px 12px 12px 4px;max-width:90%;color:var(--ts)">Good morning, Ravi. You have 3 tasks in progress on Capital Modelling. "Gather Market Data" is blocked — needs API credentials.</div>
+                        <div style="align-self:flex-end;background:var(--brand-solid);color:#fff;padding:8px 12px;border-radius:12px 12px 4px 12px;max-width:85%">Flag it and assign to Jonathan. What's the model run status?</div>
+                        <div style="align-self:flex-start;background:var(--sr);border:1px solid var(--sb);padding:8px 12px;border-radius:12px 12px 12px 4px;max-width:90%;color:var(--ts)">Done ✓ Flagged and assigned.<br><br>Capital Model is 72% through Monte Carlo simulation. ETA: ~45 minutes. Shall I notify you when it completes?</div>
+                        <div style="align-self:flex-end;background:var(--brand-solid);color:#fff;padding:8px 12px;border-radius:12px 12px 4px 12px;max-width:85%">Yes. Also show me stress test scenarios when ready.</div>
+                        <div style="align-self:flex-start;background:var(--sr);border:1px solid var(--sb);padding:8px 12px;border-radius:12px 12px 12px 4px;max-width:90%;color:var(--ts)">Will do. I'll queue the stress test summary as soon as the model output is available. 📊</div>
+                    </div>
+                    <!-- Chat input -->
+                    <div style="padding:10px 12px;border-top:1px solid var(--sb);display:flex;align-items:center;gap:8px">
+                        <input type="text" style="flex:1;border:1px solid var(--sb);background:var(--sr);border-radius:var(--r-md);padding:8px 12px;font-size:11px;font-family:inherit;outline:none;color:var(--tp)" placeholder="Ask about your workflow…">
+                        <div style="width:28px;height:28px;border-radius:var(--r-md);background:var(--brand-gradient);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;cursor:pointer">↑</div>
+                    </div>
+                </div>
+                <!-- Topbar (over canvas area) -->
+                <div style="position:absolute;top:0;left:376px;right:360px;height:44px;background:var(--so);border-bottom:1px solid var(--sb);display:flex;align-items:center;padding:0 16px;font-size:12px;z-index:4">
+                    <div class="t-bc"><a href="#">ICAAP 2026</a><span class="sep">›</span><span class="cur">Capital Modelling</span></div>
+                    <div style="margin-left:auto;display:flex;gap:6px">
+                        <div class="t-vs"><button class="t-vb a">Graph</button><button class="t-vb">List</button></div>
+                    </div>
+                </div>
+                <!-- Graph Canvas (narrower) -->
+                <div style="position:absolute;top:44px;left:376px;right:360px;bottom:0;background:var(--sr);overflow:hidden">
+                    <div class="gv-dots"></div>
+                    <!-- Dimension label -->
+                    <div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:600;color:var(--tt);background:var(--so);padding:2px 12px;border-radius:var(--r-full);border:1px solid var(--sb);z-index:3">Canvas: 464px wide</div>
+                    <!-- Nodes (tighter layout) -->
+                    <div class="gv-node" style="left:30px;top:50px"><div class="gv-nd" style="background:var(--ok)"></div><span>Data Collection</span></div>
+                    <div class="gv-node sel" style="left:30px;top:130px"><div class="gv-nd" style="background:var(--info)"></div><span>Run Capital Model</span></div>
+                    <div class="gv-node" style="left:230px;top:90px"><div class="gv-nd" style="background:var(--warn)"></div><span>Market Data</span></div>
+                    <div class="gv-node" style="left:230px;top:180px"><div class="gv-nd" style="background:var(--pend)"></div><span>Stress Test</span></div>
+                </div>
+                <!-- Detail Panel 360px -->
+                <div style="position:absolute;top:0;right:0;bottom:0;width:360px;background:var(--so);border-left:1px solid var(--sb);z-index:4">
+                    <div style="padding:14px 18px;border-bottom:1px solid var(--sb);display:flex;align-items:center;justify-content:space-between"><span style="font-size:14px;font-weight:600;color:var(--tp)">Run Capital Model</span><span style="font-size:12px;color:var(--tt);cursor:pointer">✕</span></div>
+                    <div style="padding:14px 18px">
+                        <div style="font-size:10px;font-weight:600;color:var(--tt);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Status</div>
+                        <div class="gv-badge" style="background:var(--info-bg);color:var(--info);border:1px solid var(--info-b);margin-bottom:14px"><span class="gv-badge-d" style="background:var(--info)"></span>In Progress</div>
+                        <div style="font-size:10px;font-weight:600;color:var(--tt);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Assignee</div>
+                        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--tp);margin-bottom:14px"><div style="width:24px;height:24px;clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);background:var(--brand-gradient);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">DF</div>DeepFlow Agent<span class="gv-ai" style="margin-left:auto">AI</span></div>
+                        <div style="font-size:10px;font-weight:600;color:var(--tt);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Sub-tasks</div>
+                        <ul class="gv-stl">
+                            <li class="gv-sti"><div class="gv-stc dn">✓</div><span>Load risk parameters</span><span style="margin-left:auto;font-size:10px;color:var(--ok)">Done</span></li>
+                            <li class="gv-sti"><div class="gv-stc"></div><span style="color:var(--tp);font-weight:500">Run Monte Carlo</span><span style="margin-left:auto;font-size:10px;color:var(--info)">72%</span></li>
+                            <li class="gv-sti"><div class="gv-stc"></div><span>Generate report</span><span style="margin-left:auto;font-size:10px;color:var(--tt)">Pending</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Layout label -->
+                <div style="position:absolute;bottom:8px;left:64px;font-size:9px;font-weight:600;color:var(--tt);background:var(--so);padding:2px 10px;border-radius:var(--r-full);border:1px solid var(--sb);z-index:7">[Sidebar 56px] [Chat Panel 320px] [Canvas 464px] [Detail Panel 360px]</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ann"><strong>🗣️ Best for: Ravi (chat-heavy work)</strong> — Ravi manages projects primarily through conversation. He tells the AI what to do, asks for summaries, and triages via chat. The always-open panel means he never loses context. The canvas is narrower but still functional for monitoring — Ravi rarely drags nodes.</div>
+
+    <!-- Comparison table -->
+    <div style="margin-top:24px">
+        <div class="rn">
+            <h4>🔄 When to Use Each Layout</h4>
+            <div class="rn-grid" style="grid-template-columns:1fr 1fr">
+                <div class="rn-cell">
+                    <strong>Option A — Chat as Overlay</strong>
+                    Canvas-first. Best for graph manipulation, node creation, dependency mapping. Chat is occasional. Sarah's default.<br><br>
+                    <em style="font-size:10px;color:var(--tt)">Canvas width: 784px (sidebar collapsed) or 544px (sidebar expanded)</em>
+                </div>
+                <div class="rn-cell">
+                    <strong>Option B — Chat Always Open</strong>
+                    Conversation-first. Best for delegation, triage, status queries, AI-assisted workflows. Graph is monitoring-only. Ravi's default.<br><br>
+                    <em style="font-size:10px;color:var(--tt)">Canvas width: 464px (sidebar collapsed) or 224px (sidebar expanded — not recommended)</em>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ann"><strong>⚙️ Toggle &amp; Smart Defaults</strong> — Users can switch between layouts via a toggle in the sidebar (the 💬 icon) or in Settings → Layout. The system can also default based on usage pattern: if a user sends &gt;20 chat messages per session on average, suggest Option B. If they primarily use mouse interactions on the canvas, keep Option A. This is a <strong>user preference</strong>, not a permanent mode — switchable at any time.</div>
+</section>
+
+<!-- =============================================
+     11. WORKSPACE — ACTIVE TASK
+     ============================================= -->
+<section id="workspace-active" class="section">
+    <div class="section-header">
+        <div class="section-number">Wireframe 06</div>
+        <h2 class="section-title">Workspace — Active Task</h2>
+        <p class="section-desc">This is the "desk" — where work actually gets done. Graph for navigation, detail panel for doing, chat for AI assistance. A user has selected "Risk Assessment &amp; Stress Testing" and is actively working inside it.</p>
+    </div>
+
+    <div class="wf-wrap">
+        <div class="wf-chrome">
+            <span class="wd wd-r"></span><span class="wd wd-y"></span><span class="wd wd-g"></span>
+            <span class="wf-chrome-title">DeepFlow — Workspace: Active Task · Risk Assessment &amp; Stress Testing</span>
+        </div>
+        <div class="wf-scroll">
+            <div class="wf-screen" style="height:720px">
+
+                <!-- Sidebar 56px -->
+                <div style="position:absolute;left:0;top:0;bottom:0;width:56px;background:var(--so);border-right:1px solid var(--sb);display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:6px;z-index:5">
+                    <div style="width:28px;height:28px;border-radius:var(--r-md);background:var(--brand-gradient);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;margin-bottom:8px">ES</div>
+                    <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:var(--tt);font-size:13px">⊞</div>
+                    <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:rgba(0,119,221,0.08);color:var(--brand-solid);font-size:13px">📁</div>
+                    <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:var(--tt);font-size:13px">⑃</div>
+                    <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:var(--tt);font-size:13px">💬</div>
+                    <div style="margin-top:auto">
+                        <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:var(--tt);font-size:13px">⚙</div>
+                        <div style="width:22px;height:22px;border-radius:50%;background:#8B5CF6;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;margin:6px auto 0">RM</div>
+                    </div>
+                </div>
+
+                <!-- Chat Panel (always-open variant, Option B) -->
+                <div style="position:absolute;left:56px;top:0;bottom:0;width:320px;background:var(--so);border-right:1px solid var(--sb);display:flex;flex-direction:column;z-index:5">
+                    <!-- Chat header -->
+                    <div style="padding:10px 14px;border-bottom:1px solid var(--sb);display:flex;align-items:center;gap:8px">
+                        <div style="width:8px;height:8px;border-radius:50%;background:var(--brand-gradient);animation:pulse 2s infinite"></div>
+                        <span style="font-size:13px;font-weight:600;color:var(--tp)">DeepFlow AI</span>
+                    </div>
+                    <!-- Context indicator -->
+                    <div style="padding:6px 14px;background:var(--sh);border-bottom:1px solid var(--sb);font-size:10px;color:var(--tt);display:flex;align-items:center;gap:6px">
+                        <span style="color:var(--brand-solid)">⬡</span> Chatting about: <strong style="color:var(--tp)">Risk Assessment &amp; Stress Testing (L2)</strong>
+                    </div>
+                    <!-- Messages -->
+                    <div style="flex:1;padding:12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;font-size:11px;line-height:1.5">
+                        <!-- System message -->
+                        <div style="text-align:center;font-size:10px;color:var(--tt);padding:4px 0">📋 Task context loaded — Risk Assessment &amp; Stress Testing</div>
+                        <div style="align-self:flex-end;background:var(--brand-solid);color:#fff;padding:8px 12px;border-radius:12px 12px 4px 12px;max-width:85%">Summarise the latest stress test results</div>
+                        <!-- AI response with formatted content -->
+                        <div style="align-self:flex-start;background:var(--sr);border:1px solid var(--sb);padding:10px 12px;border-radius:12px 12px 12px 4px;max-width:92%;color:var(--ts)">
+                            <strong style="color:var(--tp);font-size:11px">Stress Test Summary (13 Mar 2026)</strong><br><br>
+                            <span style="font-size:10px">Three scenarios modelled:</span>
+                            <ul style="margin:6px 0 6px 16px;font-size:10px;color:var(--ts)">
+                                <li><strong style="color:var(--ok)">Base case:</strong> CAR 14.2% — above threshold ✓</li>
+                                <li><strong style="color:var(--warn)">Moderate stress:</strong> CAR 11.8% — marginal</li>
+                                <li><strong style="color:var(--err)">Severe stress:</strong> CAR 9.1% — below 10% minimum ✕</li>
+                            </ul>
+                            <span style="font-size:10px">Key risk: credit concentration in Sector B (38% exposure).</span>
+                            <!-- Action buttons -->
+                            <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+                                <div style="padding:4px 10px;background:rgba(0,119,221,0.08);color:var(--brand-solid);border-radius:var(--r-full);font-size:9px;font-weight:600;cursor:pointer;border:1px solid rgba(0,119,221,0.15)">📋 Apply to task</div>
+                                <div style="padding:4px 10px;background:var(--sr);color:var(--ts);border-radius:var(--r-full);font-size:9px;font-weight:600;cursor:pointer;border:1px solid var(--sb)">⑃ Create workflow</div>
+                                <div style="padding:4px 10px;background:var(--sr);color:var(--ts);border-radius:var(--r-full);font-size:9px;font-weight:600;cursor:pointer;border:1px solid var(--sb)">👤 Assign to…</div>
+                            </div>
+                        </div>
+                        <div style="align-self:flex-end;background:var(--brand-solid);color:#fff;padding:8px 12px;border-radius:12px 12px 4px 12px;max-width:85%">Apply that summary to the task notes.</div>
+                        <div style="align-self:flex-start;background:var(--sr);border:1px solid var(--sb);padding:8px 12px;border-radius:12px 12px 12px 4px;max-width:90%;color:var(--ts)">Done ✓ Inserted stress test summary into "Risk Assessment &amp; Stress Testing" notes. Visible in the detail panel → Notes tab.</div>
+                        <!-- System message -->
+                        <div style="text-align:center;font-size:10px;color:var(--tt);padding:4px 0">✅ Task notes updated — "Stress Test Summary" inserted</div>
+                    </div>
+                    <!-- Input -->
+                    <div style="padding:10px 12px;border-top:1px solid var(--sb);display:flex;align-items:center;gap:8px">
+                        <input type="text" style="flex:1;border:1px solid var(--sb);background:var(--sr);border-radius:var(--r-md);padding:8px 12px;font-size:11px;font-family:inherit;outline:none;color:var(--tp)" placeholder="Ask about this task…">
+                        <div style="width:28px;height:28px;border-radius:var(--r-md);background:var(--brand-gradient);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;cursor:pointer">↑</div>
+                    </div>
+                </div>
+
+                <!-- Topbar -->
+                <div style="position:absolute;top:0;left:376px;right:360px;height:44px;background:var(--so);border-bottom:1px solid var(--sb);display:flex;align-items:center;padding:0 16px;font-size:12px;z-index:4">
+                    <div class="t-bc"><a href="#">ICAAP 2026</a><span class="sep">›</span><a href="#">Capital Modelling</a><span class="sep">›</span><span class="cur">Risk Assessment</span></div>
+                </div>
+
+                <!-- Hub bar (mini) -->
+                <div style="position:absolute;top:44px;left:376px;right:360px;height:36px;background:var(--so);border-bottom:1px solid var(--sb);display:flex;align-items:center;padding:0 16px;gap:12px;font-size:11px;z-index:4">
+                    <span style="font-weight:600;color:var(--tp)">Risk Assessment</span>
+                    <div style="width:80px;height:5px;background:var(--sb);border-radius:var(--r-full);overflow:hidden"><div style="width:60%;height:100%;background:var(--brand-gradient-h);border-radius:var(--r-full)"></div></div>
+                    <span style="font-weight:600;color:var(--tp);font-size:10px">60%</span>
+                    <span style="color:var(--ok);font-weight:600;font-size:10px">✓ 3</span>
+                    <span style="color:var(--info);font-weight:600;font-size:10px">▶ 2</span>
+                </div>
+
+                <!-- Graph Canvas (context view — parent graph with selected node highlighted) -->
+                <div style="position:absolute;top:80px;left:376px;right:360px;bottom:0;background:var(--sr);overflow:hidden">
+                    <div class="gv-dots"></div>
+                    <!-- Zone -->
+                    <div class="gv-zone" style="left:16px;top:16px;right:16px;bottom:16px;background:var(--g2);border-color:var(--g2b)">
+                        <div class="gv-zl" style="color:var(--tt);border:1px solid var(--g2b)">L2 — Capital Modelling</div>
+                    </div>
+                    <!-- Nodes — Risk Assessment is highlighted/selected -->
+                    <div class="gv-node" style="left:30px;top:60px;opacity:0.5"><div class="gv-nd" style="background:var(--ok)"></div><span>Data Collection</span></div>
+                    <div class="gv-node sel" style="left:30px;top:140px;border-color:var(--brand-solid);box-shadow:0 0 0 4px rgba(0,119,221,0.2)"><div class="gv-nd" style="background:var(--info)"></div><span>Risk Assessment &amp; Stress Testing</span></div>
+                    <div class="gv-node" style="left:30px;top:220px;opacity:0.5"><div class="gv-nd" style="background:var(--warn)"></div><span>Market Data</span></div>
+                    <div class="gv-node" style="left:260px;top:140px;opacity:0.5"><div class="gv-nd" style="background:var(--pend)"></div><span>Draft Report</span></div>
+                    <div class="gv-node" style="left:260px;top:220px;opacity:0.5"><div class="gv-nd" style="background:var(--pend)"></div><span>Board Review</span></div>
+                    <!-- Visual indicator: other nodes dimmed, selected is bright -->
+                    <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--tt);background:var(--so);padding:2px 10px;border-radius:var(--r-full);border:1px solid var(--sb)">Graph context — click another node to switch task</div>
+                </div>
+
+                <!-- Detail Panel (360px) — THE WORKING AREA -->
+                <div style="position:absolute;top:0;right:0;bottom:0;width:360px;background:var(--so);border-left:1px solid var(--sb);z-index:4;display:flex;flex-direction:column;overflow:hidden">
+                    <!-- Header -->
+                    <div style="padding:12px 18px;border-bottom:1px solid var(--sb);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+                        <span style="font-size:14px;font-weight:600;color:var(--tp)">Risk Assessment &amp; Stress Testing</span>
+                        <span style="font-size:12px;color:var(--tt);cursor:pointer">✕</span>
+                    </div>
+                    <!-- Tabs -->
+                    <div style="display:flex;border-bottom:1px solid var(--sb);flex-shrink:0">
+                        <button style="padding:8px 12px;font-size:11px;font-weight:600;color:var(--brand-solid);border:none;background:none;font-family:inherit;border-bottom:2px solid var(--brand-solid);margin-bottom:-1px;cursor:pointer">Notes</button>
+                        <button style="padding:8px 12px;font-size:11px;font-weight:600;color:var(--tt);border:none;background:none;font-family:inherit;cursor:pointer">Sub-tasks</button>
+                        <button style="padding:8px 12px;font-size:11px;font-weight:600;color:var(--tt);border:none;background:none;font-family:inherit;cursor:pointer">Files</button>
+                        <button style="padding:8px 12px;font-size:11px;font-weight:600;color:var(--tt);border:none;background:none;font-family:inherit;cursor:pointer">Comments</button>
+                        <button style="padding:8px 12px;font-size:11px;font-weight:600;color:var(--tt);border:none;background:none;font-family:inherit;cursor:pointer">History</button>
+                    </div>
+                    <!-- Content (scrollable) -->
+                    <div style="flex:1;overflow-y:auto;padding:16px 18px">
+                        <!-- Status bar -->
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+                            <div class="gv-badge" style="background:var(--info-bg);color:var(--info);border:1px solid var(--info-b)"><span class="gv-badge-d" style="background:var(--info)"></span>In Progress</div>
+                            <span style="font-size:10px;color:var(--tt)">Due: 20 Mar 2026</span>
+                            <div style="margin-left:auto;display:flex;align-items:center;gap:4px"><div style="width:22px;height:22px;border-radius:50%;background:#8B5CF6;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff">MB</div><span style="font-size:10px;color:var(--ts)">M. Barnes</span></div>
+                        </div>
+
+                        <!-- Rich text editor area (Notes tab) -->
+                        <div style="border:1px solid var(--sb);border-radius:var(--r-md);overflow:hidden;margin-bottom:16px">
+                            <!-- Toolbar -->
+                            <div style="padding:6px 10px;border-bottom:1px solid var(--sb);background:var(--sr);display:flex;gap:4px;font-size:12px;color:var(--tt)">
+                                <span style="padding:2px 6px;cursor:pointer;border-radius:3px" title="Bold"><strong>B</strong></span>
+                                <span style="padding:2px 6px;cursor:pointer;border-radius:3px" title="Italic"><em>I</em></span>
+                                <span style="padding:2px 6px;cursor:pointer;border-radius:3px" title="List">☰</span>
+                                <span style="padding:2px 6px;cursor:pointer;border-radius:3px" title="Code">&lt;/&gt;</span>
+                                <span style="padding:2px 6px;cursor:pointer;border-radius:3px" title="Link">🔗</span>
+                                <span style="margin-left:auto;padding:2px 6px;font-size:9px;color:var(--brand-solid);font-weight:600;border:1px solid rgba(0,119,221,0.2);border-radius:var(--r-sm);cursor:pointer">✨ AI inserted</span>
+                            </div>
+                            <!-- Content -->
+                            <div style="padding:12px;font-size:11px;line-height:1.7;color:var(--ts);min-height:140px">
+                                <div style="font-size:12px;font-weight:600;color:var(--tp);margin-bottom:8px">Stress Test Summary (13 Mar 2026)</div>
+                                <p style="margin-bottom:8px">Three scenarios modelled against the capital adequacy framework:</p>
+                                <div style="background:var(--ok-bg);border:1px solid var(--ok-b);border-radius:var(--r-sm);padding:6px 10px;margin-bottom:4px;font-size:10px"><strong style="color:var(--ok)">Base case:</strong> CAR 14.2% — above 10% threshold ✓</div>
+                                <div style="background:var(--warn-bg);border:1px solid var(--warn-b);border-radius:var(--r-sm);padding:6px 10px;margin-bottom:4px;font-size:10px"><strong style="color:var(--warn)">Moderate stress:</strong> CAR 11.8% — marginal, monitor closely</div>
+                                <div style="background:var(--err-bg);border:1px solid var(--err-b);border-radius:var(--r-sm);padding:6px 10px;margin-bottom:8px;font-size:10px"><strong style="color:var(--err)">Severe stress:</strong> CAR 9.1% — below 10% minimum ✕</div>
+                                <p style="font-size:10px;color:var(--tt)">Key risk: credit concentration in Sector B (38% exposure). Recommend diversification review.</p>
+                            </div>
+                        </div>
+
+                        <!-- File attachments -->
+                        <div style="margin-bottom:16px">
+                            <div style="font-size:10px;font-weight:600;color:var(--tt);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Attachments</div>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                                <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--sr);border:1px solid var(--sb);border-radius:var(--r-sm);font-size:10px;color:var(--ts)">📊 stress_test_output.xlsx</div>
+                                <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--sr);border:1px solid var(--sb);border-radius:var(--r-sm);font-size:10px;color:var(--ts)">📄 risk_parameters.pdf</div>
+                                <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--sr);border:1px dashed var(--sb);border-radius:var(--r-sm);font-size:10px;color:var(--tt);cursor:pointer">+ Add file</div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-task checklist -->
+                        <div style="margin-bottom:16px">
+                            <div style="font-size:10px;font-weight:600;color:var(--tt);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Sub-tasks (3/5)</div>
+                            <ul class="gv-stl">
+                                <li class="gv-sti"><div class="gv-stc dn">✓</div><span>Define stress scenarios</span><span style="margin-left:auto;font-size:10px;color:var(--ok)">Done</span></li>
+                                <li class="gv-sti"><div class="gv-stc dn">✓</div><span>Gather risk parameters</span><span style="margin-left:auto;font-size:10px;color:var(--ok)">Done</span></li>
+                                <li class="gv-sti"><div class="gv-stc dn">✓</div><span>Run stress test model</span><span style="margin-left:auto;font-size:10px;color:var(--ok)">Done</span></li>
+                                <li class="gv-sti"><div class="gv-stc"></div><span style="color:var(--tp);font-weight:500">Review output &amp; summarise</span><span style="margin-left:auto;font-size:10px;color:var(--info)">In Progress</span></li>
+                                <li class="gv-sti"><div class="gv-stc"></div><span>Present to risk committee</span><span style="margin-left:auto;font-size:10px;color:var(--tt)">Pending</span></li>
+                            </ul>
+                        </div>
+
+                        <!-- Comment thread -->
+                        <div style="margin-bottom:16px">
+                            <div style="font-size:10px;font-weight:600;color:var(--tt);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Comments (2)</div>
+                            <div style="display:flex;gap:8px;margin-bottom:10px">
+                                <div style="width:22px;height:22px;border-radius:50%;background:#8B5CF6;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;flex-shrink:0">MB</div>
+                                <div><div style="font-size:10px;color:var(--tt)">M. Barnes · 2h ago</div><div style="font-size:11px;color:var(--ts);margin-top:2px">Severe stress scenario looks concerning. Can we model a 4th scenario with partial mitigation?</div></div>
+                            </div>
+                            <div style="display:flex;gap:8px;margin-bottom:10px">
+                                <div style="width:22px;height:22px;border-radius:0;clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);background:var(--brand-gradient);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;flex-shrink:0">DF</div>
+                                <div><div style="font-size:10px;color:var(--tt)">DeepFlow Agent · 1h ago <span style="font-size:9px;background:rgba(0,119,221,0.08);color:var(--brand-solid);padding:1px 5px;border-radius:var(--r-full)">AI</span></div><div style="font-size:11px;color:var(--ts);margin-top:2px">Noted. I can model a "moderate mitigation" scenario with 15% Sector B reduction. Shall I proceed?</div></div>
+                            </div>
+                        </div>
+
+                        <!-- History log (collapsed) -->
+                        <div>
+                            <div style="font-size:10px;font-weight:600;color:var(--tt);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">History</div>
+                            <div style="font-size:10px;color:var(--tt);padding:4px 0;border-bottom:1px solid var(--sb)">13 Mar 09:42 — AI inserted stress test summary into notes</div>
+                            <div style="font-size:10px;color:var(--tt);padding:4px 0;border-bottom:1px solid var(--sb)">13 Mar 09:15 — M. Barnes updated status → In Progress</div>
+                            <div style="font-size:10px;color:var(--tt);padding:4px 0">12 Mar 16:30 — Stress test model completed (DeepFlow Agent)</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="ann-group">
+        <div class="ann"><strong>🖥️ The "Desk" Metaphor</strong> — Three zones working together: <strong>Graph</strong> (left canvas) for spatial navigation — see where the task lives in context, click another node to switch. <strong>Detail Panel</strong> (right) for doing — write notes, check off sub-tasks, attach files, comment. <strong>Chat</strong> (far left or overlay) for AI assistance — ask questions, get summaries, insert content directly into the task.</div>
+        <div class="ann"><strong>👩‍💻 How Sarah Uses This</strong> — Sarah opens the graph, clicks "Risk Assessment", reads the AI-generated summary in the detail panel, edits the notes to add her own analysis, then clicks "Stress Test Scenarios" in the graph to switch context. She keeps chat as overlay (Option A) and opens it only when she needs the AI to run a new model.</div>
+        <div class="ann"><strong>👨‍💼 How Ravi Uses This</strong> — Ravi opens chat (Option B, always visible) and says "Summarise the latest stress test results." The AI responds with formatted output. Ravi clicks "Apply to task" and the summary is inserted into the task notes. He then says "What's blocking the draft report?" — the AI answers and he triages without ever touching the graph directly.</div>
+        <div class="ann"><strong>✨ AI → Task Integration</strong> — When the AI generates content (summaries, analyses, formatted data), inline action buttons appear: "Apply to task" inserts into the active task's notes. "Create workflow" generates a new sub-workflow. "Assign to…" opens the assignment modal. Content flows from conversation into work product.</div>
+    </div>
+</section>
+
+<!-- =============================================
+     12. CHAT INPUT — DETAILED LAYOUT
+     ============================================= -->
+<section id="chat-input-detail" class="section">
+    <div class="section-header">
+        <div class="section-number">Component Detail</div>
+        <h2 class="section-title">Chat Input — Detailed Layout</h2>
+        <p class="section-desc">Close-up wireframe of the chat interface at two scales: the desktop panel (320px) and mobile full-screen (375px). Inspired by ChatGPT, Gemini, and Claude — multi-line input, file uploads, voice, and contextual awareness.</p>
+    </div>
+
+    <!-- DESKTOP CHAT PANEL (320px) -->
+    <h3 style="font-size:1.125rem;font-weight:700;color:var(--tp);margin-bottom:8px">Desktop — Chat Panel (320px)</h3>
+    <p style="font-size:0.875rem;color:var(--tt);margin-bottom:16px">As seen in Layout Option B or as the overlay in Option A. Full conversation history, context indicator, rich AI responses, and detailed input controls.</p>
+
+    <div class="wf-wrap">
+        <div class="wf-chrome">
+            <span class="wd wd-r"></span><span class="wd wd-y"></span><span class="wd wd-g"></span>
+            <span class="wf-chrome-title">Chat Panel — Desktop · 320px wide</span>
+        </div>
+        <div class="wf-scroll">
+            <div style="width:320px;background:var(--so);font-size:12px;display:flex;flex-direction:column">
+
+                <!-- Header -->
+                <div style="padding:12px 16px;border-bottom:1px solid var(--sb);display:flex;align-items:center;gap:10px">
+                    <div style="width:10px;height:10px;border-radius:50%;background:var(--brand-gradient);animation:pulse 2s infinite;flex-shrink:0"></div>
+                    <span style="font-size:14px;font-weight:600;color:var(--tp)">DeepFlow AI</span>
+                    <span style="margin-left:auto;font-size:11px;color:var(--tt);cursor:pointer">—</span>
+                </div>
+
+                <!-- Model/Agent selector (subtle pill) -->
+                <div style="padding:6px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--sb);background:var(--sh)">
+                    <div style="display:flex;align-items:center;gap:5px;padding:3px 10px;background:var(--sc);border:1px solid var(--sb);border-radius:var(--r-full);font-size:10px;font-weight:600;color:var(--ts);cursor:pointer">
+                        <span style="color:var(--brand-solid)">⬡</span> DeepFlow Agent <span style="color:var(--tt);font-size:8px">▾</span>
+                    </div>
+                </div>
+
+                <!-- Context indicator -->
+                <div style="padding:8px 16px;background:rgba(0,119,221,0.04);border-bottom:1px solid var(--sb);font-size:10px;color:var(--tt);display:flex;align-items:center;gap:6px">
+                    📌 Chatting about: <strong style="color:var(--tp)">Risk Assessment (L2)</strong>
+                    <span style="margin-left:auto;font-size:9px;color:var(--brand-solid);cursor:pointer;text-decoration:underline">Change scope</span>
+                </div>
+
+                <!-- Message history -->
+                <div style="flex:1;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:400px;overflow-y:auto">
+
+                    <!-- System message -->
+                    <div style="text-align:center;padding:6px 0">
+                        <span style="font-size:9px;color:var(--tt);background:var(--sr);padding:3px 12px;border-radius:var(--r-full);border:1px solid var(--sb)">✅ Task 'Data Collection' marked as complete</span>
+                    </div>
+
+                    <!-- AI message -->
+                    <div style="align-self:flex-start;max-width:90%">
+                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+                            <div style="width:18px;height:18px;clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);background:var(--brand-gradient);display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#fff">DF</div>
+                            <span style="font-size:9px;color:var(--tt)">DeepFlow AI · 2m ago</span>
+                        </div>
+                        <div style="background:var(--sr);border:1px solid var(--sb);padding:10px 14px;border-radius:14px 14px 14px 4px;color:var(--ts);font-size:11px;line-height:1.6">
+                            <p style="margin-bottom:8px">Here's the risk assessment summary:</p>
+                            <!-- Inline task card preview -->
+                            <div style="background:var(--sc);border:1px solid var(--sb);border-radius:var(--r-md);padding:8px 12px;margin-bottom:8px">
+                                <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+                                    <div style="width:6px;height:6px;border-radius:50%;background:var(--info)"></div>
+                                    <span style="font-size:10px;font-weight:600;color:var(--tp)">Risk Assessment &amp; Stress Testing</span>
+                                </div>
+                                <div style="font-size:9px;color:var(--tt)">60% complete · Due 20 Mar · M. Barnes</div>
+                            </div>
+                            <p style="margin-bottom:6px">Key findings:</p>
+                            <ul style="margin:0 0 0 14px;font-size:10px;color:var(--ts);line-height:1.6">
+                                <li>Base case CAR: 14.2% ✓</li>
+                                <li>Severe stress CAR: 9.1% ✕</li>
+                                <li>Concentration risk in Sector B</li>
+                            </ul>
+                            <!-- Code block example -->
+                            <div style="background:var(--n100);color:var(--n900);padding:8px 10px;border-radius:var(--r-sm);font-family:'SF Mono','Fira Code',monospace;font-size:9px;margin-top:8px;overflow-x:auto">
+                                <div style="color:var(--n600)">// Capital adequacy calculation</div>
+                                <div>tier1_capital / risk_weighted_assets</div>
+                                <div>= 1,420M / 10,000M = <span style="color:var(--ok)">14.2%</span></div>
+                            </div>
+                            [data-theme="dark"] would invert this
+                            <!-- Action buttons -->
+                            <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+                                <div style="padding:4px 10px;background:rgba(0,119,221,0.08);color:var(--brand-solid);border-radius:var(--r-full);font-size:9px;font-weight:600;cursor:pointer;border:1px solid rgba(0,119,221,0.15)">📋 Apply to task</div>
+                                <div style="padding:4px 10px;background:var(--sr);color:var(--ts);border-radius:var(--r-full);font-size:9px;font-weight:600;cursor:pointer;border:1px solid var(--sb)">⑃ Create workflow</div>
+                                <div style="padding:4px 10px;background:var(--sr);color:var(--ts);border-radius:var(--r-full);font-size:9px;font-weight:600;cursor:pointer;border:1px solid var(--sb)">👤 Assign to…</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User message -->
+                    <div style="align-self:flex-end;max-width:85%">
+                        <div style="text-align:right;margin-bottom:4px"><span style="font-size:9px;color:var(--tt)">You · 1m ago</span></div>
+                        <div style="background:var(--brand-solid);color:#fff;padding:10px 14px;border-radius:14px 14px 4px 14px;font-size:11px;line-height:1.6">Apply that to the task notes and flag the severe stress result to the risk committee.</div>
+                    </div>
+
+                    <!-- AI typing indicator -->
+                    <div style="align-self:flex-start;max-width:90%">
+                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+                            <div style="width:18px;height:18px;clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);background:var(--brand-gradient);display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#fff">DF</div>
+                            <span style="font-size:9px;color:var(--tt)">DeepFlow AI</span>
+                        </div>
+                        <div style="background:var(--sr);border:1px solid var(--sb);padding:10px 14px;border-radius:14px 14px 14px 4px;color:var(--tt);font-size:11px">
+                            <span style="animation:pulse 1.5s infinite">●</span> <span style="animation:pulse 1.5s infinite 0.3s">●</span> <span style="animation:pulse 1.5s infinite 0.6s">●</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input area -->
+                <div style="border-top:1px solid var(--sb);padding:12px 14px;background:var(--so)">
+                    <!-- Multi-line text input (grows like Claude/ChatGPT) -->
+                    <div style="border:1px solid var(--sb);border-radius:var(--r-lg);background:var(--sr);overflow:hidden">
+                        <textarea style="width:100%;border:none;background:transparent;padding:10px 14px;font-size:12px;font-family:inherit;color:var(--tp);resize:none;outline:none;min-height:42px;line-height:1.5" placeholder="Message DeepFlow AI…" rows="2">What's the timeline for the draft report?</textarea>
+                        <!-- Bottom toolbar -->
+                        <div style="padding:6px 10px;display:flex;align-items:center;gap:4px;border-top:1px solid var(--sb)">
+                            <!-- File upload (paperclip) -->
+                            <div style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:var(--r-sm);color:var(--tt);cursor:pointer;font-size:14px" title="Attach file">📎</div>
+                            <!-- Voice input (microphone) -->
+                            <div style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:var(--r-sm);color:var(--tt);cursor:pointer;font-size:14px" title="Voice input">🎙️</div>
+                            <div style="flex:1"></div>
+                            <!-- Send button (arrow) -->
+                            <div style="width:28px;height:28px;border-radius:var(--r-md);background:var(--brand-gradient);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;cursor:pointer;box-shadow:var(--shbr)" title="Send message">↑</div>
+                        </div>
+                    </div>
+                    <div style="text-align:center;font-size:8px;color:var(--tt);margin-top:6px">DeepFlow AI can make mistakes. Verify important outputs.</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="ann-group">
+        <div class="ann"><strong>📝 Multi-line Input</strong> — The text area grows vertically as the user types, like Claude and ChatGPT. Starts at 2 lines, expands up to 6. The input container has rounded corners (<code>border-radius: var(--r-lg)</code>) with the toolbar integrated below the text area, not as a separate bar.</div>
+        <div class="ann"><strong>🔧 Input Controls</strong> — <strong>📎 Paperclip</strong> (attach documents, data files, spreadsheets). <strong>🎙️ Microphone</strong> (voice input for hands-free commands). <strong>↑ Send</strong> (brand gradient, rightmost — the primary action). All icons are muted (<code>var(--tt)</code>) until hovered.</div>
+        <div class="ann"><strong>⬡ Agent Selector</strong> — Subtle pill above the input: "DeepFlow Agent ▾". Click to switch between agents (e.g., "GPT-4", "Custom Risk Agent", "DataBot"). Not prominent — most users will use the default. Power users switch agents for specialised tasks.</div>
+        <div class="ann"><strong>📌 Context Indicator</strong> — Shows what the chat is scoped to: "Chatting about: Risk Assessment (L2)" or "Global workspace" if no task is selected. "Change scope" link lets users re-scope without navigating the graph. Chat messages are contextual — AI knows which task you're working on.</div>
+        <div class="ann"><strong>💬 Message Types</strong> — <strong>User</strong> (right-aligned, brand-solid bg, white text). <strong>AI</strong> (left-aligned, surface-raised bg, includes formatted content: bullet lists, code blocks, inline task card previews). <strong>System</strong> (centered, muted, for status updates like "Task marked as complete"). <strong>Action buttons</strong> appear inline in AI responses.</div>
+    </div>
+
+    <!-- MOBILE FULL-SCREEN CHAT (375px) -->
+    <h3 style="font-size:1.125rem;font-weight:700;color:var(--tp);margin:32px 0 8px">Mobile — Full-Screen Chat (375px)</h3>
+    <p style="font-size:0.875rem;color:var(--tt);margin-bottom:16px">On mobile, the chat takes over the entire screen. Back button returns to the task list. Same message layout, slightly larger touch targets.</p>
+
+    <div class="wf-wrap">
+        <div class="wf-chrome">
+            <span class="wd wd-r"></span><span class="wd wd-y"></span><span class="wd wd-g"></span>
+            <span class="wf-chrome-title">Chat — Mobile Full Screen · 375px</span>
+        </div>
+        <div class="wf-scroll">
+            <div style="width:375px;background:var(--so);font-size:12px;display:flex;flex-direction:column">
+
+                <!-- Mobile header with back button -->
+                <div style="padding:12px 16px;border-bottom:1px solid var(--sb);display:flex;align-items:center;gap:12px">
+                    <span style="font-size:16px;color:var(--tt);cursor:pointer">←</span>
+                    <div style="width:10px;height:10px;border-radius:50%;background:var(--brand-gradient);animation:pulse 2s infinite;flex-shrink:0"></div>
+                    <span style="font-size:15px;font-weight:600;color:var(--tp)">DeepFlow AI</span>
+                    <span style="margin-left:auto;font-size:12px;color:var(--tt);cursor:pointer">⋮</span>
+                </div>
+
+                <!-- Agent selector -->
+                <div style="padding:6px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--sb);background:var(--sh)">
+                    <div style="display:flex;align-items:center;gap:5px;padding:4px 12px;background:var(--sc);border:1px solid var(--sb);border-radius:var(--r-full);font-size:11px;font-weight:600;color:var(--ts);cursor:pointer">
+                        <span style="color:var(--brand-solid)">⬡</span> DeepFlow Agent <span style="color:var(--tt);font-size:9px">▾</span>
+                    </div>
+                </div>
+
+                <!-- Context -->
+                <div style="padding:8px 16px;background:rgba(0,119,221,0.04);border-bottom:1px solid var(--sb);font-size:11px;color:var(--tt);display:flex;align-items:center;gap:6px">
+                    📌 <strong style="color:var(--tp)">Risk Assessment (L2)</strong>
+                    <span style="margin-left:auto;font-size:10px;color:var(--brand-solid);cursor:pointer">Change</span>
+                </div>
+
+                <!-- Messages -->
+                <div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;min-height:420px;overflow-y:auto">
+
+                    <!-- System -->
+                    <div style="text-align:center;padding:6px 0"><span style="font-size:10px;color:var(--tt);background:var(--sr);padding:4px 14px;border-radius:var(--r-full);border:1px solid var(--sb)">✅ Task 'Data Collection' marked as complete</span></div>
+
+                    <!-- AI -->
+                    <div style="align-self:flex-start;max-width:88%">
+                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+                            <div style="width:20px;height:20px;clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);background:var(--brand-gradient);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff">DF</div>
+                            <span style="font-size:10px;color:var(--tt)">DeepFlow AI · 2m ago</span>
+                        </div>
+                        <div style="background:var(--sr);border:1px solid var(--sb);padding:12px 16px;border-radius:16px 16px 16px 4px;color:var(--ts);font-size:12px;line-height:1.6">
+                            <p style="margin-bottom:8px">Stress test summary:</p>
+                            <ul style="margin:0 0 6px 16px;font-size:11px;line-height:1.7">
+                                <li><strong style="color:var(--ok)">Base:</strong> CAR 14.2% ✓</li>
+                                <li><strong style="color:var(--warn)">Moderate:</strong> 11.8%</li>
+                                <li><strong style="color:var(--err)">Severe:</strong> 9.1% ✕</li>
+                            </ul>
+                            <!-- Inline task card -->
+                            <div style="background:var(--sc);border:1px solid var(--sb);border-radius:var(--r-md);padding:10px 12px;margin:8px 0">
+                                <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><div style="width:7px;height:7px;border-radius:50%;background:var(--info)"></div><span style="font-size:11px;font-weight:600;color:var(--tp)">Risk Assessment</span></div>
+                                <div style="font-size:10px;color:var(--tt)">60% · Due 20 Mar · M. Barnes</div>
+                            </div>
+                            <!-- Action buttons (larger for touch) -->
+                            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+                                <div style="padding:6px 14px;background:rgba(0,119,221,0.08);color:var(--brand-solid);border-radius:var(--r-full);font-size:11px;font-weight:600;cursor:pointer;border:1px solid rgba(0,119,221,0.15)">📋 Apply to task</div>
+                                <div style="padding:6px 14px;background:var(--sr);color:var(--ts);border-radius:var(--r-full);font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--sb)">👤 Assign to…</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User -->
+                    <div style="align-self:flex-end;max-width:82%">
+                        <div style="text-align:right;margin-bottom:4px"><span style="font-size:10px;color:var(--tt)">You · just now</span></div>
+                        <div style="background:var(--brand-solid);color:#fff;padding:12px 16px;border-radius:16px 16px 4px 16px;font-size:12px;line-height:1.6">Apply to task notes and notify the risk committee.</div>
+                    </div>
+                </div>
+
+                <!-- Mobile input area (larger touch targets) -->
+                <div style="border-top:1px solid var(--sb);padding:12px 16px;background:var(--so)">
+                    <div style="border:1px solid var(--sb);border-radius:var(--r-lg);background:var(--sr);overflow:hidden">
+                        <textarea style="width:100%;border:none;background:transparent;padding:12px 16px;font-size:14px;font-family:inherit;color:var(--tp);resize:none;outline:none;min-height:44px;line-height:1.5" placeholder="Message DeepFlow AI…" rows="1"></textarea>
+                        <div style="padding:8px 12px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--sb)">
+                            <!-- File upload -->
+                            <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:var(--r-md);color:var(--tt);cursor:pointer;font-size:18px" title="Attach">📎</div>
+                            <!-- Voice -->
+                            <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:var(--r-md);color:var(--tt);cursor:pointer;font-size:18px" title="Voice">🎙️</div>
+                            <div style="flex:1"></div>
+                            <!-- Send -->
+                            <div style="width:36px;height:36px;border-radius:var(--r-md);background:var(--brand-gradient);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;cursor:pointer;box-shadow:var(--shbr)" title="Send">↑</div>
+                        </div>
+                    </div>
+                    <div style="text-align:center;font-size:9px;color:var(--tt);margin-top:8px">DeepFlow AI can make mistakes. Verify important outputs.</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="ann-group">
+        <div class="ann"><strong>📱 Mobile Adaptations</strong> — Touch targets are 36px minimum (vs 28px on desktop). Font sizes bump up slightly (12px body vs 11px). The back arrow (←) replaces the close button. Message bubbles have larger border-radius (16px vs 14px) for a softer mobile feel. Vertical spacing increases from 10px to 12px between messages.</div>
+        <div class="ann"><strong>🔙 Navigation</strong> — The ← back button returns to whatever view the user came from (task list, graph, workspace). The ⋮ menu contains: "Clear chat", "Export conversation", "Change agent", "Chat settings". Context scope is still visible and tappable.</div>
+        <div class="ann"><strong>🎯 "Global Workspace" Mode</strong> — When no task is selected, the context indicator reads "Global workspace" and the AI can answer questions about any project, create new tasks, or summarise across the entire workspace. Selecting a task narrows the scope and gives the AI full context about that specific task.</div>
+    </div>
+</section>
+
 </div>
 
 <!-- FOOTER -->
