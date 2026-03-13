@@ -36,33 +36,46 @@ DeepFlow is an AI-powered workflow orchestration platform. Users create hierarch
 ### Core
 | Layer | Choice | Rationale |
 |-------|--------|-----------|
-| Framework | **Next.js 15 (App Router)** | RSC for initial load, server actions, middleware for auth |
+| Framework | **React 19 + Vite 6** | Thick-client SPA. No SSR needed (behind auth). Faster HMR, no hydration headaches, no RSC complexity for a workspace app |
+| Routing | **React Router v7** | Client-side routing. Lazy-loaded route chunks. Loader/action pattern for data |
 | Language | **TypeScript (strict)** | Non-negotiable |
 | Styling | **Tailwind CSS 4** + CSS custom properties | Design tokens from guidelines map directly to CSS vars |
 | Component library | **Radix UI (headless)** | Accessible primitives. No visual opinions to fight |
 | Graph engine | **React Flow (xyflow)** | Mature DAG library. Custom nodes, edges, minimap, zoom, keyboard nav |
+| Panel layout | **react-resizable-panels** | Resizable panel groups with drag handles. Keyboard accessible. Persists sizes |
 | State management | **Zustand** | Lightweight, no boilerplate. Slices per domain |
-| Data fetching | **TanStack Query v5** | Cache, dedup, background refresh. Pairs with WebSocket invalidation |
+| Data fetching | **TanStack Query v5** | Cache, dedup, background refresh. Initial tree load + WS patch updates |
 | Forms | **React Hook Form + Zod** | Validation shares schemas with backend |
-| i18n | **next-intl** | App Router native. ICU message format. SSR-compatible |
+| i18n | **react-intl** (FormatJS) | ICU MessageFormat. No SSR dependency. Lazy locale loading |
 | Icons | **Lucide React** | Consistent, tree-shakeable. Supplement with custom DeepFlow icons |
+
+> **Why not Next.js?** DeepFlow is a thick-client workspace app: persistent WebSocket, full DAG tree in memory, complex interactive canvas, resizable panels, zero SEO needs. Everything is behind Keycloak auth — the page is meaningless without user data. Next.js optimises for content delivery and SSR; we'd fight the framework with `"use client"` on nearly every component. React + Vite is simpler, faster, and purpose-built for this kind of app.
 
 ### Auth
 | Layer | Choice | Rationale |
 |-------|--------|-----------|
 | Provider | **Keycloak** | SSO, RBAC, org-scoped tenancy |
-| Client library | **next-auth v5** (Auth.js) with Keycloak provider | Handles token refresh, session management, middleware protection |
-| Token flow | Authorization Code + PKCE | Server-side token exchange. Access token in httpOnly cookie. Refresh token server-side only |
+| Client library | **keycloak-js** + **react-oidc-context** | Lightweight OIDC wrapper. No server-side dependency. Handles token refresh, silent renew, session management |
+| Token flow | Authorization Code + PKCE (browser-native) | Access token in memory (not localStorage). Refresh via silent iframe or refresh token. Token attached to API calls via interceptor |
 | RBAC | Keycloak realm roles → mapped to app permissions | 5 roles: Viewer, Editor, Manager, Admin, Owner (per guidelines §27 Permissions) |
 | Multi-tenancy | Keycloak organisations / groups → tenant context | Org switcher in sidebar. All API calls scoped to active tenant |
 
-### Real-time
+### Data Loading — Tree-First Architecture
 | Layer | Choice | Rationale |
 |-------|--------|-----------|
-| Transport | **WebSocket** (native, via backend gateway) | Server-pushed updates: task status changes, AI chat messages, collaboration presence |
-| Client | Custom hook `useWebSocket` wrapping native WebSocket | Auto-reconnect, exponential backoff, heartbeat ping |
-| Pattern | **Event → TanStack Query invalidation** | WS message arrives → invalidate relevant query key → UI re-fetches fresh data. No dual state |
-| Events | `task.updated`, `task.created`, `task.deleted`, `chat.message`, `presence.update`, `workflow.status` | Granular invalidation. Not full-page refresh |
+| Initial load | **Full DAG tree** fetched on project open | Entire task hierarchy (all levels) loaded into Zustand store. Typically 50–500 nodes. React Flow renders visible viewport; off-screen nodes are virtualised |
+| Store shape | **Normalised tree in Zustand** | `Record<nodeId, TaskNode>` with `parentId`, `childIds[]`, `dependencyIds[]`, `level`. Flat map, tree derived via selectors. Enables O(1) lookups and patches |
+| Rendering | **Derived views from single source** | Graph View, List View, Hub Bar, Detail Panel all read from the same Zustand tree store. No data duplication between views |
+| TanStack Query role | **Initial fetch + cache only** | Query fetches the tree on project open. After that, Zustand owns the live state. Query handles stale/refetch on window focus as a consistency check |
+
+### Real-time — WebSocket Patches
+| Layer | Choice | Rationale |
+|-------|--------|-----------|
+| Transport | **WebSocket** (native, via backend gateway) | Persistent connection from login. Server pushes patches, chat messages, presence |
+| Client | Custom `useWebSocket` hook | Auto-reconnect, exponential backoff, heartbeat ping/pong |
+| Pattern | **WS event → direct Zustand patch** (not re-fetch) | `task.updated` → update the node in the store directly. No round-trip. UI re-renders via Zustand selectors. Only fall back to full re-fetch if patch sequence gaps detected |
+| Events | `tree.patch` (add/update/remove/move nodes), `chat.message`, `presence.update`, `workflow.status` | `tree.patch` carries a sequence number. Client tracks last-seen seq; if gap detected, requests full tree sync |
+| Conflict resolution | **Server-authoritative, last-write-wins** | Optimistic local updates with server confirmation. If server rejects (conflict), revert local state and show toast |
 | Fallback | SSE for environments blocking WS | Same event schema, different transport |
 
 ### Persistence (Client-side)
@@ -81,22 +94,15 @@ DeepFlow is an AI-powered workflow orchestration platform. Users create hierarch
 ### Project Structure
 ```
 src/
-├── app/                          # Next.js App Router
-│   ├── (auth)/                   # Auth routes (login, callback)
-│   ├── (app)/                    # Authenticated shell
-│   │   ├── layout.tsx            # Shell: sidebar + chat + content slot
-│   │   ├── page.tsx              # Workspace (dashboard)
-│   │   ├── projects/
-│   │   │   ├── page.tsx          # Gallery view
-│   │   │   └── [projectId]/
-│   │   │       ├── page.tsx      # Graph view (default)
-│   │   │       ├── list/page.tsx # List view
-│   │   │       └── [taskId]/     # Active task view
-│   │   └── settings/
-│   │       ├── page.tsx
-│   │       └── [section]/page.tsx
-│   ├── api/                      # API routes (BFF)
-│   └── layout.tsx                # Root layout (providers)
+├── routes/                       # React Router v7 routes
+│   ├── _auth.tsx                 # Auth layout (login, callback)
+│   ├── _app.tsx                  # Authenticated shell layout
+│   ├── _app.dashboard.tsx        # Workspace (dashboard)
+│   ├── _app.projects.tsx         # Gallery view
+│   ├── _app.projects.$projectId.tsx      # Graph view (default)
+│   ├── _app.projects.$projectId.list.tsx # List view
+│   ├── _app.projects.$projectId.task.$taskId.tsx  # Active task
+│   └── _app.settings.tsx         # Settings
 ├── components/
 │   ├── shell/                    # Sidebar, ChatPanel, TopBar, HubBar
 │   ├── graph/                    # React Flow custom nodes, edges, zones
@@ -107,11 +113,12 @@ src/
 │   ├── chat/                     # Message list, input, action chips
 │   └── ui/                       # Radix primitives styled w/ design tokens
 ├── stores/                       # Zustand stores
-│   ├── layout.ts                 # Sidebar, panel visibility, Option A/B
-│   ├── graph.ts                  # Selected node, zoom, viewport
+│   ├── tree.ts                   # THE source of truth: normalised task tree (Record<id, TaskNode>)
+│   ├── layout.ts                 # Sidebar, panel sizes, panel order, Option A/B
+│   ├── graph.ts                  # Selected node, zoom, viewport, drill level
 │   ├── chat.ts                   # Messages (optimistic), draft input
 │   ├── filters.ts                # Active filters, sort, search
-│   └── preferences.ts            # Theme, locale, view defaults (persisted)
+│   └── preferences.ts            # Theme, locale, view defaults, panel sizes (persisted)
 ├── hooks/                        # Custom hooks
 │   ├── useWebSocket.ts
 │   ├── useAuth.ts
@@ -138,20 +145,76 @@ src/
 ### Zustand Store Design
 
 ```typescript
+// stores/tree.ts — THE source of truth for all task data
+interface TaskNode {
+  id: string
+  name: string
+  status: 'pending' | 'ready' | 'in_progress' | 'needs_approval' | 'complete' | 'failed'
+  level: number                   // L1, L2, L3...
+  parentId: string | null
+  childIds: string[]
+  dependencyIds: string[]         // upstream dependencies
+  downstreamIds: string[]         // what depends on this
+  assignee: { id: string; name: string; type: 'human' | 'agent'; avatar?: string }
+  dueDate: string | null
+  priority: 'critical' | 'high' | 'medium' | 'low'
+  description: string
+  properties: Record<string, PropertyValue>  // custom property pills
+  updatedAt: string
+}
+
+interface TreeStore {
+  nodes: Record<string, TaskNode>  // normalised flat map
+  rootIds: string[]                // top-level (L1) node IDs
+  lastSeq: number                  // last WS patch sequence number
+  loading: boolean
+  
+  // Bulk operations
+  loadTree: (projectId: string) => Promise<void>   // initial fetch
+  clearTree: () => void
+  
+  // Patch operations (called by WS handler)
+  patchNode: (id: string, patch: Partial<TaskNode>) => void
+  addNode: (node: TaskNode) => void
+  removeNode: (id: string) => void
+  moveNode: (id: string, newParentId: string) => void
+  
+  // Derived selectors (memoised)
+  getChildren: (parentId: string) => TaskNode[]
+  getAncestors: (nodeId: string) => TaskNode[]
+  getSubtree: (nodeId: string) => TaskNode[]      // node + all descendants
+  getVisibleNodes: (level: number, parentId?: string) => TaskNode[]
+}
+
 // stores/layout.ts
 interface LayoutStore {
   sidebarExpanded: boolean        // 56px vs 240px
   chatPanelVisible: boolean       // always true in Option B
-  detailPanelOpen: boolean        // task detail panel
+  detailPanelOpen: boolean
   detailPanelTaskId: string | null
-  hubBarExpanded: boolean         // collapsed vs full dashboard
-  layoutMode: 'overlay' | 'always-on'  // Option A vs B
+  hubBarExpanded: boolean
+  layoutMode: 'overlay' | 'always-on'
+  panelSizes: { chat: number; detail: number }  // persisted pixel widths
   
   toggleSidebar: () => void
   openDetail: (taskId: string) => void
   closeDetail: () => void
   toggleHubBar: () => void
   setLayoutMode: (mode: 'overlay' | 'always-on') => void
+  setPanelSize: (panel: 'chat' | 'detail', size: number) => void
+}
+
+// stores/graph.ts
+interface GraphStore {
+  selectedNodeId: string | null
+  viewport: { x: number; y: number; zoom: number }
+  drillPath: string[]             // stack of node IDs for drill-down breadcrumb
+  
+  selectNode: (id: string | null) => void
+  setViewport: (viewport: Viewport) => void
+  drillDown: (nodeId: string) => void   // push to drillPath
+  drillUp: () => void                   // pop from drillPath
+  drillTo: (nodeId: string) => void     // jump to specific level (breadcrumb click)
 }
 
 // stores/filters.ts — persisted to IndexedDB
@@ -160,25 +223,13 @@ interface FiltersStore {
   sortField: string
   sortDirection: 'asc' | 'desc'
   searchQuery: string
-  viewPreference: Record<string, 'graph' | 'list' | 'kanban'>  // per project
+  viewPreference: Record<string, 'graph' | 'list' | 'kanban'>
   
   setFilter: (key: string, value: FilterValue) => void
   clearFilters: () => void
   setSort: (field: string, direction: 'asc' | 'desc') => void
   setSearch: (query: string) => void
   setViewPreference: (projectId: string, view: string) => void
-}
-
-// stores/graph.ts
-interface GraphStore {
-  selectedNodeId: string | null
-  viewport: { x: number; y: number; zoom: number }
-  contextLevel: 'L1' | 'L2' | 'L3'
-  
-  selectNode: (id: string | null) => void
-  setViewport: (viewport: Viewport) => void
-  drillDown: (nodeId: string) => void
-  drillUp: () => void
 }
 ```
 
@@ -187,11 +238,11 @@ interface GraphStore {
 ## 4. Internationalisation (i18n)
 
 ### Strategy
-- **Library:** next-intl (App Router native)
+- **Library:** react-intl (FormatJS)
 - **Default locale:** `en-GB`
 - **Message format:** ICU MessageFormat (plurals, select, dates)
 - **File structure:** `messages/{locale}.json` — flat namespace, dot-separated keys
-- **Loading:** Server-side for initial render, client-side for dynamic content
+- **Loading:** Lazy-loaded per locale. Default locale (en-GB) bundled. Others fetched on demand
 - **RTL:** CSS logical properties throughout (`margin-inline-start` not `margin-left`). Tailwind logical utilities plugin
 - **Date/Time:** `Intl.DateTimeFormat` — no moment/dayjs. Relative times via `Intl.RelativeTimeFormat`
 - **Numbers:** `Intl.NumberFormat` — percentages, counts
@@ -340,6 +391,30 @@ Many users run laptops with multiple windows at ~1024px. A small viewport with a
 </ShellLayout>
 ```
 
+### Panel Layout System
+
+The shell uses **react-resizable-panels** for a flexible, resizable panel layout. All panels have drag handles between them.
+
+```
+┌─────────┬───────────────┬──────────────────┬───────────────┐
+│         │               │                  │               │
+│ Sidebar │  Chat Panel   │  Content Area    │ Detail Panel  │
+│  56px   │  min:280      │  flex:1          │  min:320      │
+│  fixed  │  max:400      │  (graph/list/    │  max:480      │
+│         │  default:320  │   dashboard)     │  default:360  │
+│         │  ↔ drag       │                  │  ↔ drag       │
+│         │               │                  │               │
+└─────────┴───────────────┴──────────────────┴───────────────┘
+```
+
+**Resizable:** Chat panel and detail panel have drag handles. Users can widen chat to 400px or narrow it to 280px. Detail panel: 320–480px. Sizes persist to IndexedDB via Zustand `preferences` store.
+
+**Collapsible:** Double-click a drag handle to collapse that panel. Chat collapses to 0px (icon in sidebar activates it). Detail collapses to 0px (node click re-opens).
+
+**Constraints:**
+- Content area has a minimum width of 320px (below this, panels start collapsing automatically)
+- Panel order is fixed: Sidebar → Chat → Content → Detail. No drag-drop reordering (adds complexity without clear UX value for a workflow tool)
+
 ### Key Components
 | Component | Responsibilities |
 |-----------|-----------------|
@@ -357,32 +432,46 @@ Many users run laptops with multiple windows at ~1024px. A small viewport with a
 ## 9. Data Flow
 
 ### API Layer
-- **BFF pattern:** Next.js API routes proxy to backend. Attach auth tokens server-side
-- **REST endpoints:** `/api/projects`, `/api/projects/:id/tasks`, `/api/tasks/:id`, `/api/chat/messages`
-- **Response format:** JSON:API-ish with included relationships. Pagination via cursor
+- **Direct API calls:** Fetch client with Keycloak token interceptor. No BFF — SPA talks directly to backend API
+- **REST endpoints:** `/api/projects`, `/api/projects/:id/tree` (full DAG), `/api/tasks/:id`, `/api/chat/messages`
+- **Tree endpoint:** `GET /api/projects/:id/tree` returns the full normalised task tree in one response. Typically 10–100KB for 50–500 nodes
+- **Response format:** JSON with included relationships. Tree is flat `nodes[]` array with parent/child/dependency IDs
 - **Error handling:** Typed error responses. Toast for user-facing errors. Retry for transient failures
 
-### WebSocket Events → UI Updates
+### Data Loading Flow
 ```
-WS event: task.updated { id, status, assignee }
-  → invalidateQueries(['tasks', projectId])
-  → if task is selected in detail panel: refetch task detail
-  → if graph is mounted: React Flow updates node appearance
+1. User opens project
+   → GET /api/projects/:id/tree
+   → Response: { nodes: TaskNode[], seq: number }
+   → Zustand tree.loadTree() normalises into Record<id, TaskNode>
+   → React Flow renders visible nodes from store
+   → List View derives sorted/filtered rows from same store
 
-WS event: chat.message { role, content, taskId }
-  → append to chat store (optimistic)
-  → scroll to bottom
-  → if action chips present: render inline buttons
+2. WebSocket connects (scoped to project)
+   → WS subscribes to project channel
+   → Server pushes patches as they happen
 
-WS event: presence.update { userId, status, cursor }
-  → update presence store
-  → render avatar cursor on graph canvas (collaboration)
+3. WS event: tree.patch { seq: 42, ops: [{ op: 'update', id, changes }] }
+   → Check seq === lastSeq + 1 (no gaps)
+   → Apply patch directly to Zustand store: tree.patchNode(id, changes)
+   → All views re-render via selectors (React Flow, List, Hub Bar)
+   → If seq gap detected: request full tree resync
+
+4. WS event: chat.message { role, content, taskId }
+   → Append to chat store
+   → Scroll to bottom
+   → If action chips: render inline buttons
+
+5. WS event: presence.update { userId, status, cursor? }
+   → Update presence store
+   → Render avatar in top bar (Phase 2) / cursor on canvas (Phase 3)
 ```
 
 ### Optimistic Updates
-- Task status change: update UI immediately, revert on error
-- Chat message send: append to list immediately, confirm on server ack
-- Detail panel edits: save on blur/submit, optimistic update with rollback
+- Task status change: patch Zustand store immediately → send API request → if rejected, revert patch + toast
+- Chat message send: append to message list immediately → confirm on server ack → if failed, mark as failed
+- Detail panel edits: save on blur/submit → optimistic patch → revert on error
+- Node drag (graph): update position in store immediately → debounce API save (500ms)
 
 ---
 
