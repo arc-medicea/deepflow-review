@@ -686,6 +686,78 @@ Properties are defined per project via API. Four types:
 - Chat can create/modify properties: "Add a 'Regulatory Ref' property to this project"
 - Node display: users configure which properties appear on graph nodes (project-level setting). Order is drag-sortable in settings.
 
+### Graph Toolbar
+
+Floating toolbar above the graph canvas (top-centre or top-right). Always visible when graph is active.
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│ ↶ ↷  │  🔍+ 🔍− ⊞ Fit  │  ⊞ Auto │  ▸ Expand ▾  │  ⋮ More │
+│ Undo Redo │ Zoom In/Out/Fit │ Auto-layout│ Expand menu │ Overflow│
+└──────────────────────────────────────────────────────────────┘
+```
+
+| Tool | Action | Shortcut |
+|------|--------|----------|
+| **Undo** | Reverts last action (API-backed — sends PATCH to revert) | ⌘Z |
+| **Redo** | Re-applies last undone action (API-backed) | ⌘⇧Z |
+| **Zoom in** | Increase zoom level | + |
+| **Zoom out** | Decrease zoom level | − |
+| **Fit to screen** | Zoom + pan to fit all visible nodes in viewport | 0 |
+| **Auto-layout** | Re-arrange all nodes using automatic DAG layout algorithm (dagre/elkjs). Confirmation if > 20 nodes moved | ⌘⇧L |
+| **Expand selected** | Expand selected parent node inline (see below) | E |
+| **Collapse selected** | Collapse expanded parent back to stacked card | E (toggle) |
+| **Expand all** | Expand all parent nodes on current level | ⌘E |
+| **Collapse all** | Collapse all expanded nodes back to cards | ⌘⇧E |
+| **Expand to next level** | Expand all parents one level deeper only | — |
+| **More ⋮** | Overflow: minimap toggle, grid snap toggle, export as image | — |
+
+**Undo/Redo scope:** Covers both layout changes (node position) and data changes (status updates, reparenting, property edits, Flow, Fuse, Delete). The API supports undo — each action returns a revert operation. Undo stack is per-session (cleared on navigation away from project). Maximum depth: 50 actions.
+
+### Inline Node Expansion (Parent → Container)
+
+Parent nodes can be **expanded inline** on the graph canvas, transforming from a stacked card into a container that renders its child sub-graph inside.
+
+**Collapsed state (default):**
+```
+┌─────────────────┐
+│ ○ Task Name   👤│  ← stacked card (shadow behind = has children)
+│   ▸ 4 sub-tasks │  ← expand indicator: ▸ chevron + child count
+└─┬───────────────┘
+  └─(shadow)
+```
+
+**Expanded state:**
+```
+┌─ Task Name ──────── ○ In Progress ─── 👤 RM ─── ▾ ─┐
+│                                                       │
+│   ┌──────┐     ┌──────┐     ┌──────┐    ┌──────┐    │
+│   │ Sub1 │────▶│ Sub2 │────▶│ Sub3 │───▶│ Sub4 │    │
+│   └──────┘     └──────┘     └──────┘    └──────┘    │
+│                                                       │
+└───────────────────────────────────────────────────────┘
+```
+
+**Container header:** Parent name + status symbol + assignee avatar + collapse chevron (▾). Styled as a titled region with a subtle tinted background (distinct from the canvas background).
+
+**Key behaviours:**
+- **Expand/collapse indicator:** ▸ chevron on collapsed cards (right of child count). ▾ chevron in container header when expanded. Clear visual affordance.
+- **Nested expansion:** Expanded containers can contain parents that are themselves expandable. L1 container → expand L2 parent inside it → see L3 nodes inside that. Containers nest.
+- **DAG edges flow through containers:** External edges connect to nodes inside expanded containers. An edge from an external node to a child inside a container draws a line that crosses the container boundary. React Flow sub-flows handle this.
+- **Container resizes automatically** based on child node layout. Auto-layout (dagre/elkjs) positions children inside the container.
+- **Expand preserves position:** When expanding, the container appears where the stacked card was. Other nodes shift to accommodate the larger container. Animated transition (300ms ease).
+- **Performance:** Only render child nodes when expanded. Collapsed parents don't mount their children in React Flow. Lazy rendering for deep trees.
+
+**Expand controls:**
+| Control | Behaviour |
+|---------|-----------|
+| Click ▸ on a node | Expand that single parent |
+| Toolbar "Expand selected" | Expand all selected parent nodes |
+| Toolbar "Expand all" | Expand every parent node on the current level |
+| Toolbar "Expand to next level" | Expand all collapsed parents one additional level deeper |
+| Toolbar "Collapse all" | Collapse everything back to stacked cards |
+| Keyboard E | Toggle expand/collapse on focused/selected node |
+
 ### Bulk Editing
 
 Multi-select nodes via **shift+click** or **drag-select** (rubber band) on the graph canvas, or checkbox selection in list view.
