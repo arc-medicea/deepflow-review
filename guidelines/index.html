@@ -46,66 +46,89 @@
 
     <style>
         /* ============================================
-           DEEPFLOW DESIGN GUIDELINES v1.1
+           DEEPFLOW DESIGN GUIDELINES v1.2
            Monochrome + Pops of Colour
+           Light Mode Default + Dark Mode Toggle
            Brand: Euclid Circular B + Cyan→Blue Gradient
            ============================================ */
 
         :root {
-            /* --- Brand Gradient --- */
+            /* --- Brand Gradient (shared across themes) --- */
             --brand-cyan: #00D4F5;
             --brand-blue: #2244FF;
             --brand-mid: #0099FF;
             --brand-gradient: linear-gradient(135deg, #00E5FF 0%, #0099FF 45%, #2244FF 100%);
             --brand-gradient-horizontal: linear-gradient(90deg, #00E5FF 0%, #0099FF 45%, #2244FF 100%);
             --brand-gradient-vertical: linear-gradient(180deg, #00E5FF 0%, #0099FF 45%, #2244FF 100%);
-            --brand-gradient-subtle: linear-gradient(135deg, rgba(0,229,255,0.08) 0%, rgba(34,68,255,0.04) 100%);
+            --brand-gradient-subtle: linear-gradient(135deg, rgba(0,153,255,0.06) 0%, rgba(34,68,255,0.03) 100%);
 
-            /* --- Brand Solid (for when gradient isn't appropriate) --- */
-            --brand-solid: #0099FF;
-            --brand-solid-hover: #00AAFF;
-            --brand-solid-active: #0088EE;
+            /* --- Brand Solid --- */
+            --brand-solid: #0077DD;
+            --brand-solid-hover: #0066CC;
+            --brand-solid-active: #005BB5;
 
-            /* --- Neutrals (Monochrome Base — blue-tinted) --- */
-            --neutral-950: #0A0A0F;
-            --neutral-900: #111118;
-            --neutral-850: #16161F;
-            --neutral-800: #1C1C27;
-            --neutral-700: #2A2A3A;
-            --neutral-600: #3D3D52;
-            --neutral-500: #5C5C73;
-            --neutral-400: #8585A0;
-            --neutral-300: #ABABBD;
-            --neutral-200: #D0D0DB;
-            --neutral-100: #E8E8EF;
-            --neutral-50: #F4F4F7;
+            /* --- Light Mode (Default) --- */
+            --neutral-950: #FFFFFF;
+            --neutral-900: #F8F9FB;
+            --neutral-850: #F1F3F6;
+            --neutral-800: #E4E7ED;
+            --neutral-700: #D0D4DC;
+            --neutral-600: #A0A6B4;
+            --neutral-500: #6B7280;
+            --neutral-400: #4B5563;
+            --neutral-300: #374151;
+            --neutral-200: #1F2937;
+            --neutral-100: #111827;
+            --neutral-50: #0A0F1A;
             --white: #FFFFFF;
 
-            /* --- Status (Pops of Colour) --- */
-            --status-success: #34D399;
-            --status-success-bg: rgba(52, 211, 153, 0.12);
-            --status-success-border: rgba(52, 211, 153, 0.3);
+            /* --- Text colours (light mode) --- */
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-tertiary: #6B7280;
+            --text-inverse: #FFFFFF;
 
-            --status-warning: #FBBF24;
-            --status-warning-bg: rgba(251, 191, 36, 0.12);
-            --status-warning-border: rgba(251, 191, 36, 0.3);
+            /* --- Surface colours (light mode) --- */
+            --surface-page: #FFFFFF;
+            --surface-raised: #F8F9FB;
+            --surface-overlay: #FFFFFF;
+            --surface-nav: rgba(255, 255, 255, 0.9);
+            --surface-card: #FFFFFF;
+            --surface-card-border: #E4E7ED;
+            --surface-hover: #F1F3F6;
 
-            --status-error: #F87171;
-            --status-error-bg: rgba(248, 113, 113, 0.12);
-            --status-error-border: rgba(248, 113, 113, 0.3);
+            /* --- Status (Pops of Colour — adjusted for light bg) --- */
+            --status-success: #059669;
+            --status-success-bg: rgba(5, 150, 105, 0.08);
+            --status-success-border: rgba(5, 150, 105, 0.2);
 
-            --status-info: #60A5FA;
-            --status-info-bg: rgba(96, 165, 250, 0.12);
-            --status-info-border: rgba(96, 165, 250, 0.3);
+            --status-warning: #D97706;
+            --status-warning-bg: rgba(217, 119, 6, 0.08);
+            --status-warning-border: rgba(217, 119, 6, 0.2);
 
-            --status-pending: var(--neutral-500);
-            --status-pending-bg: rgba(92, 92, 115, 0.12);
+            --status-error: #DC2626;
+            --status-error-bg: rgba(220, 38, 38, 0.08);
+            --status-error-border: rgba(220, 38, 38, 0.2);
+
+            --status-info: #2563EB;
+            --status-info-bg: rgba(37, 99, 235, 0.08);
+            --status-info-border: rgba(37, 99, 235, 0.2);
+
+            --status-pending: #9CA3AF;
+            --status-pending-bg: rgba(156, 163, 175, 0.12);
 
             /* --- Grouping (Parent-Child Containment) --- */
-            --group-l1: rgba(0, 153, 255, 0.06);
-            --group-l1-border: rgba(0, 153, 255, 0.15);
-            --group-l2: rgba(0, 153, 255, 0.03);
-            --group-l2-border: rgba(0, 153, 255, 0.08);
+            --group-l1: rgba(0, 119, 221, 0.05);
+            --group-l1-border: rgba(0, 119, 221, 0.12);
+            --group-l2: rgba(0, 119, 221, 0.03);
+            --group-l2-border: rgba(0, 119, 221, 0.07);
+
+            /* --- Shadows (light mode) --- */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+            --shadow-glow: 0 0 20px rgba(0,119,221,0.1);
+            --shadow-brand: 0 4px 20px rgba(0,119,221,0.2);
 
             /* --- Spacing Scale (4px base) --- */
             --space-1: 4px;
@@ -133,13 +156,6 @@
             --text-4xl: 2.25rem;
             --text-5xl: 3rem;
 
-            /* --- Elevation --- */
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
-            --shadow-md: 0 4px 12px rgba(0,0,0,0.25);
-            --shadow-lg: 0 8px 32px rgba(0,0,0,0.3);
-            --shadow-glow: 0 0 20px rgba(0,153,255,0.15);
-            --shadow-brand: 0 4px 20px rgba(0,153,255,0.25);
-
             /* --- Radii --- */
             --radius-sm: 4px;
             --radius-md: 8px;
@@ -155,6 +171,106 @@
         }
 
         /* ============================================
+           DARK THEME
+           ============================================ */
+
+        [data-theme="dark"] {
+            --brand-solid: #0099FF;
+            --brand-solid-hover: #00AAFF;
+            --brand-solid-active: #0088EE;
+
+            --neutral-950: #0A0A0F;
+            --neutral-900: #111118;
+            --neutral-850: #16161F;
+            --neutral-800: #1C1C27;
+            --neutral-700: #2A2A3A;
+            --neutral-600: #3D3D52;
+            --neutral-500: #5C5C73;
+            --neutral-400: #8585A0;
+            --neutral-300: #ABABBD;
+            --neutral-200: #D0D0DB;
+            --neutral-100: #E8E8EF;
+            --neutral-50: #F4F4F7;
+            --white: #FFFFFF;
+
+            --text-primary: #E8E8EF;
+            --text-secondary: #ABABBD;
+            --text-tertiary: #8585A0;
+            --text-inverse: #0A0A0F;
+
+            --surface-page: #0A0A0F;
+            --surface-raised: #111118;
+            --surface-overlay: #1C1C27;
+            --surface-nav: rgba(10, 10, 15, 0.85);
+            --surface-card: #111118;
+            --surface-card-border: #1C1C27;
+            --surface-hover: #16161F;
+
+            --status-success: #34D399;
+            --status-success-bg: rgba(52, 211, 153, 0.12);
+            --status-success-border: rgba(52, 211, 153, 0.3);
+
+            --status-warning: #FBBF24;
+            --status-warning-bg: rgba(251, 191, 36, 0.12);
+            --status-warning-border: rgba(251, 191, 36, 0.3);
+
+            --status-error: #F87171;
+            --status-error-bg: rgba(248, 113, 113, 0.12);
+            --status-error-border: rgba(248, 113, 113, 0.3);
+
+            --status-info: #60A5FA;
+            --status-info-bg: rgba(96, 165, 250, 0.12);
+            --status-info-border: rgba(96, 165, 250, 0.3);
+
+            --status-pending: #5C5C73;
+            --status-pending-bg: rgba(92, 92, 115, 0.12);
+
+            --group-l1: rgba(0, 153, 255, 0.06);
+            --group-l1-border: rgba(0, 153, 255, 0.15);
+            --group-l2: rgba(0, 153, 255, 0.03);
+            --group-l2-border: rgba(0, 153, 255, 0.08);
+
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.25);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.3);
+            --shadow-glow: 0 0 20px rgba(0,153,255,0.15);
+            --shadow-brand: 0 4px 20px rgba(0,153,255,0.25);
+        }
+
+        /* ============================================
+           THEME TOGGLE
+           ============================================ */
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            background: var(--surface-raised);
+            border: 1px solid var(--surface-card-border);
+            border-radius: var(--radius-full);
+            padding: 3px;
+            cursor: pointer;
+        }
+
+        .theme-toggle-option {
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
+            font-weight: 500;
+            color: var(--text-tertiary);
+            transition: all var(--duration-fast) var(--ease-default);
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        .theme-toggle-option.active {
+            background: var(--brand-solid);
+            color: white;
+        }
+
+        /* ============================================
            BASE STYLES
            ============================================ */
 
@@ -163,17 +279,24 @@
 
         body {
             font-family: 'Euclid Circular B', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-            background: var(--neutral-950);
-            color: var(--neutral-200);
+            background: var(--surface-page);
+            color: var(--text-secondary);
             font-size: var(--text-base);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            transition: background var(--duration-normal) var(--ease-default),
+                        color var(--duration-normal) var(--ease-default);
         }
 
         ::selection {
+            background: rgba(0, 119, 221, 0.2);
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] ::selection {
             background: rgba(0, 153, 255, 0.3);
-            color: var(--white);
+            color: var(--text-primary);
         }
 
         /* ============================================
@@ -184,10 +307,11 @@
             position: fixed;
             top: 0; left: 0; right: 0;
             z-index: 100;
-            background: rgba(10, 10, 15, 0.85);
+            background: var(--surface-nav);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--neutral-800);
+            border-bottom: 1px solid var(--surface-card-border);
+            transition: background var(--duration-normal) var(--ease-default);
         }
 
         .nav-inner {
@@ -205,7 +329,7 @@
             align-items: center;
             gap: var(--space-3);
             text-decoration: none;
-            color: var(--white);
+            color: var(--text-primary);
         }
 
         .nav-brand img {
@@ -216,13 +340,13 @@
         .nav-divider {
             width: 1px;
             height: 24px;
-            background: var(--neutral-700);
+            background: var(--surface-card-border);
         }
 
         .nav-subtitle {
             font-size: var(--text-sm);
             font-weight: 500;
-            color: var(--neutral-400);
+            color: var(--text-tertiary);
         }
 
         .nav-links {
@@ -234,7 +358,7 @@
         .nav-links a {
             display: block;
             padding: var(--space-2) var(--space-3);
-            color: var(--neutral-400);
+            color: var(--text-tertiary);
             text-decoration: none;
             font-size: var(--text-sm);
             font-weight: 500;
@@ -244,8 +368,8 @@
         }
 
         .nav-links a:hover {
-            color: var(--white);
-            background: var(--neutral-800);
+            color: var(--text-primary);
+            background: var(--surface-hover);
         }
 
         @media (max-width: 1100px) {
@@ -271,8 +395,12 @@
             transform: translateX(-50%);
             width: 1000px;
             height: 700px;
-            background: radial-gradient(ellipse, rgba(0,153,255,0.07) 0%, rgba(34,68,255,0.03) 40%, transparent 70%);
+            background: radial-gradient(ellipse, rgba(0,119,221,0.05) 0%, rgba(34,68,255,0.02) 40%, transparent 70%);
             pointer-events: none;
+        }
+
+        [data-theme="dark"] .hero::before {
+            background: radial-gradient(ellipse, rgba(0,153,255,0.07) 0%, rgba(34,68,255,0.03) 40%, transparent 70%);
         }
 
         .hero-logo {
@@ -293,11 +421,11 @@
             align-items: center;
             gap: var(--space-2);
             padding: var(--space-2) var(--space-4);
-            background: var(--neutral-850);
-            border: 1px solid var(--neutral-700);
+            background: var(--surface-raised);
+            border: 1px solid var(--surface-card-border);
             border-radius: var(--radius-full);
             font-size: var(--text-sm);
-            color: var(--neutral-300);
+            color: var(--text-tertiary);
             margin-bottom: var(--space-8);
         }
 
@@ -317,7 +445,7 @@
         .hero h1 {
             font-size: var(--text-5xl);
             font-weight: 700;
-            color: var(--white);
+            color: var(--text-primary);
             letter-spacing: -0.03em;
             line-height: 1.1;
             margin-bottom: var(--space-6);
@@ -333,7 +461,7 @@
 
         .hero-sub {
             font-size: var(--text-lg);
-            color: var(--neutral-400);
+            color: var(--text-tertiary);
             max-width: 600px;
             margin: 0 auto;
             line-height: 1.7;
@@ -352,7 +480,7 @@
 
         .section {
             padding: var(--space-24) 0;
-            border-top: 1px solid var(--neutral-850);
+            border-top: 1px solid var(--surface-card-border);
         }
 
         .section-header { margin-bottom: var(--space-16); }
@@ -372,14 +500,14 @@
         .section-title {
             font-size: var(--text-3xl);
             font-weight: 700;
-            color: var(--white);
+            color: var(--text-primary);
             letter-spacing: -0.02em;
             margin-bottom: var(--space-4);
         }
 
         .section-desc {
             font-size: var(--text-md);
-            color: var(--neutral-400);
+            color: var(--text-tertiary);
             max-width: 700px;
             line-height: 1.7;
         }
@@ -389,24 +517,25 @@
            ============================================ */
 
         .card {
-            background: var(--neutral-900);
-            border: 1px solid var(--neutral-800);
+            background: var(--surface-card);
+            border: 1px solid var(--surface-card-border);
             border-radius: var(--radius-lg);
             padding: var(--space-8);
-            transition: border-color var(--duration-normal) var(--ease-default);
+            transition: border-color var(--duration-normal) var(--ease-default),
+                        background var(--duration-normal) var(--ease-default);
         }
 
-        .card:hover { border-color: var(--neutral-700); }
+        .card:hover { border-color: var(--neutral-600); }
 
         .card-title {
             font-size: var(--text-lg);
             font-weight: 600;
-            color: var(--white);
+            color: var(--text-primary);
             margin-bottom: var(--space-3);
         }
 
         .card-text {
-            color: var(--neutral-400);
+            color: var(--text-secondary);
             line-height: 1.7;
         }
 
@@ -425,7 +554,7 @@
         .brand-statement {
             font-size: var(--text-2xl);
             font-weight: 600;
-            color: var(--white);
+            color: var(--text-primary);
             line-height: 1.5;
             border-left: 3px solid;
             border-image: var(--brand-gradient-vertical) 1;
@@ -455,8 +584,8 @@
         .pillar-icon {
             width: 48px;
             height: 48px;
-            background: var(--neutral-850);
-            border: 1px solid var(--neutral-700);
+            background: var(--surface-raised);
+            border: 1px solid var(--surface-card-border);
             border-radius: var(--radius-md);
             display: flex;
             align-items: center;
@@ -489,8 +618,8 @@
         }
 
         .logo-variant-dark {
-            background: var(--neutral-900);
-            border: 1px solid var(--neutral-800);
+            background: var(--surface-card);
+            border: 1px solid var(--surface-card-border);
         }
 
         .logo-variant-gradient {
@@ -504,7 +633,7 @@
             letter-spacing: 0.08em;
         }
 
-        .logo-variant-dark .logo-variant-label { color: var(--neutral-500); }
+        .logo-variant-dark .logo-variant-label { color: var(--text-tertiary); }
         .logo-variant-gradient .logo-variant-label { color: rgba(255,255,255,0.7); }
 
         /* ============================================
@@ -516,7 +645,7 @@
             grid-template-columns: 80px 1fr;
             gap: var(--space-6);
             padding: var(--space-8) 0;
-            border-bottom: 1px solid var(--neutral-850);
+            border-bottom: 1px solid var(--surface-card-border);
         }
 
         .principle:last-child { border-bottom: none; }
@@ -524,29 +653,29 @@
         .principle-number {
             font-size: var(--text-4xl);
             font-weight: 700;
+            line-height: 1;
             background: var(--brand-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            line-height: 1;
         }
 
         .principle-title {
             font-size: var(--text-xl);
             font-weight: 600;
-            color: var(--white);
+            color: var(--text-primary);
             margin-bottom: var(--space-2);
         }
 
-        .principle-desc { color: var(--neutral-400); line-height: 1.7; }
+        .principle-desc { color: var(--text-secondary); line-height: 1.7; }
 
         .principle-example {
             margin-top: var(--space-4);
             padding: var(--space-4);
-            background: var(--neutral-850);
+            background: var(--surface-raised);
             border-radius: var(--radius-md);
             font-size: var(--text-sm);
-            color: var(--neutral-300);
+            color: var(--text-secondary);
         }
 
         .principle-example strong {
@@ -559,8 +688,8 @@
            ============================================ */
 
         .persona-card {
-            background: var(--neutral-900);
-            border: 1px solid var(--neutral-800);
+            background: var(--surface-card);
+            border: 1px solid var(--surface-card-border);
             border-radius: var(--radius-lg);
             overflow: hidden;
         }
@@ -570,7 +699,7 @@
             display: flex;
             align-items: center;
             gap: var(--space-5);
-            border-bottom: 1px solid var(--neutral-800);
+            border-bottom: 1px solid var(--surface-card-border);
         }
 
         .persona-avatar {
@@ -582,15 +711,15 @@
             justify-content: center;
             font-size: var(--text-xl);
             font-weight: 700;
-            color: var(--white);
+            color: var(--text-primary);
             flex-shrink: 0;
         }
 
         .persona-avatar.primary { background: var(--brand-gradient); }
         .persona-avatar.secondary { background: linear-gradient(135deg, var(--neutral-600), var(--neutral-500)); }
 
-        .persona-name { font-size: var(--text-lg); font-weight: 600; color: var(--white); }
-        .persona-role { font-size: var(--text-sm); color: var(--neutral-400); }
+        .persona-name { font-size: var(--text-lg); font-weight: 600; color: var(--text-primary); }
+        .persona-role { font-size: var(--text-sm); color: var(--text-tertiary); }
 
         .persona-badge {
             margin-left: auto;
@@ -612,14 +741,14 @@
         .persona-section-title {
             font-size: var(--text-sm);
             font-weight: 600;
-            color: var(--neutral-300);
+            color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.05em;
             margin-bottom: var(--space-2);
         }
 
         .persona-section p, .persona-section li {
-            color: var(--neutral-400);
+            color: var(--text-secondary);
             font-size: var(--text-sm);
             line-height: 1.7;
         }
@@ -660,7 +789,7 @@
 
         .tone-bar {
             height: 4px;
-            background: var(--neutral-800);
+            background: var(--surface-card-border);
             border-radius: var(--radius-full);
             margin-bottom: var(--space-4);
             position: relative;
@@ -675,8 +804,8 @@
             border-radius: var(--radius-full);
         }
 
-        .tone-label { font-size: var(--text-sm); font-weight: 600; color: var(--white); margin-bottom: var(--space-1); }
-        .tone-range { font-size: var(--text-xs); color: var(--neutral-500); }
+        .tone-label { font-size: var(--text-sm); font-weight: 600; color: var(--text-primary); margin-bottom: var(--space-1); }
+        .tone-range { font-size: var(--text-xs); color: var(--text-tertiary); }
 
         .tone-examples {
             display: grid;
@@ -701,21 +830,21 @@
 
         .tone-example-item {
             padding: var(--space-3) 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid var(--surface-card-border);
             font-size: var(--text-sm);
-            color: var(--neutral-300);
+            color: var(--text-secondary);
         }
 
         .tone-example-item:last-child { border-bottom: none; }
-        .tone-context { font-size: var(--text-xs); color: var(--neutral-500); margin-bottom: var(--space-1); }
+        .tone-context { font-size: var(--text-xs); color: var(--text-tertiary); margin-bottom: var(--space-1); }
 
         /* ============================================
            05. COLOUR PALETTE
            ============================================ */
 
         .colour-philosophy {
-            background: var(--neutral-900);
-            border: 1px solid var(--neutral-800);
+            background: var(--surface-card);
+            border: 1px solid var(--surface-card-border);
             border-radius: var(--radius-lg);
             padding: var(--space-8);
             margin-bottom: var(--space-12);
@@ -732,7 +861,7 @@
             flex-shrink: 0;
             width: 200px;
             height: 120px;
-            background: var(--neutral-850);
+            background: var(--surface-raised);
             border-radius: var(--radius-md);
             position: relative;
             overflow: hidden;
@@ -741,7 +870,7 @@
         .colour-philosophy-visual .mono-base {
             position: absolute;
             inset: 0;
-            background: linear-gradient(180deg, var(--neutral-800) 0%, var(--neutral-900) 100%);
+            background: linear-gradient(180deg, var(--surface-hover) 0%, var(--surface-raised) 100%);
         }
 
         .colour-philosophy-visual .pop {
@@ -776,13 +905,13 @@
         .colour-group-title {
             font-size: var(--text-lg);
             font-weight: 600;
-            color: var(--white);
+            color: var(--text-primary);
             margin-bottom: var(--space-2);
         }
 
         .colour-group-desc {
             font-size: var(--text-sm);
-            color: var(--neutral-400);
+            color: var(--text-secondary);
             margin-bottom: var(--space-6);
         }
 
@@ -803,20 +932,20 @@
             width: 72px;
             height: 72px;
             border-radius: var(--radius-md);
-            border: 1px solid var(--neutral-700);
+            border: 1px solid var(--surface-card-border);
             transition: transform var(--duration-fast) var(--ease-default);
         }
 
         .swatch-color:hover { transform: scale(1.05); }
 
-        .swatch-label { font-size: var(--text-xs); font-weight: 500; color: var(--neutral-300); }
-        .swatch-hex { font-size: 10px; color: var(--neutral-500); font-family: 'SF Mono', 'Fira Code', monospace; }
+        .swatch-label { font-size: var(--text-xs); font-weight: 500; color: var(--text-secondary); }
+        .swatch-hex { font-size: 10px; color: var(--text-tertiary); font-family: 'SF Mono', 'Fira Code', monospace; }
 
         .gradient-swatch {
             width: 100%;
             height: 80px;
             border-radius: var(--radius-md);
-            border: 1px solid var(--neutral-700);
+            border: 1px solid var(--surface-card-border);
             margin-bottom: var(--space-3);
         }
 
@@ -824,7 +953,7 @@
             display: flex;
             border-radius: var(--radius-md);
             overflow: hidden;
-            border: 1px solid var(--neutral-700);
+            border: 1px solid var(--surface-card-border);
             margin-bottom: var(--space-4);
         }
 
@@ -862,8 +991,8 @@
             font-size: var(--text-md);
         }
 
-        .status-name { font-size: var(--text-sm); font-weight: 500; color: var(--neutral-200); margin-bottom: var(--space-1); }
-        .status-use { font-size: var(--text-xs); color: var(--neutral-500); }
+        .status-name { font-size: var(--text-sm); font-weight: 500; color: var(--text-primary); margin-bottom: var(--space-1); }
+        .status-use { font-size: var(--text-xs); color: var(--text-tertiary); }
 
         /* Gradient vs Solid section */
         .usage-table {
@@ -877,9 +1006,9 @@
             padding: var(--space-3) var(--space-4);
             font-size: var(--text-sm);
             font-weight: 600;
-            color: var(--neutral-300);
-            border-bottom: 1px solid var(--neutral-700);
-            background: var(--neutral-850);
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--surface-card-border);
+            background: var(--surface-raised);
         }
 
         .usage-table th:first-child {
@@ -893,8 +1022,8 @@
         .usage-table td {
             padding: var(--space-3) var(--space-4);
             font-size: var(--text-sm);
-            color: var(--neutral-400);
-            border-bottom: 1px solid var(--neutral-850);
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--surface-card-border);
         }
 
         .usage-table tr:last-child td { border-bottom: none; }
@@ -921,8 +1050,8 @@
 
         /* Grouping demo */
         .grouping-demo {
-            background: var(--neutral-900);
-            border: 1px solid var(--neutral-800);
+            background: var(--surface-card);
+            border: 1px solid var(--surface-card-border);
             border-radius: var(--radius-lg);
             padding: var(--space-6);
             margin-bottom: var(--space-6);
@@ -953,12 +1082,12 @@
         }
 
         .group-child {
-            background: var(--neutral-850);
-            border: 1px solid var(--neutral-700);
+            background: var(--surface-raised);
+            border: 1px solid var(--surface-card-border);
             border-radius: var(--radius-sm);
             padding: var(--space-3) var(--space-4);
             font-size: var(--text-sm);
-            color: var(--neutral-300);
+            color: var(--text-secondary);
             display: flex;
             align-items: center;
             gap: var(--space-3);
@@ -982,7 +1111,7 @@
         .group-nested-label {
             font-size: var(--text-xs);
             font-weight: 600;
-            color: var(--neutral-400);
+            color: var(--text-tertiary);
             margin-bottom: var(--space-2);
         }
 
@@ -994,7 +1123,7 @@
 
         .type-sample {
             padding: var(--space-8) 0;
-            border-bottom: 1px solid var(--neutral-850);
+            border-bottom: 1px solid var(--surface-card-border);
             display: grid;
             grid-template-columns: 200px 1fr;
             gap: var(--space-8);
@@ -1005,10 +1134,10 @@
             .type-sample { grid-template-columns: 1fr; gap: var(--space-2); }
         }
 
-        .type-meta { font-size: var(--text-sm); color: var(--neutral-500); }
-        .type-meta strong { display: block; color: var(--neutral-300); font-weight: 500; }
-        .type-meta code { font-size: var(--text-xs); color: var(--neutral-500); font-family: 'SF Mono', 'Fira Code', monospace; }
-        .type-demo { color: var(--white); }
+        .type-meta { font-size: var(--text-sm); color: var(--text-tertiary); }
+        .type-meta strong { display: block; color: var(--text-secondary); font-weight: 500; }
+        .type-meta code { font-size: var(--text-xs); color: var(--text-tertiary); font-family: 'SF Mono', 'Fira Code', monospace; }
+        .type-demo { color: var(--text-primary); }
 
         .weight-grid {
             display: grid;
@@ -1023,14 +1152,14 @@
         .weight-item {
             text-align: center;
             padding: var(--space-6) var(--space-4);
-            background: var(--neutral-900);
-            border: 1px solid var(--neutral-800);
+            background: var(--surface-card);
+            border: 1px solid var(--surface-card-border);
             border-radius: var(--radius-md);
         }
 
-        .weight-demo { font-size: var(--text-2xl); color: var(--white); margin-bottom: var(--space-2); }
-        .weight-name { font-size: var(--text-xs); color: var(--neutral-400); }
-        .weight-value { font-size: 10px; color: var(--neutral-600); font-family: 'SF Mono', 'Fira Code', monospace; }
+        .weight-demo { font-size: var(--text-2xl); color: var(--text-primary); margin-bottom: var(--space-2); }
+        .weight-name { font-size: var(--text-xs); color: var(--text-secondary); }
+        .weight-value { font-size: 10px; color: var(--text-tertiary); font-family: 'SF Mono', 'Fira Code', monospace; }
 
         /* ============================================
            07. ICONOGRAPHY
@@ -1049,8 +1178,8 @@
             align-items: center;
             justify-content: center;
             gap: var(--space-2);
-            background: var(--neutral-900);
-            border: 1px solid var(--neutral-800);
+            background: var(--surface-card);
+            border: 1px solid var(--surface-card-border);
             border-radius: var(--radius-md);
             padding: var(--space-4);
             transition: border-color var(--duration-fast) var(--ease-default);
@@ -1060,14 +1189,14 @@
 
         .icon-item svg {
             width: 24px; height: 24px;
-            stroke: var(--neutral-300);
+            stroke: var(--text-secondary);
             fill: none;
             stroke-width: 1.5;
             stroke-linecap: round;
             stroke-linejoin: round;
         }
 
-        .icon-item span { font-size: 10px; color: var(--neutral-500); }
+        .icon-item span { font-size: 10px; color: var(--text-tertiary); }
 
         /* ============================================
            08. SPACING & LAYOUT
@@ -1097,7 +1226,7 @@
 
         .spacing-label {
             font-size: 10px;
-            color: var(--neutral-500);
+            color: var(--text-tertiary);
             font-family: 'SF Mono', 'Fira Code', monospace;
             text-align: center;
         }
@@ -1123,12 +1252,12 @@
             text-align: center;
         }
 
-        .elevation-item.flat { background: var(--neutral-900); border: 1px solid var(--neutral-800); }
-        .elevation-item.raised { background: var(--neutral-850); box-shadow: var(--shadow-md); }
-        .elevation-item.floating { background: var(--neutral-800); box-shadow: var(--shadow-lg); }
+        .elevation-item.flat { background: var(--surface-card); border: 1px solid var(--surface-card-border); }
+        .elevation-item.raised { background: var(--surface-raised); box-shadow: var(--shadow-md); }
+        .elevation-item.floating { background: var(--surface-overlay); box-shadow: var(--shadow-lg); }
 
-        .elevation-name { font-size: var(--text-sm); font-weight: 600; color: var(--white); margin-bottom: var(--space-1); }
-        .elevation-use { font-size: var(--text-xs); color: var(--neutral-500); }
+        .elevation-name { font-size: var(--text-sm); font-weight: 600; color: var(--text-primary); margin-bottom: var(--space-1); }
+        .elevation-use { font-size: var(--text-xs); color: var(--text-tertiary); }
 
         /* ============================================
            10. MOTION
@@ -1145,8 +1274,8 @@
         }
 
         .motion-demo-card {
-            background: var(--neutral-900);
-            border: 1px solid var(--neutral-800);
+            background: var(--surface-card);
+            border: 1px solid var(--surface-card-border);
             border-radius: var(--radius-lg);
             padding: var(--space-6);
             text-align: center;
@@ -1175,9 +1304,9 @@
         .motion-demo-card:hover .motion-dot-slow { transform: translateX(40px); transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1); }
         .motion-dot-slow { transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1); }
 
-        .motion-name { font-size: var(--text-sm); font-weight: 600; color: var(--white); margin-bottom: var(--space-1); }
-        .motion-detail { font-size: var(--text-xs); color: var(--neutral-500); font-family: 'SF Mono', 'Fira Code', monospace; }
-        .motion-use { font-size: var(--text-xs); color: var(--neutral-400); margin-top: var(--space-2); }
+        .motion-name { font-size: var(--text-sm); font-weight: 600; color: var(--text-primary); margin-bottom: var(--space-1); }
+        .motion-detail { font-size: var(--text-xs); color: var(--text-tertiary); font-family: 'SF Mono', 'Fira Code', monospace; }
+        .motion-use { font-size: var(--text-xs); color: var(--text-secondary); margin-top: var(--space-2); }
 
         /* ============================================
            FOOTER
@@ -1185,11 +1314,11 @@
 
         .footer {
             padding: var(--space-12) 0;
-            border-top: 1px solid var(--neutral-850);
+            border-top: 1px solid var(--surface-card-border);
             text-align: center;
         }
 
-        .footer p { font-size: var(--text-sm); color: var(--neutral-500); }
+        .footer p { font-size: var(--text-sm); color: var(--text-tertiary); }
         .footer a { color: var(--brand-solid); text-decoration: none; }
         .footer a:hover { text-decoration: underline; }
 
@@ -1203,16 +1332,34 @@
         .mb-6 { margin-bottom: var(--space-6); }
         .mb-8 { margin-bottom: var(--space-8); }
         .mb-12 { margin-bottom: var(--space-12); }
-        .text-muted { color: var(--neutral-500); }
+        .text-muted { color: var(--text-tertiary); }
         .text-sm { font-size: var(--text-sm); }
 
         code {
             font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
             font-size: 0.9em;
-            background: var(--neutral-850);
+            background: var(--surface-raised);
             padding: 2px 6px;
             border-radius: var(--radius-sm);
-            color: var(--brand-cyan);
+            color: var(--brand-solid);
+            border: 1px solid var(--surface-card-border);
+        }
+
+        /* Logo inversion for light mode */
+        .nav-brand img,
+        .hero-logo img {
+            filter: brightness(0);
+        }
+
+        [data-theme="dark"] .nav-brand img,
+        [data-theme="dark"] .hero-logo img {
+            filter: brightness(1);
+        }
+
+        /* Logo display dark variant needs dark bg in light mode */
+        .logo-variant-dark {
+            background: #111118 !important;
+            border-color: #1C1C27 !important;
         }
     </style>
 </head>
@@ -1226,7 +1373,7 @@
             <a href="#" class="nav-brand">
                 <img src="assets/iconmark-white.png" alt="DeepFlow" style="height: 28px; width: auto;">
                 <span class="nav-divider"></span>
-                <span class="nav-subtitle">Design Guidelines v1.1</span>
+                <span class="nav-subtitle">Design Guidelines v1.2</span>
             </a>
             <ul class="nav-links">
                 <li><a href="#brand">Brand</a></li>
@@ -1241,6 +1388,10 @@
                 <li><a href="#elevation">Elevation</a></li>
                 <li><a href="#motion">Motion</a></li>
             </ul>
+            <div class="theme-toggle" role="radiogroup" aria-label="Theme switcher">
+                <button class="theme-toggle-option active" data-theme-value="light" aria-checked="true" role="radio">☀️ Light</button>
+                <button class="theme-toggle-option" data-theme-value="dark" aria-checked="false" role="radio">🌙 Dark</button>
+            </div>
         </div>
     </nav>
 
@@ -1316,7 +1467,7 @@
             <div class="card mt-8">
                 <div class="card-title">Brand Name Usage</div>
                 <p class="card-text">
-                    The wordmark logo renders "deepflow" in lowercase as a single word — this is correct for the logo image. When used as <strong style="color: var(--white);">text</strong> (in UI labels, documentation, marketing copy, or conversation), always write <strong style="color: var(--white);">DeepFlow</strong> with capital D and F for legibility. Never "Deepflow", "deepflow", or "Deep Flow" in running text.
+                    The wordmark logo renders "deepflow" in lowercase as a single word — this is correct for the logo image. When used as <strong style="color: var(--text-primary);">text</strong> (in UI labels, documentation, marketing copy, or conversation), always write <strong style="color: var(--text-primary);">DeepFlow</strong> with capital D and F for legibility. Never "Deepflow", "deepflow", or "Deep Flow" in running text.
                 </p>
             </div>
         </section>
@@ -1619,7 +1770,7 @@
                 </div>
                 <div>
                     <div class="card-title mb-4">The Philosophy</div>
-                    <p class="card-text">The interface is built on a monochrome neutral scale — dark backgrounds, light text, subtle borders. Colour appears only for three purposes: <strong style="color: var(--brand-cyan)">brand identity</strong> (cyan→blue gradient), <strong style="color: var(--status-success)">semantic status</strong> (success, warning, error), and <strong style="color: var(--white)">parent-child grouping</strong> (subtle containment shading). If a colour doesn't serve one of these three roles, it doesn't belong.</p>
+                    <p class="card-text">The interface is built on a monochrome neutral scale — dark backgrounds, light text, subtle borders. Colour appears only for three purposes: <strong style="color: var(--brand-cyan)">brand identity</strong> (cyan→blue gradient), <strong style="color: var(--status-success)">semantic status</strong> (success, warning, error), and <strong style="color: var(--text-primary)">parent-child grouping</strong> (subtle containment shading). If a colour doesn't serve one of these three roles, it doesn't belong.</p>
                 </div>
             </div>
 
@@ -1660,11 +1811,11 @@
                 <p class="colour-group-desc">12-step neutral scale from near-black to white. This is 90% of what users see. Backgrounds, text, borders, dividers — all neutral.</p>
 
                 <div class="neutral-strip">
-                    <div class="neutral-strip-item" style="background: var(--neutral-950); color: var(--neutral-500);">950</div>
-                    <div class="neutral-strip-item" style="background: var(--neutral-900); color: var(--neutral-500);">900</div>
-                    <div class="neutral-strip-item" style="background: var(--neutral-850); color: var(--neutral-500);">850</div>
-                    <div class="neutral-strip-item" style="background: var(--neutral-800); color: var(--neutral-400);">800</div>
-                    <div class="neutral-strip-item" style="background: var(--neutral-700); color: var(--neutral-300);">700</div>
+                    <div class="neutral-strip-item" style="background: var(--neutral-950); color: var(--text-tertiary);">950</div>
+                    <div class="neutral-strip-item" style="background: var(--surface-card); color: var(--text-tertiary);">900</div>
+                    <div class="neutral-strip-item" style="background: var(--surface-raised); color: var(--text-tertiary);">850</div>
+                    <div class="neutral-strip-item" style="background: var(--neutral-800); color: var(--text-secondary);">800</div>
+                    <div class="neutral-strip-item" style="background: var(--neutral-700); color: var(--text-secondary);">700</div>
                     <div class="neutral-strip-item" style="background: var(--neutral-600); color: var(--neutral-200);">600</div>
                     <div class="neutral-strip-item" style="background: var(--neutral-500); color: var(--neutral-100);">500</div>
                     <div class="neutral-strip-item" style="background: var(--neutral-400); color: var(--neutral-900);">400</div>
@@ -1708,10 +1859,10 @@
                         <div class="swatch-hex mt-4" style="color: var(--status-error);">#F87171</div>
                     </div>
                     <div class="status-item">
-                        <div class="status-indicator" style="background: var(--status-pending-bg); border: 2px solid var(--neutral-500);"><span style="color: var(--neutral-500);">○</span></div>
+                        <div class="status-indicator" style="background: var(--status-pending-bg); border: 2px solid var(--neutral-500);"><span style="color: var(--text-tertiary);">○</span></div>
                         <div class="status-name">Pending</div>
                         <div class="status-use">Dependencies unmet</div>
-                        <div class="swatch-hex mt-4" style="color: var(--neutral-500);">#5C5C73</div>
+                        <div class="swatch-hex mt-4" style="color: var(--text-tertiary);">#5C5C73</div>
                     </div>
                 </div>
             </div>
@@ -1761,12 +1912,12 @@
                         Brand-level moments that should feel premium and distinctive. The gradient says "this is DeepFlow" — it's the visual signature.
                     </p>
                     <ul style="list-style: none; padding: 0; margin-top: var(--space-4);">
-                        <li style="color: var(--neutral-300); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--neutral-850);"><span class="usage-gradient"></span>Logo and iconmark (always gradient or white)</li>
-                        <li style="color: var(--neutral-300); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--neutral-850);"><span class="usage-gradient"></span>Hero sections and landing page headers</li>
-                        <li style="color: var(--neutral-300); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--neutral-850);"><span class="usage-gradient"></span>Primary CTA button (one per view maximum)</li>
-                        <li style="color: var(--neutral-300); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--neutral-850);"><span class="usage-gradient"></span>Onboarding and empty-state illustrations</li>
-                        <li style="color: var(--neutral-300); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--neutral-850);"><span class="usage-gradient"></span>Gradient text for display headings (sparingly)</li>
-                        <li style="color: var(--neutral-300); font-size: var(--text-sm); padding: var(--space-2) 0;"><span class="usage-gradient"></span>Loading/progress indicators (the animated edge flow on graph)</li>
+                        <li style="color: var(--text-secondary); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--surface-card-border);"><span class="usage-gradient"></span>Logo and iconmark (always gradient or white)</li>
+                        <li style="color: var(--text-secondary); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--surface-card-border);"><span class="usage-gradient"></span>Hero sections and landing page headers</li>
+                        <li style="color: var(--text-secondary); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--surface-card-border);"><span class="usage-gradient"></span>Primary CTA button (one per view maximum)</li>
+                        <li style="color: var(--text-secondary); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--surface-card-border);"><span class="usage-gradient"></span>Onboarding and empty-state illustrations</li>
+                        <li style="color: var(--text-secondary); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--surface-card-border);"><span class="usage-gradient"></span>Gradient text for display headings (sparingly)</li>
+                        <li style="color: var(--text-secondary); font-size: var(--text-sm); padding: var(--space-2) 0;"><span class="usage-gradient"></span>Loading/progress indicators (the animated edge flow on graph)</li>
                     </ul>
                 </div>
                 <div class="card">
@@ -1776,12 +1927,12 @@
                         Everyday UI elements where brand presence is needed but the gradient would be too heavy. Solid <code>#0099FF</code> is the workhorse.
                     </p>
                     <ul style="list-style: none; padding: 0; margin-top: var(--space-4);">
-                        <li style="color: var(--neutral-300); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--neutral-850);"><span class="usage-solid"></span>Text links and interactive text</li>
-                        <li style="color: var(--neutral-300); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--neutral-850);"><span class="usage-solid"></span>Secondary buttons and outline buttons</li>
-                        <li style="color: var(--neutral-300); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--neutral-850);"><span class="usage-solid"></span>Active/selected states (tabs, sidebar items)</li>
-                        <li style="color: var(--neutral-300); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--neutral-850);"><span class="usage-solid"></span>Form focus rings and input borders</li>
-                        <li style="color: var(--neutral-300); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--neutral-850);"><span class="usage-solid"></span>Badges and tags (non-status)</li>
-                        <li style="color: var(--neutral-300); font-size: var(--text-sm); padding: var(--space-2) 0;"><span class="usage-solid"></span>Toggles, checkboxes, radio buttons when active</li>
+                        <li style="color: var(--text-secondary); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--surface-card-border);"><span class="usage-solid"></span>Text links and interactive text</li>
+                        <li style="color: var(--text-secondary); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--surface-card-border);"><span class="usage-solid"></span>Secondary buttons and outline buttons</li>
+                        <li style="color: var(--text-secondary); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--surface-card-border);"><span class="usage-solid"></span>Active/selected states (tabs, sidebar items)</li>
+                        <li style="color: var(--text-secondary); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--surface-card-border);"><span class="usage-solid"></span>Form focus rings and input borders</li>
+                        <li style="color: var(--text-secondary); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--surface-card-border);"><span class="usage-solid"></span>Badges and tags (non-status)</li>
+                        <li style="color: var(--text-secondary); font-size: var(--text-sm); padding: var(--space-2) 0;"><span class="usage-solid"></span>Toggles, checkboxes, radio buttons when active</li>
                     </ul>
                 </div>
             </div>
@@ -1789,21 +1940,21 @@
             <div class="card">
                 <div class="card-title">The Rule of One</div>
                 <p class="card-text">
-                    In any given view, there should be <strong style="color: var(--white);">at most one gradient element</strong> visible at a time (excluding the logo). This is the "hero" element — typically the primary CTA or a section header. Everything else uses solid brand colour or neutrals. If you're debating whether something should be gradient or solid, it should be solid. The gradient is earned, not defaulted to.
+                    In any given view, there should be <strong style="color: var(--text-primary);">at most one gradient element</strong> visible at a time (excluding the logo). This is the "hero" element — typically the primary CTA or a section header. Everything else uses solid brand colour or neutrals. If you're debating whether something should be gradient or solid, it should be solid. The gradient is earned, not defaulted to.
                 </p>
             </div>
 
             <!-- Visual demo -->
             <div class="card-grid card-grid-3 mt-8">
-                <div style="background: var(--neutral-900); border: 1px solid var(--neutral-800); border-radius: var(--radius-lg); padding: var(--space-6); text-align: center;">
+                <div style="background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-lg); padding: var(--space-6); text-align: center;">
                     <div style="display: inline-block; padding: var(--space-3) var(--space-6); background: var(--brand-gradient); border-radius: var(--radius-md); color: white; font-weight: 600; font-size: var(--text-sm); box-shadow: var(--shadow-brand);">Create Workflow</div>
                     <p class="text-sm text-muted mt-4">Primary CTA — gradient</p>
                 </div>
-                <div style="background: var(--neutral-900); border: 1px solid var(--neutral-800); border-radius: var(--radius-lg); padding: var(--space-6); text-align: center;">
+                <div style="background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-lg); padding: var(--space-6); text-align: center;">
                     <div style="display: inline-block; padding: var(--space-3) var(--space-6); background: var(--brand-solid); border-radius: var(--radius-md); color: white; font-weight: 600; font-size: var(--text-sm);">Add Task</div>
                     <p class="text-sm text-muted mt-4">Secondary action — solid</p>
                 </div>
-                <div style="background: var(--neutral-900); border: 1px solid var(--neutral-800); border-radius: var(--radius-lg); padding: var(--space-6); text-align: center;">
+                <div style="background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-lg); padding: var(--space-6); text-align: center;">
                     <div style="display: inline-block; padding: var(--space-3) var(--space-6); background: transparent; border: 1px solid var(--brand-solid); border-radius: var(--radius-md); color: var(--brand-solid); font-weight: 600; font-size: var(--text-sm);">View Details</div>
                     <p class="text-sm text-muted mt-4">Tertiary action — outline</p>
                 </div>
@@ -1823,10 +1974,10 @@
             <div class="card mb-8">
                 <div class="card-title">Euclid Circular B</div>
                 <p class="card-text mb-4">A geometric sans-serif by Swiss Typefaces. Clean, modern, with perfectly circular bowls and generous apertures. Licensed typeface — self-hosted, not loaded from CDN. Fallback stack: <code>-apple-system, BlinkMacSystemFont, 'Inter', sans-serif</code>.</p>
-                <p style="font-size: var(--text-2xl); color: var(--white); font-weight: 400; letter-spacing: -0.01em;">
+                <p style="font-size: var(--text-2xl); color: var(--text-primary); font-weight: 400; letter-spacing: -0.01em;">
                     The quick brown fox jumps over the lazy dog
                 </p>
-                <p style="font-size: var(--text-2xl); color: var(--white); font-weight: 400; letter-spacing: -0.01em; margin-top: var(--space-2);">
+                <p style="font-size: var(--text-2xl); color: var(--text-primary); font-weight: 400; letter-spacing: -0.01em; margin-top: var(--space-2);">
                     ABCDEFGHIJKLMNOPQRSTUVWXYZ · 0123456789
                 </p>
             </div>
@@ -1892,11 +2043,11 @@
                 </div>
                 <div class="type-sample">
                     <div class="type-meta"><strong>Small</strong><code>13px / Regular</code></div>
-                    <div class="type-demo" style="font-size: var(--text-sm); font-weight: 400; line-height: 1.5; color: var(--neutral-300);">Last updated 2 hours ago · Assigned to Sarah Chen</div>
+                    <div class="type-demo" style="font-size: var(--text-sm); font-weight: 400; line-height: 1.5; color: var(--text-secondary);">Last updated 2 hours ago · Assigned to Sarah Chen</div>
                 </div>
                 <div class="type-sample">
                     <div class="type-meta"><strong>Caption</strong><code>12px / Medium</code></div>
-                    <div class="type-demo" style="font-size: var(--text-xs); font-weight: 500; line-height: 1.5; color: var(--neutral-400); text-transform: uppercase; letter-spacing: 0.05em;">STATUS · ASSIGNEE · DUE DATE</div>
+                    <div class="type-demo" style="font-size: var(--text-xs); font-weight: 500; line-height: 1.5; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">STATUS · ASSIGNEE · DUE DATE</div>
                 </div>
             </div>
 
@@ -1934,15 +2085,15 @@
             <div class="card-grid card-grid-3 mb-8">
                 <div class="card">
                     <div class="card-title">Style: Outlined</div>
-                    <p class="card-text">1.5px stroke, rounded caps and joins. We recommend <strong style="color: var(--white);">Lucide</strong> — open source, React-native, visually aligned with Euclid Circular B's geometric character.</p>
+                    <p class="card-text">1.5px stroke, rounded caps and joins. We recommend <strong style="color: var(--text-primary);">Lucide</strong> — open source, React-native, visually aligned with Euclid Circular B's geometric character.</p>
                 </div>
                 <div class="card">
                     <div class="card-title">Sizes</div>
                     <p class="card-text">
-                        <strong style="color: var(--white);">16px</strong> — Inline with text, table rows<br>
-                        <strong style="color: var(--white);">20px</strong> — Buttons, nav items<br>
-                        <strong style="color: var(--white);">24px</strong> — Section headers, cards<br>
-                        <strong style="color: var(--white);">32px</strong> — Empty states, callouts
+                        <strong style="color: var(--text-primary);">16px</strong> — Inline with text, table rows<br>
+                        <strong style="color: var(--text-primary);">20px</strong> — Buttons, nav items<br>
+                        <strong style="color: var(--text-primary);">24px</strong> — Section headers, cards<br>
+                        <strong style="color: var(--text-primary);">32px</strong> — Empty states, callouts
                     </p>
                 </div>
                 <div class="card">
@@ -1995,38 +2146,38 @@
                 <div class="card">
                     <div class="card-title">Component Padding</div>
                     <p class="card-text">
-                        <strong style="color: var(--white);">Tight:</strong> 8px — Tags, badges, inline elements<br>
-                        <strong style="color: var(--white);">Default:</strong> 16px — Cards, list items, inputs<br>
-                        <strong style="color: var(--white);">Comfortable:</strong> 24px — Panels, modals, sections<br>
-                        <strong style="color: var(--white);">Spacious:</strong> 32px — Page containers, hero areas
+                        <strong style="color: var(--text-primary);">Tight:</strong> 8px — Tags, badges, inline elements<br>
+                        <strong style="color: var(--text-primary);">Default:</strong> 16px — Cards, list items, inputs<br>
+                        <strong style="color: var(--text-primary);">Comfortable:</strong> 24px — Panels, modals, sections<br>
+                        <strong style="color: var(--text-primary);">Spacious:</strong> 32px — Page containers, hero areas
                     </p>
                 </div>
                 <div class="card">
                     <div class="card-title">Grid Gaps</div>
                     <p class="card-text">
-                        <strong style="color: var(--white);">Related:</strong> 8px — Items in a list, radio options<br>
-                        <strong style="color: var(--white);">Siblings:</strong> 16px — Cards in a grid, form fields<br>
-                        <strong style="color: var(--white);">Sections:</strong> 24–32px — Between content blocks<br>
-                        <strong style="color: var(--white);">Page:</strong> 64–96px — Major page divisions
+                        <strong style="color: var(--text-primary);">Related:</strong> 8px — Items in a list, radio options<br>
+                        <strong style="color: var(--text-primary);">Siblings:</strong> 16px — Cards in a grid, form fields<br>
+                        <strong style="color: var(--text-primary);">Sections:</strong> 24–32px — Between content blocks<br>
+                        <strong style="color: var(--text-primary);">Page:</strong> 64–96px — Major page divisions
                     </p>
                 </div>
                 <div class="card">
                     <div class="card-title">Content Width</div>
                     <p class="card-text">
-                        <strong style="color: var(--white);">Max content:</strong> 1200px — Page container<br>
-                        <strong style="color: var(--white);">Readable text:</strong> 680px max — Paragraphs<br>
-                        <strong style="color: var(--white);">Sidebar:</strong> 56px collapsed / 240px expanded<br>
-                        <strong style="color: var(--white);">Detail panel:</strong> 320–400px
+                        <strong style="color: var(--text-primary);">Max content:</strong> 1200px — Page container<br>
+                        <strong style="color: var(--text-primary);">Readable text:</strong> 680px max — Paragraphs<br>
+                        <strong style="color: var(--text-primary);">Sidebar:</strong> 56px collapsed / 240px expanded<br>
+                        <strong style="color: var(--text-primary);">Detail panel:</strong> 320–400px
                     </p>
                 </div>
                 <div class="card">
                     <div class="card-title">Border Radius</div>
                     <p class="card-text">
-                        <strong style="color: var(--white);">4px</strong> — Badges, tags, small elements<br>
-                        <strong style="color: var(--white);">8px</strong> — Buttons, inputs, cards<br>
-                        <strong style="color: var(--white);">12px</strong> — Panels, modals, popovers<br>
-                        <strong style="color: var(--white);">16px</strong> — Large containers, hero cards<br>
-                        <strong style="color: var(--white);">Full</strong> — Pills, avatars, circular elements
+                        <strong style="color: var(--text-primary);">4px</strong> — Badges, tags, small elements<br>
+                        <strong style="color: var(--text-primary);">8px</strong> — Buttons, inputs, cards<br>
+                        <strong style="color: var(--text-primary);">12px</strong> — Panels, modals, popovers<br>
+                        <strong style="color: var(--text-primary);">16px</strong> — Large containers, hero cards<br>
+                        <strong style="color: var(--text-primary);">Full</strong> — Pills, avatars, circular elements
                     </p>
                 </div>
             </div>
@@ -2101,18 +2252,18 @@
                 <div class="card">
                     <div class="card-title">Motion Principles</div>
                     <p class="card-text">
-                        <strong style="color: var(--white);">Purposeful:</strong> Every animation answers "what changed?"<br>
-                        <strong style="color: var(--white);">Quick:</strong> Default to fast. Slow only for major transitions.<br>
-                        <strong style="color: var(--white);">Respectful:</strong> Honour <code>prefers-reduced-motion</code>.<br>
-                        <strong style="color: var(--white);">Consistent:</strong> One easing curve. No bouncing or spring physics.
+                        <strong style="color: var(--text-primary);">Purposeful:</strong> Every animation answers "what changed?"<br>
+                        <strong style="color: var(--text-primary);">Quick:</strong> Default to fast. Slow only for major transitions.<br>
+                        <strong style="color: var(--text-primary);">Respectful:</strong> Honour <code>prefers-reduced-motion</code>.<br>
+                        <strong style="color: var(--text-primary);">Consistent:</strong> One easing curve. No bouncing or spring physics.
                     </p>
                 </div>
                 <div class="card">
                     <div class="card-title">Graph-Specific Motion</div>
                     <p class="card-text">
-                        <strong style="color: var(--white);">Edge flow:</strong> Animated dots along dependency edges. Speed proportional to zoom level.<br>
-                        <strong style="color: var(--white);">Node entrance:</strong> Fade + scale (0.95→1.0), staggered 30ms per node.<br>
-                        <strong style="color: var(--white);">Status change:</strong> Brief pulse glow on node (150ms).
+                        <strong style="color: var(--text-primary);">Edge flow:</strong> Animated dots along dependency edges. Speed proportional to zoom level.<br>
+                        <strong style="color: var(--text-primary);">Node entrance:</strong> Fade + scale (0.95→1.0), staggered 30ms per node.<br>
+                        <strong style="color: var(--text-primary);">Status change:</strong> Brief pulse glow on node (150ms).
                     </p>
                 </div>
             </div>
@@ -2126,7 +2277,7 @@
     <footer class="footer">
         <div class="container">
             <p style="margin-bottom: var(--space-2);">
-                <strong style="color: var(--white);">DeepFlow Design Guidelines</strong> · v1.1 · Phase 1: Foundations
+                <strong style="color: var(--text-primary);">DeepFlow Design Guidelines</strong> · v1.2 · Phase 1: Foundations
             </p>
             <p>
                 Prepared by <a href="https://enrichedsolutions.com">Enriched Solutions</a> · Phase 2: Component Library — coming next
@@ -2134,5 +2285,34 @@
         </div>
     </footer>
 
+    <script>
+        // Theme toggle
+        const toggleButtons = document.querySelectorAll('.theme-toggle-option');
+        const html = document.documentElement;
+
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                html.setAttribute('data-theme', 'dark');
+            } else {
+                html.removeAttribute('data-theme');
+            }
+            toggleButtons.forEach(btn => {
+                const isActive = btn.getAttribute('data-theme-value') === theme;
+                btn.classList.toggle('active', isActive);
+                btn.setAttribute('aria-checked', isActive);
+            });
+            localStorage.setItem('deepflow-guidelines-theme', theme);
+        }
+
+        toggleButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setTheme(btn.getAttribute('data-theme-value'));
+            });
+        });
+
+        // Check for saved preference (default: light)
+        const savedTheme = localStorage.getItem('deepflow-guidelines-theme') || 'light';
+        setTheme(savedTheme);
+    </script>
 </body>
 </html>
