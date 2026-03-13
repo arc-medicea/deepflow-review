@@ -647,29 +647,61 @@ Each row: status symbol + task name + assignee avatar + status label. Click a ro
 - Rich text (markdown rendered)
 - Editable inline (click to edit)
 
-**Files tab:**
-- Attached files: icon + name + size + date + download link
-- URL links: title + favicon preview + URL (auto-fetched via unfurl)
-- Upload dropzone ("Drag files or click to upload")
-- "+ Add URL" button
-- **Inheritance note:** "Files on this task are passed to sub-tasks. Files on the workflow hub are summarised into each task."
+**Resources tab:**
+Three sections with visual distinction:
+
+| Section | Icon | Contents |
+|---------|------|----------|
+| **Inputs** (from upstream) | ↓ arrow | Files/outputs produced by upstream tasks. Read-only. Inherited via dependency chain. Click "Review" → opens in canvas tab |
+| **Resources** (user-uploaded) | 📎 clip | Files and URLs attached directly to this task. Upload dropzone + "+ Add URL" button |
+| **Outputs** (task-generated) | ↑ arrow | Files/content produced by this task (human or agent). Available as inputs to downstream tasks |
+
+Per item: icon (file type) + name + size + date + source badge ("Agent" / "Human" / "Upstream: [Task Name]") + "Review" button.
+
+**Review in canvas:** Clicking "Review" on any resource opens it as a tab in the canvas area (the middle pane). Canvas becomes a multi-tab work surface:
+```
+┌─ [Editor] ─┬─ [Input: risk_data.csv] ─┬─ [Output: report_draft.md] ─┐
+│                                                                        │
+│  [Resource rendered here — PDF viewer, image, markdown, iframe, etc]  │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
+- Default tab is the task editor (markdown / embed)
+- Additional tabs open for each resource the user clicks "Review" on
+- Tabs are closeable (×). Editor tab is always present
+- Chat can reference the active canvas tab: "Summarise this document"
+- Outputs are editable in canvas if it's the current task's output. Inputs from upstream are read-only
+
+**Inheritance model:**
+- Files attached to a task (Resources) are passed to its sub-tasks as Inputs
+- Files attached to the workflow hub are summarised into each task; tasks can request the full resource via chat
 
 **Comments tab:**
-- Thread: avatar + name + time + rich text message
-- @mentions: users, files, other tasks (autocomplete on @)
-- Reactions on comments (emoji picker, click to add — API extension needed)
+- Thread: avatar + name + timestamp (relative) + rich text message
+- @mentions: users, files, other tasks (autocomplete on @ — type to search)
+- Reactions on comments (emoji picker, click to toggle — API extension needed)
 - No file attachments in comments (yet)
-- Input: rich text editor with @ autocomplete
+- No resolved/unresolved state (yet)
+- Input bar: rich text editor with @ autocomplete + Send button
 
 **Dependencies tab:**
-- Upstream: list with status symbols + task names (clickable → navigate to that node)
-- Downstream: same format
-- "+ Add dependency" with task search
+- **Upstream:** list with status symbols + task names (clickable → navigate to that node on graph)
+- **Downstream:** same format
+- "+ Add dependency" with task search autocomplete
+- Drag to reorder (affects execution order for sequential dependencies)
 
 **History tab:**
 - Timeline: timestamp + actor avatar + action description
-- Includes AI actions: "AI inserted content", "Agent completed task", "Property changed by DeepFlow AI"
-- Filter: All / Human / AI
+- Renders whatever the API returns — status changes, property edits, file uploads, comments, assignment changes, dependency changes, reparenting, AI actions
+- Filter toggle: All / Human / AI
+- Entries are read-only
+
+**Advanced tab** ⚠️ (feature-flagged, power users only — hidden in production):
+- Shows the **full system prompt** used for AI task execution or flow generation
+- Editable text area — user can modify the system prompt
+- "Rerun with edited prompt" button — re-executes the task/flow with the modified prompt
+- Warning banner: "This is a debug tool. Changes here affect AI behaviour for this task."
+- Only visible when feature flag `advanced_prompt_editor` is enabled
 
 ### Custom Properties System
 
