@@ -340,10 +340,10 @@
 </div>
 
 <!-- ============================================
-     3. WORKSPACE (DASHBOARD)
+     3. DASHBOARD
      ============================================ -->
 <div class="view-section">
-    <h2>3. Workspace (Dashboard)</h2>
+    <h2>3. Dashboard</h2>
     <p class="view-desc">Landing page / command centre. Project cards, summary stats, attention items.</p>
 
     <div class="wf layout-workspace">
@@ -362,7 +362,7 @@
             <span class="panel-dims">320px</span>
             <ul class="data-list">
                 <li>(Same structure)</li>
-                <li>Context: workspace-level (no specific task)</li>
+                <li>Context: dashboard-level (no specific task)</li>
                 <li>Can ask: "What needs my attention?"</li>
                 <li>Can ask: "Summarise all projects"</li>
             </ul>
@@ -373,8 +373,8 @@
             <span class="panel-label">Top Bar</span>
             <span class="panel-dims">h:44px</span>
             <ul class="data-list">
-                <li>Breadcrumbs: Workspace (or "Home")</li>
-                <li>No view switcher (this IS the workspace)</li>
+                <li>Breadcrumbs: Dashboard (or "Home")</li>
+                <li>No view switcher</li>
                 <li>Global search input</li>
                 <li>Notifications bell</li>
             </ul>
@@ -486,11 +486,11 @@
 </div>
 
 <!-- ============================================
-     5. ACTIVE TASK (WORKING STATE)
+     5. WORKSPACE (LEAF-NODE WORKING ENVIRONMENT)
      ============================================ -->
 <div class="view-section">
-    <h2>5. Active Task (Working State)</h2>
-    <p class="view-desc">User has selected a specific task. Chat is contextual to that task. Graph shows surrounding context (siblings dimmed). Detail panel is the working area.</p>
+    <h2>5. Workspace</h2>
+    <p class="view-desc">Entered by double-clicking or opening a leaf node (no children). This is where work actually happens — a human writes the report, or inspects what an agent produced. Three-pane: Chat + Canvas + Detail. Same shell as Graph View, but the middle pane is a content editor instead of a DAG canvas.</p>
 
     <div class="wf layout-active">
         <!-- Sidebar -->
@@ -510,15 +510,15 @@
                 <li class="heading">Header:</li>
                 <li class="sub">"DeepFlow AI" + status dot</li>
                 <li class="heading">Context indicator bar:</li>
-                <li class="sub">⬡ "Chatting about: [Task Name] (L2)"</li>
-                <li class="sub">Updates when user clicks different node</li>
+                <li class="sub">⬡ "Working on: [Task Name]"</li>
                 <li class="heading">Messages:</li>
                 <li class="sub">Task-scoped conversation</li>
+                <li class="sub">AI can reference canvas content: "I see the stress test section…"</li>
                 <li class="sub">AI responses can include:</li>
                 <li class="sub" style="padding-left:28px">Formatted summaries (bold headings, bullet lists)</li>
                 <li class="sub" style="padding-left:28px">Data tables</li>
-                <li class="sub" style="padding-left:28px">Action chips: "Apply to task", "Create workflow", "Assign to…"</li>
-                <li class="sub">System messages: "✅ Task notes updated"</li>
+                <li class="sub" style="padding-left:28px">Action chips: "Insert into canvas", "Replace selection", "Assign to…"</li>
+                <li class="sub">System messages: "✅ Content inserted into canvas"</li>
                 <li class="heading">Input bar:</li>
                 <li class="sub">"Ask about this task…"</li>
                 <li class="sub">Send button</li>
@@ -531,72 +531,90 @@
             <span class="panel-dims">h:44px</span>
             <ul class="data-list">
                 <li>Breadcrumbs: [Project] › [Workflow] › [Task Name]</li>
+                <li>Canvas type indicator / switcher (if multiple embed types available)</li>
+                <li>Back to parent graph button</li>
             </ul>
         </div>
 
-        <!-- Hub Bar -->
+        <!-- Status Bar (replaces Hub Bar) -->
         <div class="panel" style="grid-column:3; grid-row:2">
-            <span class="panel-label">Hub Bar (mini)</span>
+            <span class="panel-label">Status Bar</span>
             <span class="panel-dims">h:36px</span>
             <ul class="data-list">
-                <li>Parent workflow name</li>
-                <li>Progress bar + percentage</li>
-                <li>Status counts (✓ done · ▶ active)</li>
+                <li>Task status badge (pill)</li>
+                <li>Assignee avatar + name (or "AI Agent" with hex avatar)</li>
+                <li>Last saved / sync indicator</li>
+                <li>If agent task: "Agent completed 2h ago" or "Agent running… 72%"</li>
             </ul>
         </div>
 
-        <!-- Graph Canvas (context mode) -->
+        <!-- CANVAS (the work surface) -->
         <div class="panel" style="grid-column:3; grid-row:3">
-            <span class="panel-label">Graph Canvas (context mode)</span>
-            <span class="panel-dims">flexible</span>
+            <span class="panel-label">Canvas (work surface)</span>
+            <span class="panel-dims">flexible width</span>
             <ul class="data-list">
-                <li class="heading">Selected node:</li>
-                <li class="sub">Full opacity, blue border + glow</li>
-                <li class="heading">Sibling nodes:</li>
-                <li class="sub">Dimmed (50% opacity)</li>
-                <li class="sub">Still clickable — clicking switches active task</li>
-                <li class="heading">Zone + edges:</li>
-                <li class="sub">Same as Graph View but muted</li>
-                <li class="heading">Footer label:</li>
-                <li class="sub">"Graph context — click another node to switch task"</li>
+                <li class="heading">Default: Markdown editor</li>
+                <li class="sub">Rich text editing (headings, lists, tables, code blocks)</li>
+                <li class="sub">Real-time save (debounced)</li>
+                <li class="sub">AI-inserted sections marked with "🤖 Added by AI" tag</li>
+                <li class="sub">Selection → "Ask AI about this" context menu</li>
+                <li class="heading">Alternative canvas types:</li>
+                <li class="sub">Google Doc embed (iframe, authed via integration)</li>
+                <li class="sub">Spreadsheet embed (Google Sheets or similar)</li>
+                <li class="sub">Code view (syntax-highlighted, for technical tasks)</li>
+                <li class="sub">Agent output log (streaming or completed — timestamped entries)</li>
+                <li class="sub">File preview (PDF, image, etc.)</li>
+                <li class="heading">Canvas type set per task:</li>
+                <li class="sub">Default is markdown. User or agent can change.</li>
+                <li class="sub">Type selector in top bar if multiple are configured.</li>
+                <li class="heading">Agent inspection mode:</li>
+                <li class="sub">If task is assigned to an agent: canvas shows agent output</li>
+                <li class="sub">Streaming log while agent is running</li>
+                <li class="sub">Final output (markdown/data) when agent completes</li>
+                <li class="sub">User can review, edit, and approve agent work</li>
             </ul>
         </div>
 
-        <!-- Detail Panel (working area) -->
+        <!-- Detail Panel -->
         <div class="panel span-rows-all" style="grid-column:4">
-            <span class="panel-label">Detail Panel (working)</span>
+            <span class="panel-label">Detail Panel</span>
             <span class="panel-dims">360px</span>
             <ul class="data-list">
                 <li class="heading">Header:</li>
                 <li class="sub">Task name</li>
-                <li class="sub">Close (✕) button</li>
+                <li class="sub">Close (✕) → returns to parent Graph View</li>
                 <li class="heading">Tabs:</li>
-                <li class="sub">Notes | Sub-tasks | Files | Comments | History</li>
-                <li class="heading">Status bar (always visible):</li>
-                <li class="sub">Status badge (pill)</li>
-                <li class="sub">Assignee: avatar + name</li>
-                <li class="sub">Due date</li>
-                <li class="sub">Priority pill</li>
-                <li class="heading">Notes tab:</li>
-                <li class="sub">Rich text editor area</li>
-                <li class="sub">AI-inserted content marked with "🤖 Added by AI" tag</li>
+                <li class="sub">Overview | Sub-tasks | Files | Comments | History</li>
+                <li class="heading">Overview tab:</li>
+                <li class="sub">Status badge (editable)</li>
+                <li class="sub">Assignee (editable)</li>
+                <li class="sub">Due date (editable)</li>
+                <li class="sub">Priority (editable)</li>
+                <li class="sub">Description (text)</li>
+                <li class="sub">Custom properties (coloured pills)</li>
+                <li class="sub">Dependencies: upstream + downstream lists</li>
                 <li class="heading">Sub-tasks tab:</li>
                 <li class="sub">Checklist: checkbox + name + status</li>
-                <li class="sub">"+ Add sub-task" at bottom</li>
+                <li class="sub">"+ Add sub-task" (note: adding children converts this to a parent node)</li>
                 <li class="heading">Files tab:</li>
                 <li class="sub">Attached files list: icon + name + size + date</li>
                 <li class="sub">Upload dropzone</li>
                 <li class="heading">Comments tab:</li>
                 <li class="sub">Thread: avatar + name + time + message</li>
+                <li class="sub">@mentions supported</li>
                 <li class="sub">Input: "Add a comment…"</li>
                 <li class="heading">History tab:</li>
-                <li class="sub">Timeline: timestamp + actor + action description</li>
+                <li class="sub">Timeline: timestamp + actor + action</li>
+                <li class="sub">Includes AI actions: "AI inserted content", "Agent completed task"</li>
             </ul>
         </div>
     </div>
 
     <div class="notes">
-        <strong>Key interaction:</strong> Chat and detail panel are linked. "Apply to task" in chat → inserts content into detail panel's Notes tab. AI actions surface as system messages in chat AND as history entries in the detail panel.
+        <strong>Entry:</strong> Double-click a leaf node in Graph View, or click "Open" in the detail panel. The graph zooms into the node and transitions to Workspace.<br>
+        <strong>Exit:</strong> Close (✕) in detail panel header, or click a breadcrumb. Returns to parent Graph View with the node still selected.<br>
+        <strong>Key interaction:</strong> Chat and canvas are linked. "Insert into canvas" in chat → inserts AI-generated content at cursor position. "Replace selection" overwrites highlighted text. All AI edits tracked in History tab.<br>
+        <strong>Agent tasks:</strong> If assigned to an AI agent, the canvas is read-only while the agent is running (showing streaming output). Once complete, user can edit the output and change status to "Complete" or send back to agent with feedback via chat.
     </div>
 </div>
 
@@ -688,20 +706,25 @@
         <br>
         <strong>Variable panels:</strong><br>
         — Top Bar: 44px height, spans remaining width<br>
-        — Hub Bar: 36px collapsed / ~220px expanded, only in Graph + Active Task views<br>
-        — Detail Panel: 360px, present in Graph + Active Task views. Overlay in List view. Absent in Workspace/Gallery/Settings<br>
+        — Hub Bar / Status Bar: 36px, present in Graph + Workspace views<br>
+        — Detail Panel: 360px, present in Graph + Workspace views. Overlay in List view. Absent in Dashboard/Gallery/Settings<br>
         <br>
         <strong>Content area widths (of 1200px total):</strong><br>
         — With detail panel: 1200 − 56 − 320 − 360 = <strong>464px canvas</strong><br>
         — Without detail panel: 1200 − 56 − 320 = <strong>824px content</strong><br>
-        — Detail panel closed in graph: 1200 − 56 − 320 = <strong>824px canvas</strong><br>
+        — All panels resizable via drag handles (chat: 280–400px, detail: 320–480px)<br>
         <br>
         <strong>Chat context per view:</strong><br>
-        — Workspace: general ("What needs attention?")<br>
+        — Dashboard: general ("What needs attention?")<br>
         — Gallery: project-level ("Create from template")<br>
         — Graph: workflow-level ("Show blocked tasks")<br>
-        — Active Task: task-level ("Summarise stress test results")<br>
+        — Workspace: task-level ("Summarise stress test results", "Insert into canvas")<br>
         — Settings: config-level ("Change notification preferences")<br>
+        <br>
+        <strong>Graph → Workspace transition:</strong><br>
+        — Double-click leaf node in Graph → enters Workspace for that task<br>
+        — Middle pane switches from React Flow canvas to content editor (markdown / embed / agent log)<br>
+        — Same shell, same panels, different middle content<br>
     </div>
 </div>
 

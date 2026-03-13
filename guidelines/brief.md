@@ -14,9 +14,9 @@ DeepFlow is an AI-powered workflow orchestration platform. Users create hierarch
 ### Core Views
 1. **Graph View** — DAG canvas with draggable nodes, edges, zones, detail panel
 2. **List View** — Sortable task table with expandable parent/child rows
-3. **Workspace (Dashboard)** — Landing page with project cards, stats, attention items
-4. **Gallery** — Project browser with templates and project cards
-5. **Active Task** — Task-focused working state with contextual chat
+3. **Workspace** — Leaf-node working environment. Three-pane: Chat + Canvas + Detail. Canvas is a markdown editor by default, but can embed Google Docs, code views, spreadsheets, or agent output logs. This is where work is done or an agent's work is inspected. Entered by double-clicking/opening a node with no children
+4. **Dashboard** — Landing page with project cards, summary stats, attention items
+5. **Gallery** — Project browser with templates and project cards
 6. **Settings** — App configuration with section-based navigation
 
 ### Fixed Layout (Option B)
@@ -101,13 +101,15 @@ src/
 │   ├── _app.projects.tsx         # Gallery view
 │   ├── _app.projects.$projectId.tsx      # Graph view (default)
 │   ├── _app.projects.$projectId.list.tsx # List view
-│   ├── _app.projects.$projectId.task.$taskId.tsx  # Active task
-│   └── _app.settings.tsx         # Settings
+│   ├── _app.projects.$projectId.task.$taskId.tsx  # Workspace (leaf-node editor)
+│   ├── _app.settings.tsx         # Settings
+│   └── _app.settings.$section.tsx # Settings sub-section
 ├── components/
 │   ├── shell/                    # Sidebar, ChatPanel, TopBar, HubBar
 │   ├── graph/                    # React Flow custom nodes, edges, zones
 │   ├── list/                     # Table, expandable rows
-│   ├── workspace/                # Project cards, stats, attention banner
+│   ├── workspace/                # Canvas editor, embeds (GDoc, code, agent log)
+│   ├── dashboard/                # Project cards, stats, attention banner
 │   ├── gallery/                  # Template cards, project cards
 │   ├── detail/                   # Detail panel, tabs, forms
 │   ├── chat/                     # Message list, input, action chips
@@ -127,7 +129,7 @@ src/
 ├── lib/
 │   ├── api/                      # API client, types, endpoints
 │   ├── auth/                     # Keycloak config, token helpers
-│   ├── i18n/                     # next-intl config, message loaders
+│   ├── i18n/                     # react-intl config, message loaders
 │   └── ws/                       # WebSocket client, event types
 ├── messages/                     # i18n translation files
 │   ├── en.json
