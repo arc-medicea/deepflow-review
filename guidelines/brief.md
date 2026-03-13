@@ -710,9 +710,60 @@ Floating toolbar above the graph canvas (top-centre or top-right). Always visibl
 | **Expand all** | Expand all parent nodes on current level | ⌘E |
 | **Collapse all** | Collapse all expanded nodes back to cards | ⌘⇧E |
 | **Expand to next level** | Expand all parents one level deeper only | — |
+| **View options** 🎛 | Popover: node layout, edge style, visible properties (see below) | — |
 | **More ⋮** | Overflow: minimap toggle, grid snap toggle, export as image | — |
 
 **Undo/Redo scope:** Covers both layout changes (node position) and data changes (status updates, reparenting, property edits, Flow, Fuse, Delete). The API supports undo — each action returns a revert operation. Undo stack is per-session (cleared on navigation away from project). Maximum depth: 50 actions.
+
+### Graph Keyboard Navigation
+
+With a node selected, arrow keys traverse the graph using a hybrid DAG + spatial model:
+
+| Key | Behaviour |
+|-----|-----------|
+| **→** | Move to next downstream node (follow DAG edge). If fan-out (multiple downstream), go to topmost visually |
+| **←** | Move to upstream node (follow DAG edge back). If fan-in, go to topmost |
+| **↓** | Move to next visual sibling (same parent, below current). At fan-out, cycles through downstream branches |
+| **↑** | Move to previous visual sibling (same parent, above current) |
+| **Enter** | Open detail panel for selected node (same as single-click) |
+| **E** | Expand/collapse parent node inline |
+| **Space** | Toggle add-to-multiselection |
+| **Delete/Backspace** | Delete selected node(s) — with confirmation dialog |
+| **Tab** | Cycle through all nodes in reading order (top-left to bottom-right) |
+| **Escape** | Deselect all nodes |
+
+Focus indicator: selected node has a visible blue border + glow. Keyboard focus is the same as mouse selection — no separate focus ring.
+
+### View Options (Graph Toolbar Popover)
+
+Triggered by the **sliders icon** (🎛) in the graph toolbar. Persisted per-project in IndexedDB.
+
+```
+┌─ View Options ───────────────────┐
+│                                   │
+│ Node layout                       │
+│ ◉ Left → Right   ○ Top → Bottom  │
+│                                   │
+│ Edge style                        │
+│ ○ Direct  ◉ Bezier  ○ Stepped   │
+│                                   │
+│ Show on nodes                     │
+│ ☑ Due date                       │
+│ ☑ Priority                       │
+│ ☐ Tags                           │
+│ ☑ Risk Rating                    │
+│ ☐ Regulatory Ref                 │
+│ (list from project's custom      │
+│  properties, drag to reorder)    │
+│                                   │
+│ [Reset to default]               │
+└───────────────────────────────────┘
+```
+
+- **Node layout:** Controls auto-layout direction. Left→Right = DAG flows horizontally. Top→Bottom = flows vertically.
+- **Edge style:** Direct (straight lines), Bezier (curved), Stepped (right-angle paths). Applies to all edges.
+- **Show on nodes:** Checkboxes for each available property. Checked properties display on graph nodes. Drag to reorder. Unchecked properties only visible in detail panel and tooltips.
+- Per-project, per-user. Different users can have different view preferences on the same project.
 
 ### Graph Manipulation — Adding Nodes, Edges, Quick Actions
 
