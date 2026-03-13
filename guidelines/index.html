@@ -117,6 +117,26 @@
             --status-pending: #9CA3AF;
             --status-pending-bg: rgba(156, 163, 175, 0.12);
 
+            /* --- Task Status (dedicated per-state colours) --- */
+            --task-pending: #9CA3AF;
+            --task-pending-bg: rgba(156, 163, 175, 0.12);
+            --task-pending-border: rgba(156, 163, 175, 0.2);
+            --task-ready: #3B82F6;
+            --task-ready-bg: rgba(59, 130, 246, 0.08);
+            --task-ready-border: rgba(59, 130, 246, 0.2);
+            --task-active: #EAB308;
+            --task-active-bg: rgba(234, 179, 8, 0.08);
+            --task-active-border: rgba(234, 179, 8, 0.2);
+            --task-approval: #F59E0B;
+            --task-approval-bg: rgba(245, 158, 11, 0.08);
+            --task-approval-border: rgba(245, 158, 11, 0.2);
+            --task-complete: #059669;
+            --task-complete-bg: rgba(5, 150, 105, 0.08);
+            --task-complete-border: rgba(5, 150, 105, 0.2);
+            --task-failed: #DC2626;
+            --task-failed-bg: rgba(220, 38, 38, 0.08);
+            --task-failed-border: rgba(220, 38, 38, 0.2);
+
             /* --- Grouping (Parent-Child Containment) --- */
             --group-l1: rgba(0, 119, 221, 0.05);
             --group-l1-border: rgba(0, 119, 221, 0.12);
@@ -224,6 +244,26 @@
 
             --status-pending: #5C5C73;
             --status-pending-bg: rgba(92, 92, 115, 0.12);
+
+            /* --- Task Status (dark mode) --- */
+            --task-pending: #8585A0;
+            --task-pending-bg: rgba(133, 133, 160, 0.12);
+            --task-pending-border: rgba(133, 133, 160, 0.3);
+            --task-ready: #60A5FA;
+            --task-ready-bg: rgba(96, 165, 250, 0.12);
+            --task-ready-border: rgba(96, 165, 250, 0.3);
+            --task-active: #FACC15;
+            --task-active-bg: rgba(250, 204, 21, 0.12);
+            --task-active-border: rgba(250, 204, 21, 0.3);
+            --task-approval: #FBBF24;
+            --task-approval-bg: rgba(251, 191, 36, 0.12);
+            --task-approval-border: rgba(251, 191, 36, 0.3);
+            --task-complete: #34D399;
+            --task-complete-bg: rgba(52, 211, 153, 0.12);
+            --task-complete-border: rgba(52, 211, 153, 0.3);
+            --task-failed: #F87171;
+            --task-failed-bg: rgba(248, 113, 113, 0.12);
+            --task-failed-border: rgba(248, 113, 113, 0.3);
 
             --group-l1: rgba(0, 153, 255, 0.06);
             --group-l1-border: rgba(0, 153, 255, 0.15);
@@ -2033,39 +2073,39 @@
 
         /* States */
         .df-status-pending {
-            background: var(--status-pending-bg);
-            color: var(--text-tertiary);
-            border: 1.5px solid var(--surface-card-border);
+            background: var(--task-pending-bg);
+            color: var(--task-pending);
+            border: 1.5px solid var(--task-pending-border);
         }
 
         .df-status-ready {
-            background: var(--status-warning-bg);
-            color: var(--status-warning);
-            border: 1.5px solid var(--status-warning-border);
+            background: var(--task-ready-bg);
+            color: var(--task-ready);
+            border: 1.5px solid var(--task-ready-border);
         }
 
         .df-status-in-progress {
-            background: var(--status-info-bg);
-            color: var(--status-info);
-            border: 1.5px solid var(--status-info-border);
+            background: var(--task-active-bg);
+            color: var(--task-active);
+            border: 1.5px solid var(--task-active-border);
         }
 
         .df-status-complete {
-            background: var(--status-success-bg);
-            color: var(--status-success);
-            border: 1.5px solid var(--status-success-border);
+            background: var(--task-complete-bg);
+            color: var(--task-complete);
+            border: 1.5px solid var(--task-complete-border);
         }
 
         .df-status-approval {
-            background: var(--status-warning-bg);
-            color: var(--status-warning);
-            border: 1.5px solid var(--status-warning-border);
+            background: var(--task-approval-bg);
+            color: var(--task-approval);
+            border: 1.5px solid var(--task-approval-border);
         }
 
         .df-status-failed {
-            background: var(--status-error-bg);
-            color: var(--status-error);
-            border: 1.5px solid var(--status-error-border);
+            background: var(--task-failed-bg);
+            color: var(--task-failed);
+            border: 1.5px solid var(--task-failed-border);
         }
 
         /* Interactive (action buttons) */
@@ -3153,7 +3193,7 @@
             <a href="#" class="nav-brand">
                 <img src="assets/iconmark-white.png" alt="DeepFlow" style="height: 28px; width: auto;">
                 <span class="nav-divider"></span>
-                <span class="nav-subtitle">Design Guidelines v1.2</span>
+                <span class="nav-subtitle">Design Guidelines v2.3</span>
             </a>
             <ul class="nav-links">
                 <li><a href="#brand">Brand</a></li>
@@ -3179,6 +3219,7 @@
                 <li><a href="#sidebar-nav">Sidebar</a></li>
                 <li><a href="#tabs">Tabs</a></li>
                 <li><a href="#toasts">Toasts</a></li>
+                <li><a href="#dialogs">Dialogs</a></li>
                 <li style="color: var(--surface-card-border);">|</li>
                 <li><a href="views.html" style="color: var(--brand-solid);">View Layouts →</a></li>
                 <li><a href="mobile.html" style="color: var(--brand-solid);">📱 Mobile</a></li>
@@ -3252,6 +3293,7 @@
                         <li><a href="#empty-states"><span class="idx-num">25</span> Empty States</a></li>
                         <li><a href="#loading-states"><span class="idx-num">26</span> Loading States</a></li>
                         <li><a href="#permissions"><span class="idx-num">27</span> Permissions & Access</a></li>
+                        <li><a href="#dialogs"><span class="idx-num">28</span> Dialogs & Panels</a></li>
                     </ul>
                     <div style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--surface-card-border);">
                         <div class="section-index-group-title">Phase 3 — Views & Mobile</div>
@@ -3384,14 +3426,6 @@
                 </div>
             </div>
 
-            <div class="principle">
-                <div class="principle-number">05</div>
-                <div>
-                    <div class="principle-title">Human and AI, Visually Distinct</div>
-                    <p class="principle-desc">DeepFlow uniquely blends human and AI task execution. At a glance, users must know whether a task is assigned to a person or an agent. This distinction is expressed through shape, never colour.</p>
-                    <div class="principle-example"><strong>In practice →</strong> Circular avatars = human assignees. Hexagonal avatars = AI agents. This shape language persists across graph nodes, list rows, kanban cards, and detail panels.</div>
-                </div>
-            </div>
         </section>
 
         <!-- ==========================================
@@ -3744,44 +3778,44 @@
             <!-- Status -->
             <div class="colour-group">
                 <div class="colour-group-title">Status — Semantic Colour</div>
-                <p class="colour-group-desc">Six task states with semantic colours. Each has a solid variant (indicators/icons), a background wash (badges/containers), and a border variant. "Ready" and "Needs Approval" share amber — distinguished by their symbol (▶ vs ❗).</p>
+                <p class="colour-group-desc">Six task states, each with a unique colour and symbol. Colour + shape = doubly encoded for accessibility. Ready (blue) and In Progress (yellow) are now distinct; Needs Approval keeps amber/orange, distinguished from Ready by the ❗ symbol.</p>
 
                 <div class="status-row">
                     <div class="status-item">
-                        <div class="status-indicator" style="background: var(--status-success-bg); border: 2px solid var(--status-success);"><span style="color: var(--status-success);">✓</span></div>
-                        <div class="status-name">Complete</div>
-                        <div class="status-use">Finished successfully</div>
-                        <div class="swatch-hex mt-4" style="color: var(--status-success);">#34D399</div>
-                    </div>
-                    <div class="status-item">
-                        <div class="status-indicator" style="background: var(--status-info-bg); border: 2px solid var(--status-info);"><span style="color: var(--status-info);">●</span></div>
-                        <div class="status-name">In Progress</div>
-                        <div class="status-use">Currently active</div>
-                        <div class="swatch-hex mt-4" style="color: var(--status-info);">#60A5FA</div>
-                    </div>
-                    <div class="status-item">
-                        <div class="status-indicator" style="background: var(--status-warning-bg); border: 2px solid var(--status-warning);"><span style="color: var(--status-warning);">!</span></div>
-                        <div class="status-name">Needs Attention</div>
-                        <div class="status-use">Ready or requires action</div>
-                        <div class="swatch-hex mt-4" style="color: var(--status-warning);">#FBBF24</div>
-                    </div>
-                    <div class="status-item">
-                        <div class="status-indicator" style="background: var(--status-warning-bg); border: 2px solid var(--status-warning);"><span style="color: var(--status-warning);">!</span></div>
-                        <div class="status-name">Needs Approval</div>
-                        <div class="status-use">Human sign-off required</div>
-                        <div class="swatch-hex mt-4" style="color: var(--status-warning);">#FBBF24</div>
-                    </div>
-                    <div class="status-item">
-                        <div class="status-indicator" style="background: var(--status-error-bg); border: 2px solid var(--status-error);"><span style="color: var(--status-error);">✕</span></div>
-                        <div class="status-name">Failed</div>
-                        <div class="status-use">Error, needs intervention</div>
-                        <div class="swatch-hex mt-4" style="color: var(--status-error);">#F87171</div>
-                    </div>
-                    <div class="status-item">
-                        <div class="status-indicator" style="background: var(--status-pending-bg); border: 2px solid var(--neutral-500);"><span style="color: var(--text-tertiary);">○</span></div>
+                        <div class="status-indicator" style="background: var(--task-pending-bg); border: 2px solid var(--task-pending);"><span style="color: var(--task-pending);">○</span></div>
                         <div class="status-name">Pending</div>
                         <div class="status-use">Dependencies unmet</div>
-                        <div class="swatch-hex mt-4" style="color: var(--text-tertiary);">#5C5C73</div>
+                        <div class="swatch-hex mt-4" style="color: var(--task-pending);">#9CA3AF</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-indicator" style="background: var(--task-ready-bg); border: 2px solid var(--task-ready);"><span style="color: var(--task-ready);">▶</span></div>
+                        <div class="status-name">Ready</div>
+                        <div class="status-use">Dependencies met, tap to start</div>
+                        <div class="swatch-hex mt-4" style="color: var(--task-ready);">#3B82F6</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-indicator" style="background: var(--task-active-bg); border: 2px solid var(--task-active);"><span style="color: var(--task-active);">❚❚</span></div>
+                        <div class="status-name">In Progress</div>
+                        <div class="status-use">Currently active</div>
+                        <div class="swatch-hex mt-4" style="color: var(--task-active);">#EAB308</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-indicator" style="background: var(--task-approval-bg); border: 2px solid var(--task-approval);"><span style="color: var(--task-approval);">❗</span></div>
+                        <div class="status-name">Needs Approval</div>
+                        <div class="status-use">Human sign-off required</div>
+                        <div class="swatch-hex mt-4" style="color: var(--task-approval);">#F59E0B</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-indicator" style="background: var(--task-complete-bg); border: 2px solid var(--task-complete);"><span style="color: var(--task-complete);">✓</span></div>
+                        <div class="status-name">Complete</div>
+                        <div class="status-use">Finished successfully</div>
+                        <div class="swatch-hex mt-4" style="color: var(--task-complete);">#059669</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-indicator" style="background: var(--task-failed-bg); border: 2px solid var(--task-failed);"><span style="color: var(--task-failed);">✕</span></div>
+                        <div class="status-name">Failed</div>
+                        <div class="status-use">Error, needs intervention</div>
+                        <div class="swatch-hex mt-4" style="color: var(--task-failed);">#DC2626</div>
                     </div>
                 </div>
             </div>
@@ -4302,12 +4336,12 @@
             <div class="component-demo">
                 <div class="component-demo-label">Status Badges</div>
                 <div class="demo-row" style="margin-bottom: var(--space-6);">
-                    <span class="df-badge df-badge-success"><span class="df-badge-dot"></span> Complete</span>
-                    <span class="df-badge df-badge-info"><span class="df-badge-dot"></span> In Progress</span>
-                    <span class="df-badge df-badge-warning"><span class="df-badge-dot"></span> Ready</span>
-                    <span class="df-badge df-badge-warning"><span class="df-badge-dot"></span> Needs Approval</span>
-                    <span class="df-badge df-badge-error"><span class="df-badge-dot"></span> Failed</span>
-                    <span class="df-badge df-badge-neutral"><span class="df-badge-dot"></span> Pending</span>
+                    <span class="df-badge" style="background: var(--task-pending-bg); color: var(--task-pending); border-color: var(--task-pending-border);"><span class="df-badge-symbol">○</span> Pending</span>
+                    <span class="df-badge" style="background: var(--task-ready-bg); color: var(--task-ready); border-color: var(--task-ready-border);"><span class="df-badge-symbol">▶</span> Ready</span>
+                    <span class="df-badge" style="background: var(--task-active-bg); color: var(--task-active); border-color: var(--task-active-border);"><span class="df-badge-symbol">❚❚</span> In Progress</span>
+                    <span class="df-badge" style="background: var(--task-approval-bg); color: var(--task-approval); border-color: var(--task-approval-border);"><span class="df-badge-symbol">❗</span> Needs Approval</span>
+                    <span class="df-badge" style="background: var(--task-complete-bg); color: var(--task-complete); border-color: var(--task-complete-border);"><span class="df-badge-symbol">✓</span> Complete</span>
+                    <span class="df-badge" style="background: var(--task-failed-bg); color: var(--task-failed); border-color: var(--task-failed-border);"><span class="df-badge-symbol">✕</span> Failed</span>
                 </div>
 
                 <div class="component-demo-label">Brand & Category</div>
@@ -4331,7 +4365,7 @@
             <div class="card">
                 <div class="card-title">Usage Rules</div>
                 <p class="card-text">
-                    Status badges include a coloured dot + text label — both are required for accessibility. The dot provides rapid visual scanning; the text provides unambiguous meaning. Never use a status badge without text. Count badges are for numerical quantities only (task counts, notification counts). Tags are for categorisation and metadata — always neutral coloured.
+                    Status badges include a status symbol (○ ▶ ❚❚ ❗ ✓ ✕) + text label — both are required for accessibility. The symbol provides rapid visual scanning via colour + shape; the text provides unambiguous meaning. Never use a status badge without text. Count badges are for numerical quantities only (task counts, notification counts). Tags are for categorisation and metadata — always neutral coloured.
                 </p>
             </div>
         </section>
@@ -4422,13 +4456,13 @@
                     <!-- Complete -->
                     <div class="df-task-card">
                         <div class="df-task-card-header">
-                            <div class="df-task-card-status" style="background: var(--status-success);"></div>
+                            <div class="df-status-symbol df-status-symbol-sm df-status-complete"><svg viewBox="0 0 24 24"><polyline points="7 12 10.5 15.5 17 9"/></svg></div>
                             <div class="df-task-card-title">Data Collection & Validation</div>
                             <div class="df-avatar df-avatar-human df-avatar-xs df-avatar-blue">SC</div>
                         </div>
                         <div class="df-task-card-meta">
                             <div class="df-task-card-meta-left">
-                                <span class="df-badge df-badge-success" style="font-size: 10px; padding: 2px 8px;"><span class="df-badge-dot" style="width: 5px; height: 5px;"></span> Complete</span>
+                                <span class="df-badge" style="font-size: 10px; padding: 2px 8px; background: var(--task-complete-bg); color: var(--task-complete); border-color: var(--task-complete-border);"><span class="df-badge-symbol">✓</span> Complete</span>
                             </div>
                             <div class="df-task-card-meta-right">
                                 <span class="df-task-card-id">DF-142</span>
@@ -4439,13 +4473,13 @@
                     <!-- In Progress -->
                     <div class="df-task-card">
                         <div class="df-task-card-header">
-                            <div class="df-task-card-status" style="background: var(--status-info);"></div>
+                            <div class="df-status-symbol df-status-symbol-sm df-status-in-progress"><svg viewBox="0 0 24 24"><line x1="9" y1="7" x2="9" y2="17"/><line x1="15" y1="7" x2="15" y2="17"/></svg></div>
                             <div class="df-task-card-title">Risk Assessment & Stress Testing</div>
                             <div class="df-avatar df-avatar-human df-avatar-xs df-avatar-teal">DO</div>
                         </div>
                         <div class="df-task-card-meta">
                             <div class="df-task-card-meta-left">
-                                <span class="df-badge df-badge-info" style="font-size: 10px; padding: 2px 8px;"><span class="df-badge-dot" style="width: 5px; height: 5px;"></span> In Progress</span>
+                                <span class="df-badge" style="font-size: 10px; padding: 2px 8px; background: var(--task-active-bg); color: var(--task-active); border-color: var(--task-active-border);"><span class="df-badge-symbol">❚❚</span> In Progress</span>
                                 <span class="df-task-deps"><svg viewBox="0 0 24 24"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/></svg> 2</span>
                             </div>
                             <div class="df-task-card-meta-right">
@@ -4454,16 +4488,16 @@
                         </div>
                     </div>
 
-                    <!-- AI Agent Task -->
+                    <!-- AI Agent Task — Needs Approval -->
                     <div class="df-task-card">
                         <div class="df-task-card-header">
-                            <div class="df-task-card-status" style="background: var(--status-warning);"></div>
+                            <div class="df-status-symbol df-status-symbol-sm df-status-approval"><svg viewBox="0 0 24 24"><line x1="12" y1="8" x2="12" y2="13" stroke-width="2.5"/><circle cx="12" cy="16.5" r="0.5" fill="currentColor" stroke="none"/></svg></div>
                             <div class="df-task-card-title">Run Capital Adequacy Model</div>
                             <div class="df-avatar df-avatar-ai df-avatar-xs df-avatar-gradient">DF</div>
                         </div>
                         <div class="df-task-card-meta">
                             <div class="df-task-card-meta-left">
-                                <span class="df-badge df-badge-warning" style="font-size: 10px; padding: 2px 8px;"><span class="df-badge-dot" style="width: 5px; height: 5px;"></span> Needs Attention</span>
+                                <span class="df-badge" style="font-size: 10px; padding: 2px 8px; background: var(--task-approval-bg); color: var(--task-approval); border-color: var(--task-approval-border);"><span class="df-badge-symbol">❗</span> Needs Approval</span>
                             </div>
                             <div class="df-task-card-meta-right">
                                 <span class="df-badge df-badge-brand" style="font-size: 10px; padding: 2px 6px;">AI</span>
@@ -4472,18 +4506,18 @@
                     </div>
 
                     <!-- Failed -->
-                    <div class="df-task-card" style="border-left: 3px solid var(--status-error);">
+                    <div class="df-task-card" style="border-left: 3px solid var(--task-failed);">
                         <div class="df-task-card-header">
-                            <div class="df-task-card-status" style="background: var(--status-error);"></div>
+                            <div class="df-status-symbol df-status-symbol-sm df-status-failed"><svg viewBox="0 0 24 24"><line x1="8" y1="8" x2="16" y2="16"/><line x1="16" y1="8" x2="8" y2="16"/></svg></div>
                             <div class="df-task-card-title">Gather Market Data Feed</div>
                             <div class="df-avatar df-avatar-ai df-avatar-xs df-avatar-gradient">DB</div>
                         </div>
                         <div class="df-task-card-meta">
                             <div class="df-task-card-meta-left">
-                                <span class="df-badge df-badge-error" style="font-size: 10px; padding: 2px 8px;"><span class="df-badge-dot" style="width: 5px; height: 5px;"></span> Failed</span>
+                                <span class="df-badge" style="font-size: 10px; padding: 2px 8px; background: var(--task-failed-bg); color: var(--task-failed); border-color: var(--task-failed-border);"><span class="df-badge-symbol">✕</span> Failed</span>
                             </div>
                             <div class="df-task-card-meta-right">
-                                <span class="df-task-card-due" style="color: var(--status-error);">Overdue</span>
+                                <span class="df-task-card-due" style="color: var(--task-failed);">Overdue</span>
                             </div>
                         </div>
                     </div>
@@ -4494,10 +4528,10 @@
                 <div class="card">
                     <div class="card-title">Card Anatomy</div>
                     <p class="card-text">
-                        <strong style="color: var(--text-primary);">Status dot:</strong> Top-left, always visible. Colour matches task state.<br>
+                        <strong style="color: var(--text-primary);">Status symbol:</strong> Top-left, always visible. Uses the df-status-symbol at small size (○ ▶ ❚❚ ❗ ✓ ✕). Colour + shape encode state.<br>
                         <strong style="color: var(--text-primary);">Title:</strong> Full task name — never truncated below 2 lines. Wraps if needed.<br>
                         <strong style="color: var(--text-primary);">Avatar:</strong> Top-right. Circle (human) or hexagon (AI). Shows assignee initials.<br>
-                        <strong style="color: var(--text-primary);">Meta row:</strong> Status badge, dependency count, due date, task ID.
+                        <strong style="color: var(--text-primary);">Meta row:</strong> Status badge (with symbol), dependency count, due date, task ID.
                     </p>
                 </div>
                 <div class="card">
@@ -4524,35 +4558,35 @@
                 <div style="display: flex; align-items: center; gap: 60px; flex-wrap: wrap;">
                     <!-- Node 1: Complete -->
                     <div class="df-node" style="position: relative;">
-                        <div class="df-node-handle df-node-handle-left" style="background: var(--status-success);"></div>
-                        <div class="df-node-status" style="background: var(--status-success);"></div>
+                        <div class="df-node-handle df-node-handle-left" style="background: var(--task-complete);"></div>
+                        <div class="df-status-symbol df-status-symbol-sm df-status-complete" style="flex-shrink: 0;"><svg viewBox="0 0 24 24"><polyline points="7 12 10.5 15.5 17 9"/></svg></div>
                         <div class="df-node-content">
                             <div class="df-node-title">Data Collection</div>
                             <div class="df-node-subtitle">Sarah Chen · Complete</div>
                         </div>
                         <div class="df-avatar df-avatar-human df-avatar-sm df-avatar-blue" style="font-size: 11px;">SC</div>
-                        <div class="df-node-handle df-node-handle-right" style="background: var(--status-success);"></div>
+                        <div class="df-node-handle df-node-handle-right" style="background: var(--task-complete);"></div>
                     </div>
 
                     <!-- Node 2: In Progress -->
                     <div class="df-node" style="position: relative;">
-                        <div class="df-node-handle df-node-handle-left" style="background: var(--status-info);"></div>
-                        <div class="df-node-status" style="background: var(--status-info);"></div>
+                        <div class="df-node-handle df-node-handle-left" style="background: var(--task-active);"></div>
+                        <div class="df-status-symbol df-status-symbol-sm df-status-in-progress" style="flex-shrink: 0;"><svg viewBox="0 0 24 24"><line x1="9" y1="7" x2="9" y2="17"/><line x1="15" y1="7" x2="15" y2="17"/></svg></div>
                         <div class="df-node-content">
                             <div class="df-node-title">Risk Assessment</div>
                             <div class="df-node-subtitle">David Okafor · In Progress</div>
                         </div>
                         <div class="df-avatar df-avatar-human df-avatar-sm df-avatar-teal" style="font-size: 11px;">DO</div>
-                        <div class="df-node-handle df-node-handle-right" style="background: var(--status-info);"></div>
+                        <div class="df-node-handle df-node-handle-right" style="background: var(--task-active);"></div>
                     </div>
 
-                    <!-- Node 3: AI Agent -->
+                    <!-- Node 3: AI Agent — Needs Approval -->
                     <div class="df-node df-node-selected" style="position: relative;">
                         <div class="df-node-handle df-node-handle-left" style="background: var(--brand-solid);"></div>
-                        <div class="df-node-status" style="background: var(--status-warning);"></div>
+                        <div class="df-status-symbol df-status-symbol-sm df-status-approval" style="flex-shrink: 0;"><svg viewBox="0 0 24 24"><line x1="12" y1="8" x2="12" y2="13" stroke-width="2.5"/><circle cx="12" cy="16.5" r="0.5" fill="currentColor" stroke="none"/></svg></div>
                         <div class="df-node-content">
                             <div class="df-node-title">Run Capital Model</div>
-                            <div class="df-node-subtitle">DeepFlow Agent · Needs Attention</div>
+                            <div class="df-node-subtitle">DeepFlow Agent · Needs Approval</div>
                         </div>
                         <div class="df-avatar df-avatar-ai df-avatar-sm df-avatar-gradient" style="font-size: 11px;">DF</div>
                         <div class="df-node-handle df-node-handle-right" style="background: var(--brand-solid);"></div>
@@ -4563,7 +4597,7 @@
             <div class="card-grid card-grid-3 mt-8">
                 <div class="card">
                     <div class="card-title">Node Structure</div>
-                    <p class="card-text">Rectangular card with rounded corners. Left: status dot. Centre: task name + subtitle. Right: assignee avatar (circle/hexagon). Connection handles on left and right edges.</p>
+                    <p class="card-text">Rectangular card with rounded corners. Left: status symbol (○ ▶ ❚❚ ❗ ✓ ✕). Centre: task name + subtitle. Right: assignee avatar (circle/hexagon). Connection handles on left and right edges.</p>
                 </div>
                 <div class="card">
                     <div class="card-title">Selection State</div>
@@ -4788,11 +4822,12 @@
                 <div class="component-demo-label">Legacy: Simple Status Dots</div>
                 <p class="card-text" style="margin-bottom: var(--space-4);">Still used in ultra-compact contexts (minimap, breadcrumb badges, inline mentions) where 8px is all you have.</p>
                 <div class="demo-row" style="margin-bottom: var(--space-6);">
-                    <div style="display: flex; align-items: center; gap: var(--space-2);"><div class="df-status-dot" style="background: var(--status-success);"></div><span style="font-size: var(--text-sm); color: var(--text-secondary);">Complete</span></div>
-                    <div style="display: flex; align-items: center; gap: var(--space-2);"><div class="df-status-dot" style="background: var(--status-info);"></div><span style="font-size: var(--text-sm); color: var(--text-secondary);">In Progress</span></div>
-                    <div style="display: flex; align-items: center; gap: var(--space-2);"><div class="df-status-dot" style="background: var(--status-warning);"></div><span style="font-size: var(--text-sm); color: var(--text-secondary);">Ready</span></div>
-                    <div style="display: flex; align-items: center; gap: var(--space-2);"><div class="df-status-dot" style="background: var(--status-error);"></div><span style="font-size: var(--text-sm); color: var(--text-secondary);">Failed</span></div>
-                    <div style="display: flex; align-items: center; gap: var(--space-2);"><div class="df-status-dot" style="background: var(--status-pending);"></div><span style="font-size: var(--text-sm); color: var(--text-secondary);">Pending</span></div>
+                    <div style="display: flex; align-items: center; gap: var(--space-2);"><div class="df-status-dot" style="background: var(--task-pending);"></div><span style="font-size: var(--text-sm); color: var(--text-secondary);">Pending</span></div>
+                    <div style="display: flex; align-items: center; gap: var(--space-2);"><div class="df-status-dot" style="background: var(--task-ready);"></div><span style="font-size: var(--text-sm); color: var(--text-secondary);">Ready</span></div>
+                    <div style="display: flex; align-items: center; gap: var(--space-2);"><div class="df-status-dot" style="background: var(--task-active);"></div><span style="font-size: var(--text-sm); color: var(--text-secondary);">In Progress</span></div>
+                    <div style="display: flex; align-items: center; gap: var(--space-2);"><div class="df-status-dot" style="background: var(--task-approval);"></div><span style="font-size: var(--text-sm); color: var(--text-secondary);">Needs Approval</span></div>
+                    <div style="display: flex; align-items: center; gap: var(--space-2);"><div class="df-status-dot" style="background: var(--task-complete);"></div><span style="font-size: var(--text-sm); color: var(--text-secondary);">Complete</span></div>
+                    <div style="display: flex; align-items: center; gap: var(--space-2);"><div class="df-status-dot" style="background: var(--task-failed);"></div><span style="font-size: var(--text-sm); color: var(--text-secondary);">Failed</span></div>
                 </div>
 
                 <div class="component-demo-label">Progress Bars</div>
@@ -4854,6 +4889,123 @@
                         <div class="df-health-segment"></div>
                     </div>
                     <span style="font-size: var(--text-xs); font-weight: 600; color: var(--status-error);">Critical</span>
+                </div>
+
+                <div class="component-demo-label" style="margin-top: var(--space-8);">Stacked Health Meter — Horizontal Bar</div>
+                <p class="card-text" style="margin-bottom: var(--space-4);">A proportional stacked bar (like GitHub's language bar) showing task distribution by status. Each segment's width is proportional to its count. Hover segments for exact counts.</p>
+                <div style="max-width: 500px; margin-bottom: var(--space-4);">
+                    <div style="display: flex; height: 12px; border-radius: var(--radius-full); overflow: hidden; gap: 2px;">
+                        <div title="Complete: 12" style="flex: 12; background: var(--task-complete); border-radius: var(--radius-full) 0 0 var(--radius-full);"></div>
+                        <div title="In Progress: 5" style="flex: 5; background: var(--task-active);"></div>
+                        <div title="Ready: 3" style="flex: 3; background: var(--task-ready);"></div>
+                        <div title="Needs Approval: 2" style="flex: 2; background: var(--task-approval);"></div>
+                        <div title="Pending: 6" style="flex: 6; background: var(--task-pending);"></div>
+                        <div title="Failed: 1" style="flex: 1; background: var(--task-failed); border-radius: 0 var(--radius-full) var(--radius-full) 0;"></div>
+                    </div>
+                    <div style="display: flex; gap: var(--space-4); margin-top: var(--space-2); flex-wrap: wrap;">
+                        <span style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-secondary);"><span style="width: 8px; height: 8px; border-radius: 2px; background: var(--task-complete);"></span> Complete 12</span>
+                        <span style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-secondary);"><span style="width: 8px; height: 8px; border-radius: 2px; background: var(--task-active);"></span> In Progress 5</span>
+                        <span style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-secondary);"><span style="width: 8px; height: 8px; border-radius: 2px; background: var(--task-ready);"></span> Ready 3</span>
+                        <span style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-secondary);"><span style="width: 8px; height: 8px; border-radius: 2px; background: var(--task-approval);"></span> Approval 2</span>
+                        <span style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-secondary);"><span style="width: 8px; height: 8px; border-radius: 2px; background: var(--task-pending);"></span> Pending 6</span>
+                        <span style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-secondary);"><span style="width: 8px; height: 8px; border-radius: 2px; background: var(--task-failed);"></span> Failed 1</span>
+                    </div>
+                </div>
+
+                <!-- Second example: mostly complete -->
+                <div style="max-width: 500px; margin-bottom: var(--space-8);">
+                    <div style="font-size: var(--text-xs); font-weight: 600; color: var(--text-secondary); margin-bottom: var(--space-2);">ICAAP 2026 — 29 tasks</div>
+                    <div style="display: flex; height: 12px; border-radius: var(--radius-full); overflow: hidden; gap: 2px;">
+                        <div title="Complete: 18" style="flex: 18; background: var(--task-complete); border-radius: var(--radius-full) 0 0 var(--radius-full);"></div>
+                        <div title="In Progress: 4" style="flex: 4; background: var(--task-active);"></div>
+                        <div title="Ready: 2" style="flex: 2; background: var(--task-ready);"></div>
+                        <div title="Needs Approval: 1" style="flex: 1; background: var(--task-approval);"></div>
+                        <div title="Pending: 3" style="flex: 3; background: var(--task-pending);"></div>
+                        <div title="Failed: 1" style="flex: 1; background: var(--task-failed); border-radius: 0 var(--radius-full) var(--radius-full) 0;"></div>
+                    </div>
+                    <div style="display: flex; gap: var(--space-4); margin-top: var(--space-2); flex-wrap: wrap;">
+                        <span style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-secondary);"><span style="width: 8px; height: 8px; border-radius: 2px; background: var(--task-complete);"></span> 18</span>
+                        <span style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-secondary);"><span style="width: 8px; height: 8px; border-radius: 2px; background: var(--task-active);"></span> 4</span>
+                        <span style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-secondary);"><span style="width: 8px; height: 8px; border-radius: 2px; background: var(--task-ready);"></span> 2</span>
+                        <span style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-secondary);"><span style="width: 8px; height: 8px; border-radius: 2px; background: var(--task-approval);"></span> 1</span>
+                        <span style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-secondary);"><span style="width: 8px; height: 8px; border-radius: 2px; background: var(--task-pending);"></span> 3</span>
+                        <span style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-secondary);"><span style="width: 8px; height: 8px; border-radius: 2px; background: var(--task-failed);"></span> 1</span>
+                    </div>
+                </div>
+
+                <div class="component-demo-label">Stacked Health Meter — Circular / Donut</div>
+                <p class="card-text" style="margin-bottom: var(--space-4);">A ring/donut variant (like GitHub's PR check circle). Segments go clockwise in the same order. Centre shows total count or completion percentage. Ideal for dashboard widgets.</p>
+                <div style="display: flex; gap: var(--space-8); align-items: center; flex-wrap: wrap; margin-bottom: var(--space-4);">
+                    <!-- Donut 1: project overview -->
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: var(--space-2);">
+                        <div style="position: relative; width: 120px; height: 120px;">
+                            <svg viewBox="0 0 36 36" width="120" height="120" style="transform: rotate(-90deg);">
+                                <!-- Complete: 12/29 = 41.4% → stroke-dasharray: 41.4 58.6 -->
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--task-complete)" stroke-width="3.5" stroke-dasharray="41.4 58.6" stroke-dashoffset="0"/>
+                                <!-- In Progress: 5/29 = 17.2% → offset: -41.4 -->
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--task-active)" stroke-width="3.5" stroke-dasharray="17.2 82.8" stroke-dashoffset="-41.4"/>
+                                <!-- Ready: 3/29 = 10.3% → offset: -58.6 -->
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--task-ready)" stroke-width="3.5" stroke-dasharray="10.3 89.7" stroke-dashoffset="-58.6"/>
+                                <!-- Needs Approval: 2/29 = 6.9% → offset: -68.9 -->
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--task-approval)" stroke-width="3.5" stroke-dasharray="6.9 93.1" stroke-dashoffset="-68.9"/>
+                                <!-- Pending: 6/29 = 20.7% → offset: -75.8 -->
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--task-pending)" stroke-width="3.5" stroke-dasharray="20.7 79.3" stroke-dashoffset="-75.8"/>
+                                <!-- Failed: 1/29 = 3.5% → offset: -96.5 -->
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--task-failed)" stroke-width="3.5" stroke-dasharray="3.5 96.5" stroke-dashoffset="-96.5"/>
+                            </svg>
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                                <div style="font-size: 20px; font-weight: 700; color: var(--text-primary); line-height: 1;">29</div>
+                                <div style="font-size: 9px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em;">tasks</div>
+                            </div>
+                        </div>
+                        <span style="font-size: 11px; color: var(--text-secondary); font-weight: 500;">All Tasks</span>
+                    </div>
+
+                    <!-- Donut 2: mostly complete project -->
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: var(--space-2);">
+                        <div style="position: relative; width: 120px; height: 120px;">
+                            <svg viewBox="0 0 36 36" width="120" height="120" style="transform: rotate(-90deg);">
+                                <!-- Complete: 18/29 = 62.1% -->
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--task-complete)" stroke-width="3.5" stroke-dasharray="62.1 37.9" stroke-dashoffset="0"/>
+                                <!-- In Progress: 4/29 = 13.8% → offset: -62.1 -->
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--task-active)" stroke-width="3.5" stroke-dasharray="13.8 86.2" stroke-dashoffset="-62.1"/>
+                                <!-- Ready: 2/29 = 6.9% → offset: -75.9 -->
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--task-ready)" stroke-width="3.5" stroke-dasharray="6.9 93.1" stroke-dashoffset="-75.9"/>
+                                <!-- Approval: 1/29 = 3.4% → offset: -82.8 -->
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--task-approval)" stroke-width="3.5" stroke-dasharray="3.4 96.6" stroke-dashoffset="-82.8"/>
+                                <!-- Pending: 3/29 = 10.3% → offset: -86.2 -->
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--task-pending)" stroke-width="3.5" stroke-dasharray="10.3 89.7" stroke-dashoffset="-86.2"/>
+                                <!-- Failed: 1/29 = 3.4% → offset: -96.5 -->
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--task-failed)" stroke-width="3.5" stroke-dasharray="3.4 96.6" stroke-dashoffset="-96.5"/>
+                            </svg>
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                                <div style="font-size: 20px; font-weight: 700; color: var(--task-complete); line-height: 1;">62%</div>
+                                <div style="font-size: 9px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em;">done</div>
+                            </div>
+                        </div>
+                        <span style="font-size: 11px; color: var(--text-secondary); font-weight: 500;">ICAAP 2026</span>
+                    </div>
+
+                    <!-- Donut 3: small/problematic project -->
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: var(--space-2);">
+                        <div style="position: relative; width: 120px; height: 120px;">
+                            <svg viewBox="0 0 36 36" width="120" height="120" style="transform: rotate(-90deg);">
+                                <!-- Complete: 2/8 = 25% -->
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--task-complete)" stroke-width="3.5" stroke-dasharray="25 75" stroke-dashoffset="0"/>
+                                <!-- In Progress: 1/8 = 12.5% -->
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--task-active)" stroke-width="3.5" stroke-dasharray="12.5 87.5" stroke-dashoffset="-25"/>
+                                <!-- Pending: 2/8 = 25% -->
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--task-pending)" stroke-width="3.5" stroke-dasharray="25 75" stroke-dashoffset="-37.5"/>
+                                <!-- Failed: 3/8 = 37.5% -->
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--task-failed)" stroke-width="3.5" stroke-dasharray="37.5 62.5" stroke-dashoffset="-62.5"/>
+                            </svg>
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                                <div style="font-size: 20px; font-weight: 700; color: var(--task-failed); line-height: 1;">3</div>
+                                <div style="font-size: 9px; color: var(--task-failed); text-transform: uppercase; letter-spacing: 0.05em;">failed</div>
+                            </div>
+                        </div>
+                        <span style="font-size: 11px; color: var(--text-secondary); font-weight: 500;">At Risk</span>
+                    </div>
                 </div>
             </div>
 
@@ -5108,6 +5260,10 @@
                     <div class="df-form-group">
                         <label class="df-label">Textarea</label>
                         <textarea class="df-textarea" placeholder="Describe the task scope…"></textarea>
+                        <div style="display: flex; align-items: center; gap: 6px; margin-top: var(--space-1); font-size: var(--text-xs); color: var(--status-success);">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Saved just now
+                        </div>
                     </div>
                     <div class="df-form-group">
                         <label class="df-label">Select / Dropdown</label>
@@ -5164,7 +5320,52 @@
                 </div>
             </div>
 
-            <div class="card-grid card-grid-2">
+            <!-- Auto-save Status Variants -->
+            <div class="component-demo" style="margin-top: var(--space-6);">
+                <div class="component-demo-label">Auto-Save Status Variants</div>
+                <div style="display: flex; gap: var(--space-8); flex-wrap: wrap; align-items: flex-start;">
+                    <!-- Saving -->
+                    <div style="min-width: 200px;">
+                        <div style="font-size: var(--text-xs); color: var(--text-tertiary); margin-bottom: var(--space-2); font-weight: 500;">Saving…</div>
+                        <div style="display: flex; align-items: center; gap: 6px; font-size: var(--text-xs); color: var(--text-tertiary);">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+                            Saving…
+                        </div>
+                    </div>
+                    <!-- Saved just now -->
+                    <div style="min-width: 200px;">
+                        <div style="font-size: var(--text-xs); color: var(--text-tertiary); margin-bottom: var(--space-2); font-weight: 500;">Saved (relative)</div>
+                        <div style="display: flex; align-items: center; gap: 6px; font-size: var(--text-xs); color: var(--status-success);">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Saved just now
+                        </div>
+                    </div>
+                    <!-- Saved with timestamp -->
+                    <div style="min-width: 200px;">
+                        <div style="font-size: var(--text-xs); color: var(--text-tertiary); margin-bottom: var(--space-2); font-weight: 500;">Saved (timestamp)</div>
+                        <div style="display: flex; align-items: center; gap: 6px; font-size: var(--text-xs); color: var(--text-tertiary);" title="13 March 2026, 03:41 GMT">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--status-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Saved Mar 13 at 03:41
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                @keyframes spin {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+            </style>
+
+            <div class="card mt-8" style="border-left: 3px solid var(--status-success);">
+                <div class="card-title">Auto-Save Indicator Pattern</div>
+                <p class="card-text">
+                    Auto-save reduces anxiety. Show confirmation with a tick and relative time ("just now", "2 min ago"). On hover, show the full timestamp. Never show "Unsaved changes" without an auto-save — if the system auto-saves, just confirm it did. Inspired by Google Docs, Notion, and Linear which all use subtle save indicators rather than explicit save buttons.
+                </p>
+            </div>
+
+            <div class="card-grid card-grid-2" style="margin-top: var(--space-6);">
                 <div class="card">
                     <div class="card-title">Focus Ring</div>
                     <p class="card-text">
@@ -5192,10 +5393,17 @@
 
             <div class="component-demo">
                 <div class="component-demo-label">Task List Table</div>
+                <style>
+                    .df-table .df-checkbox { width: 16px; height: 16px; accent-color: var(--brand-solid); cursor: pointer; margin: 0; }
+                    .df-table tr.df-row-selected td { background: rgba(0, 119, 221, 0.06); }
+                    [data-theme="dark"] .df-table tr.df-row-selected td { background: rgba(0, 153, 255, 0.08); }
+                    .df-chevron { cursor: pointer; color: var(--text-tertiary); font-size: var(--text-sm); display: inline-block; margin-right: var(--space-1); user-select: none; transition: transform var(--duration-fast) var(--ease-default); }
+                </style>
                 <div class="df-table-wrapper">
                     <table class="df-table">
                         <thead>
                             <tr>
+                                <th style="width: 36px; text-align: center;"><input type="checkbox" class="df-checkbox" title="Select all"></th>
                                 <th style="width: 48px;">Status</th>
                                 <th class="df-sorted">Task Name <span class="df-sort-icon">▲</span></th>
                                 <th>Assignee</th>
@@ -5204,14 +5412,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <!-- Parent row — expanded (▾) -->
+                            <tr class="df-row-selected">
+                                <td style="text-align: center;"><input type="checkbox" class="df-checkbox" checked></td>
                                 <td><span class="df-table-status-symbol" style="color: var(--status-success);">✓</span></td>
-                                <td><span class="df-table-task-name"><span class="df-table-expand expanded" onclick="this.classList.toggle('expanded')">▸</span>ICAAP Document Production</span></td>
+                                <td><span class="df-table-task-name"><span class="df-chevron" style="transform: rotate(90deg);">▸</span>ICAAP Document Production</span></td>
                                 <td><div class="df-table-assignee"><span class="df-table-avatar">SC</span> Sarah Chen</div></td>
                                 <td>2026-04-15</td>
                                 <td><span class="df-table-priority df-priority-high">High</span></td>
                             </tr>
                             <tr class="df-table-child">
+                                <td style="text-align: center;"><input type="checkbox" class="df-checkbox"></td>
                                 <td><span class="df-table-status-symbol" style="color: var(--status-success);">✓</span></td>
                                 <td><span class="df-table-task-name">Gather Risk Data</span></td>
                                 <td><div class="df-table-assignee"><span class="df-table-avatar">DO</span> David Okafor</div></td>
@@ -5219,6 +5430,7 @@
                                 <td><span class="df-table-priority df-priority-medium">Medium</span></td>
                             </tr>
                             <tr class="df-table-child">
+                                <td style="text-align: center;"><input type="checkbox" class="df-checkbox"></td>
                                 <td><span class="df-table-status-symbol" style="color: var(--brand-solid);">▶</span></td>
                                 <td><span class="df-table-task-name">Run Capital Model</span></td>
                                 <td><div class="df-table-assignee"><span class="df-table-avatar">SC</span> Sarah Chen</div></td>
@@ -5226,20 +5438,24 @@
                                 <td><span class="df-table-priority df-priority-high">High</span></td>
                             </tr>
                             <tr class="df-table-child">
+                                <td style="text-align: center;"><input type="checkbox" class="df-checkbox"></td>
                                 <td><span class="df-table-status-symbol" style="color: var(--status-pending);">○</span></td>
                                 <td><span class="df-table-task-name">Draft Executive Summary</span></td>
                                 <td><div class="df-table-assignee"><span class="df-table-avatar">EZ</span> Emily Zhao</div></td>
                                 <td>2026-04-10</td>
                                 <td><span class="df-table-priority df-priority-low">Low</span></td>
                             </tr>
+                            <!-- Parent row — collapsed (▸) -->
                             <tr>
+                                <td style="text-align: center;"><input type="checkbox" class="df-checkbox"></td>
                                 <td><span class="df-table-status-symbol" style="color: var(--brand-solid);">▶</span></td>
-                                <td><span class="df-table-task-name">Risk Assessment Review</span></td>
+                                <td><span class="df-table-task-name"><span class="df-chevron">▸</span>Risk Assessment Review</span></td>
                                 <td><div class="df-table-assignee"><span class="df-table-avatar">DO</span> David Okafor</div></td>
                                 <td>2026-03-25</td>
                                 <td><span class="df-table-priority df-priority-high">High</span></td>
                             </tr>
                             <tr>
+                                <td style="text-align: center;"><input type="checkbox" class="df-checkbox"></td>
                                 <td><span class="df-table-status-symbol" style="color: var(--status-warning);">⏸</span></td>
                                 <td><span class="df-table-task-name">Stress Testing Scenarios</span></td>
                                 <td><div class="df-table-assignee"><span class="df-table-avatar">SC</span> Sarah Chen</div></td>
@@ -5247,6 +5463,7 @@
                                 <td><span class="df-table-priority df-priority-medium">Medium</span></td>
                             </tr>
                             <tr>
+                                <td style="text-align: center;"><input type="checkbox" class="df-checkbox"></td>
                                 <td><span class="df-table-status-symbol" style="color: var(--status-pending);">○</span></td>
                                 <td><span class="df-table-task-name">Board Presentation Prep</span></td>
                                 <td><div class="df-table-assignee"><span class="df-table-avatar">EZ</span> Emily Zhao</div></td>
@@ -5293,16 +5510,17 @@
                             <div class="df-sidebar-switcher-avatar">D</div>
                         </div>
                         <div class="df-sidebar-section">
-                            <a class="df-sidebar-item" title="Dashboard"><span class="df-sidebar-icon">📊</span></a>
-                            <a class="df-sidebar-item active" title="Projects"><span class="df-sidebar-icon">📁</span></a>
-                            <a class="df-sidebar-item" title="Workflows"><span class="df-sidebar-icon">🔀</span></a>
-                            <a class="df-sidebar-item" title="Templates"><span class="df-sidebar-icon">📋</span></a>
-                            <a class="df-sidebar-item" title="Team"><span class="df-sidebar-icon">👥</span></a>
+                            <a class="df-sidebar-item" title="Dashboard"><span class="df-sidebar-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg></span></a>
+                            <a class="df-sidebar-item active" title="Projects"><span class="df-sidebar-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></span></a>
+                            <a class="df-sidebar-item" title="Workflows"><span class="df-sidebar-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><path d="M6 21V9a9 9 0 0 0 9 9"></path></svg></span></a>
+                            <a class="df-sidebar-item" title="Templates"><span class="df-sidebar-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="13" height="16" rx="2"></rect><path d="M3 8h2"></path><path d="M3 12h2"></path><path d="M3 16h2"></path><rect x="3" y="6" width="13" height="16" rx="2"></rect></svg></span></a>
+                            <a class="df-sidebar-item" title="Team"><span class="df-sidebar-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span></a>
                         </div>
                         <div class="df-sidebar-spacer"></div>
                         <div class="df-sidebar-divider"></div>
                         <div class="df-sidebar-section">
-                            <a class="df-sidebar-item" title="Settings"><span class="df-sidebar-icon">⚙️</span></a>
+                            <a class="df-sidebar-item" title="Settings"><span class="df-sidebar-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span></a>
+                            <a class="df-sidebar-item" title="Help"><span class="df-sidebar-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span></a>
                         </div>
                     </div>
 
@@ -5316,11 +5534,11 @@
                             </div>
                         </div>
                         <div class="df-sidebar-section">
-                            <a class="df-sidebar-item"><span class="df-sidebar-icon">📊</span> <span>Dashboard</span></a>
-                            <a class="df-sidebar-item active"><span class="df-sidebar-icon">📁</span> <span>Projects</span></a>
-                            <a class="df-sidebar-item"><span class="df-sidebar-icon">🔀</span> <span>Workflows</span></a>
-                            <a class="df-sidebar-item"><span class="df-sidebar-icon">📋</span> <span>Templates</span></a>
-                            <a class="df-sidebar-item"><span class="df-sidebar-icon">👥</span> <span>Team</span></a>
+                            <a class="df-sidebar-item"><span class="df-sidebar-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg></span> <span>Dashboard</span></a>
+                            <a class="df-sidebar-item active"><span class="df-sidebar-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></span> <span>Projects</span></a>
+                            <a class="df-sidebar-item"><span class="df-sidebar-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><path d="M6 21V9a9 9 0 0 0 9 9"></path></svg></span> <span>Workflows</span></a>
+                            <a class="df-sidebar-item"><span class="df-sidebar-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="13" height="16" rx="2"></rect><path d="M3 8h2"></path><path d="M3 12h2"></path><path d="M3 16h2"></path><rect x="3" y="6" width="13" height="16" rx="2"></rect></svg></span> <span>Templates</span></a>
+                            <a class="df-sidebar-item"><span class="df-sidebar-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span> <span>Team</span></a>
                         </div>
                         <div class="df-sidebar-divider"></div>
                         <div class="df-sidebar-section">
@@ -5332,7 +5550,8 @@
                         <div class="df-sidebar-spacer"></div>
                         <div class="df-sidebar-divider"></div>
                         <div class="df-sidebar-section">
-                            <a class="df-sidebar-item"><span class="df-sidebar-icon">⚙️</span> <span>Settings</span></a>
+                            <a class="df-sidebar-item"><span class="df-sidebar-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span> <span>Settings</span></a>
+                            <a class="df-sidebar-item"><span class="df-sidebar-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span> <span>Help</span></a>
                         </div>
                     </div>
                 </div>
@@ -5663,11 +5882,11 @@
                 </p>
                 <div style="background: var(--surface-raised); border: 1px solid var(--surface-card-border); border-radius: var(--radius-md); padding: var(--space-6); margin-top: var(--space-4); font-family: 'SF Mono', 'Fira Code', monospace; font-size: var(--text-sm); color: var(--text-secondary); line-height: 2;">
                     <span style="color: var(--text-tertiary);">L1</span> ICAAP 2026 <span style="color: var(--text-tertiary);">─── Sarah (Owner), James (Read-only)</span><br>
-                    <span style="color: var(--text-tertiary);">&nbsp;├─ L2</span> Capital Modelling <span style="color: var(--text-tertiary);">─── David (Editor), DF Agent (Agent)</span><br>
+                    <span style="color: var(--text-tertiary);">&nbsp;├─ L2</span> Capital Modelling <span style="color: var(--text-tertiary);">─── David (Member), DF Agent (Agent)</span><br>
                     <span style="color: var(--text-tertiary);">&nbsp;│&nbsp;&nbsp;├─ L3</span> Run Model <span style="color: var(--text-tertiary);">─── DF Agent (inherits from L2)</span><br>
                     <span style="color: var(--text-tertiary);">&nbsp;│&nbsp;&nbsp;└─ L3</span> Validate Output <span style="color: var(--text-tertiary);">─── David (inherits from L2)</span><br>
-                    <span style="color: var(--text-tertiary);">&nbsp;├─ L2</span> Risk Assessment <span style="color: var(--text-tertiary);">─── Maya (Editor) ← no L1 access</span><br>
-                    <span style="color: var(--text-tertiary);">&nbsp;└─ L2</span> Board Approval <span style="color: var(--text-tertiary);">─── James (Approver)</span>
+                    <span style="color: var(--text-tertiary);">&nbsp;├─ L2</span> Risk Assessment <span style="color: var(--text-tertiary);">─── Maya (Member) ← no L1 access</span><br>
+                    <span style="color: var(--text-tertiary);">&nbsp;└─ L2</span> Board Approval <span style="color: var(--text-tertiary);">─── James (Read-only) + <span style="color: var(--status-warning);">approval gate assignee</span></span>
                 </div>
             </div>
 
@@ -5680,20 +5899,14 @@
                             <div class="df-avatar df-avatar-human df-avatar-xs df-avatar-purple">O</div>
                             <span style="font-size: var(--text-sm); font-weight: 600; color: var(--text-primary);">Owner</span>
                         </div>
-                        <p style="font-size: var(--text-xs); color: var(--text-secondary); line-height: 1.6;">Full control. Manage permissions, delete workflow, assign tasks, modify structure. Receives all escalation notifications.</p>
+                        <p style="font-size: var(--text-xs); color: var(--text-secondary); line-height: 1.6;">Full control. Manage permissions, delete workflow, assign tasks, modify structure. Receives all escalation notifications. Can designate tasks as approval gates and assign specific approvers.</p>
                     </div>
                     <div style="padding: var(--space-4); background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-md);">
                         <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
-                            <div class="df-avatar df-avatar-human df-avatar-xs df-avatar-blue">E</div>
-                            <span style="font-size: var(--text-sm); font-weight: 600; color: var(--text-primary);">Editor</span>
+                            <div class="df-avatar df-avatar-human df-avatar-xs df-avatar-blue">M</div>
+                            <span style="font-size: var(--text-sm); font-weight: 600; color: var(--text-primary);">Member</span>
                         </div>
-                        <p style="font-size: var(--text-xs); color: var(--text-secondary); line-height: 1.6;">Create, edit, and advance tasks. Assign sub-tasks. Cannot modify permissions or delete the workflow.</p>
-                    </div>
-                    <div style="padding: var(--space-4); background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-md);">
-                        <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
-                            <span style="font-size: var(--text-sm); font-weight: 600; color: var(--status-warning); margin-left: 28px;">Approver</span>
-                        </div>
-                        <p style="font-size: var(--text-xs); color: var(--text-secondary); line-height: 1.6;">Can approve/reject at gates (❗ status). Can comment. Cannot edit task content or structure. For compliance officers and sign-off authorities.</p>
+                        <p style="font-size: var(--text-xs); color: var(--text-secondary); line-height: 1.6;">Create, edit, and advance tasks. Assign sub-tasks. Cannot modify permissions or delete the workflow. May be assigned as approver on specific gates by the Owner.</p>
                     </div>
                     <div style="padding: var(--space-4); background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-md);">
                         <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
@@ -5708,6 +5921,13 @@
                         </div>
                         <p style="font-size: var(--text-xs); color: var(--text-secondary); line-height: 1.6;">AI agents inherit the permissions of their logged-in user. Chat and agent actions are scoped to exactly what that user can see and do. No privilege escalation.</p>
                     </div>
+                </div>
+
+                <div class="card" style="margin-bottom: var(--space-6); border-left: 3px solid var(--status-warning);">
+                    <div class="card-title">Approval Gates (Not a Role)</div>
+                    <p class="card-text">
+                        Approval is <strong style="color: var(--text-primary);">not a global role</strong> — it's a per-gate permission. An Owner can designate specific tasks as approval gates and assign specific Members, Read-only users, or even external users as approvers for those gates. This is more flexible than a fixed "Approver" role: a compliance officer might approve regulatory sign-offs but not budget decisions, while a finance lead approves budgets but not code reviews. Approval permissions are visible on the task detail panel and in the permission summary.
+                    </p>
                 </div>
             </div>
 
@@ -5725,7 +5945,7 @@
                     <p class="card-text">
                         Permission is granted per-level via a "Share" action on any workflow node. The dialog shows:<br><br>
                         <strong style="color: var(--text-primary);">1.</strong> User/team search<br>
-                        <strong style="color: var(--text-primary);">2.</strong> Role dropdown (Owner / Editor / Approver / Read-only)<br>
+                        <strong style="color: var(--text-primary);">2.</strong> Role dropdown (Owner / Member / Read-only)<br>
                         <strong style="color: var(--text-primary);">3.</strong> Scope indicator: "Access to <strong style="color: var(--brand-solid);">Capital Modelling</strong> and all sub-levels"<br>
                         <strong style="color: var(--text-primary);">4.</strong> Current members list with role badges<br><br>
                         The scope indicator is crucial — it makes the cascade visible. No hidden side effects.
@@ -5766,6 +5986,121 @@
             </div>
         </section>
 
+        <!-- ==========================================
+             28. DIALOGS & PANELS
+             ========================================== -->
+        <section id="dialogs" class="section">
+            <div class="section-header">
+                <div class="section-number">28</div>
+                <h2 class="section-title">Dialogs &amp; Panels</h2>
+                <p class="section-desc">Modal dialogs and slide-over panels for confirmations, editing, and approval gates. Button placement follows a strict right-aligned convention with the primary action always rightmost.</p>
+            </div>
+
+            <div class="component-demo">
+                <div class="component-demo-label">Button Placement Rules</div>
+                <div class="card-grid card-grid-2" style="margin-bottom: var(--space-8);">
+                    <div class="card">
+                        <div class="card-title">Placement Convention</div>
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li style="color: var(--text-secondary); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--surface-card-border);">✓ CTA / confirm / success button → <strong style="color: var(--text-primary);">RIGHT</strong></li>
+                            <li style="color: var(--text-secondary); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--surface-card-border);">✓ Cancel / dismiss / tertiary → <strong style="color: var(--text-primary);">LEFT of primary</strong></li>
+                            <li style="color: var(--text-secondary); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--surface-card-border);">✓ All buttons are <strong style="color: var(--text-primary);">BOTTOM-RIGHT</strong> aligned</li>
+                            <li style="color: var(--text-secondary); font-size: var(--text-sm); padding: var(--space-2) 0; border-bottom: 1px solid var(--surface-card-border);">✓ Dismiss via Cancel button or <code>Escape</code> key</li>
+                            <li style="color: var(--text-secondary); font-size: var(--text-sm); padding: var(--space-2) 0;">✗ No "X" close button on confirmation/destructive dialogs</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Why No "X" on Confirmations?</div>
+                        <p class="card-text">
+                            The X button in the top corner is ambiguous on destructive dialogs — does X mean "cancel the action" or "confirm the deletion"? Removing it forces an explicit choice. Escape key provides the same affordance without the ambiguity.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="component-demo-label">Demo Dialogs</div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6);">
+
+                    <!-- Confirmation Dialog -->
+                    <div style="background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-lg); padding: var(--space-6); box-shadow: var(--shadow-lg);">
+                        <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);">
+                            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--status-error-bg); border: 1.5px solid var(--status-error-border); display: flex; align-items: center; justify-content: center;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--status-error)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+                            </div>
+                            <div>
+                                <div style="font-size: var(--text-md); font-weight: 600; color: var(--text-primary);">Delete workflow?</div>
+                                <div style="font-size: var(--text-xs); color: var(--text-tertiary);">This action cannot be undone.</div>
+                            </div>
+                        </div>
+                        <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-6); line-height: 1.6;">
+                            "ICAAP 2026" and all 24 tasks will be permanently deleted. Team members will lose access immediately.
+                        </p>
+                        <div style="display: flex; justify-content: flex-end; gap: var(--space-3);">
+                            <button class="df-btn df-btn-ghost df-btn-sm">Cancel</button>
+                            <button class="df-btn df-btn-destructive df-btn-sm">Delete Workflow</button>
+                        </div>
+                    </div>
+
+                    <!-- Edit Panel -->
+                    <div style="background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-lg); padding: var(--space-6); box-shadow: var(--shadow-lg); display: flex; flex-direction: column;">
+                        <div style="font-size: var(--text-md); font-weight: 600; color: var(--text-primary); margin-bottom: var(--space-4); padding-bottom: var(--space-3); border-bottom: 1px solid var(--surface-card-border);">Edit Task</div>
+                        <div class="df-form-group">
+                            <label class="df-label" style="font-size: var(--text-xs);">Task Name</label>
+                            <input type="text" class="df-input" value="Run Capital Model" style="font-size: var(--text-xs); padding: 6px 10px;">
+                        </div>
+                        <div class="df-form-group">
+                            <label class="df-label" style="font-size: var(--text-xs);">Assignee</label>
+                            <select class="df-select" style="font-size: var(--text-xs); padding: 6px 10px;">
+                                <option>Sarah Chen</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1;"></div>
+                        <div style="display: flex; justify-content: flex-end; gap: var(--space-3); padding-top: var(--space-4); border-top: 1px solid var(--surface-card-border);">
+                            <button class="df-btn df-btn-ghost df-btn-sm">Cancel</button>
+                            <button class="df-btn df-btn-secondary df-btn-sm">Save Changes</button>
+                        </div>
+                    </div>
+
+                    <!-- Approval Gate -->
+                    <div style="background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-lg); padding: var(--space-6); box-shadow: var(--shadow-lg);">
+                        <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);">
+                            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--status-warning-bg); border: 1.5px solid var(--status-warning-border); display: flex; align-items: center; justify-content: center;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--status-warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            </div>
+                            <div>
+                                <div style="font-size: var(--text-md); font-weight: 600; color: var(--text-primary);">Approve task?</div>
+                                <div style="font-size: var(--text-xs); color: var(--text-tertiary);">Approval gate · Requires sign-off</div>
+                            </div>
+                        </div>
+                        <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-4); line-height: 1.6;">
+                            "Capital Model Output" has been completed by DF Agent and requires your sign-off before dependent tasks can proceed.
+                        </p>
+                        <div class="df-form-group" style="margin-bottom: var(--space-4);">
+                            <label class="df-label" style="font-size: var(--text-xs);">Comment <span class="df-label-optional">(optional)</span></label>
+                            <textarea class="df-textarea" placeholder="Add review notes…" style="font-size: var(--text-xs); min-height: 48px; padding: 6px 10px;"></textarea>
+                        </div>
+                        <div style="display: flex; justify-content: flex-end; gap: var(--space-3);">
+                            <button class="df-btn df-btn-ghost df-btn-sm">Reject</button>
+                            <button class="df-btn df-btn-sm" style="background: var(--status-success); color: white; border: none;">Approve</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rationale -->
+            <div class="card mt-8" style="border-left: 3px solid var(--brand-solid);">
+                <div class="card-title">Rationale — Button Placement &amp; the X Button</div>
+                <p class="card-text" style="margin-bottom: var(--space-4);">
+                    The X button in the top corner is a UX antipattern for destructive dialogs — it's ambiguous (does X mean "cancel the action" or "confirm the deletion"?). Bottom-right button placement follows the natural reading flow (left-to-right, top-to-bottom) and matches macOS/iOS conventions. The primary action is always rightmost, making it the last thing the eye hits. This aligns with Apple HIG and Material Design 3.
+                </p>
+                <p class="card-text" style="margin-bottom: var(--space-4);">
+                    <strong style="color: var(--text-primary);">Honest critique:</strong> Removing the X button can cause friction. Many users — especially those from Windows backgrounds — instinctively reach for the top-right corner to dismiss. Removing it entirely may feel "trapped." This is a real usability cost.
+                </p>
+                <p class="card-text">
+                    <strong style="color: var(--text-primary);">Compromise:</strong> The X button is <strong style="color: var(--status-success);">allowed</strong> on non-destructive panels (task detail view, settings, info overlays) where dismissal has no consequences. It is <strong style="color: var(--status-error);">prohibited</strong> on confirmation dialogs (delete, approve, reject) and any dialog with a form that could lose data. This gives users the familiar escape hatch where it's safe, while forcing deliberate choice where it matters.
+                </p>
+            </div>
+        </section>
+
     </div>
 
     <!-- ==========================================
@@ -5774,10 +6109,10 @@
     <footer class="footer">
         <div class="container">
             <p style="margin-bottom: var(--space-2);">
-                <strong style="color: var(--text-primary);">DeepFlow Design Guidelines</strong> · v2.2 · Foundations + Component Library + Permissions
+                <strong style="color: var(--text-primary);">DeepFlow Design Guidelines</strong> · v2.3 · Foundations + Component Library + Permissions + Dialogs
             </p>
             <p>
-                Prepared by <a href="https://enriched.solutions">Enriched Solutions</a> · 27 sections covering foundations, components, interaction patterns, and access control
+                Prepared by <a href="https://enriched.solutions">Enriched Solutions</a> · 28 sections covering foundations, components, interaction patterns, and access control
             </p>
         </div>
     </footer>
