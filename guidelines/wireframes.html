@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepFlow — Layout Wireframes (Option B: Chat Always On)</title>
+    <style>
+        @font-face { font-family: 'Euclid Circular B'; src: url('fonts/EuclidCircularB-Regular.ttf') format('truetype'); font-weight: 400; }
+        @font-face { font-family: 'Euclid Circular B'; src: url('fonts/EuclidCircularB-Medium.ttf') format('truetype'); font-weight: 500; }
+        @font-face { font-family: 'Euclid Circular B'; src: url('fonts/EuclidCircularB-SemiBold.ttf') format('truetype'); font-weight: 600; }
+        @font-face { font-family: 'Euclid Circular B'; src: url('fonts/EuclidCircularB-Bold.ttf') format('truetype'); font-weight: 700; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Euclid Circular B', -apple-system, sans-serif;
+            background: #F5F5F5;
+            color: #333;
+            padding: 40px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #111; }
+        .subtitle { font-size: 15px; color: #666; margin-bottom: 48px; }
+        h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; color: #111; }
+        .view-desc { font-size: 13px; color: #666; margin-bottom: 20px; }
+
+        .view-section { margin-bottom: 64px; }
+
+        /* Wireframe container */
+        .wf {
+            width: 1200px;
+            height: auto;
+            border: 2px solid #333;
+            background: #fff;
+            position: relative;
+            display: grid;
+            overflow: hidden;
+        }
+
+        /* Panels are simple labeled rectangles */
+        .panel {
+            border: 1.5px solid #333;
+            padding: 10px 12px;
+            position: relative;
+            background: #fff;
+        }
+        .panel-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #fff;
+            background: #333;
+            display: inline-block;
+            padding: 2px 8px;
+            margin-bottom: 8px;
+        }
+        .panel-dims {
+            font-size: 9px;
+            color: #999;
+            position: absolute;
+            top: 3px;
+            right: 6px;
+        }
+        .data-list {
+            list-style: none;
+            font-size: 11px;
+            color: #555;
+            line-height: 1.7;
+        }
+        .data-list li::before {
+            content: "— ";
+            color: #999;
+        }
+        .data-list li.heading {
+            font-weight: 600;
+            color: #333;
+            margin-top: 6px;
+        }
+        .data-list li.heading::before { content: ""; }
+        .data-list li.sub { padding-left: 14px; font-size: 10px; }
+        .data-list li.sub::before { content: "· "; }
+
+        /* Layout grids for each wireframe */
+        .layout-graph {
+            grid-template-columns: 56px 320px 1fr 360px;
+            grid-template-rows: 44px 36px 1fr;
+            height: 560px;
+        }
+        .layout-list {
+            grid-template-columns: 56px 320px 1fr;
+            grid-template-rows: 44px 1fr;
+            height: 520px;
+        }
+        .layout-workspace {
+            grid-template-columns: 56px 320px 1fr;
+            grid-template-rows: 44px 1fr;
+            height: 600px;
+        }
+        .layout-gallery {
+            grid-template-columns: 56px 320px 1fr;
+            grid-template-rows: 44px 1fr;
+            height: 560px;
+        }
+        .layout-active {
+            grid-template-columns: 56px 320px 1fr 360px;
+            grid-template-rows: 44px 36px 1fr;
+            height: 600px;
+        }
+        .layout-settings {
+            grid-template-columns: 56px 320px 280px 1fr;
+            grid-template-rows: 44px 1fr;
+            height: 520px;
+        }
+
+        /* Spanning helpers */
+        .span-rows-all { grid-row: 1 / -1; }
+        .span-cols-rest { grid-column: 3 / -1; }
+
+        .notes {
+            background: #FFFDE7;
+            border: 1px solid #E0D8A8;
+            border-radius: 4px;
+            padding: 12px 14px;
+            margin-top: 16px;
+            font-size: 11px;
+            color: #555;
+            line-height: 1.7;
+            max-width: 1200px;
+        }
+        .notes strong { color: #333; }
+    </style>
+</head>
+<body>
+
+<h1>DeepFlow — Option B Wireframes</h1>
+<p class="subtitle">Chat always on. Pure layout with data inside each panel. Target: 1200px viewport.</p>
+
+<!-- ============================================
+     1. GRAPH VIEW
+     ============================================ -->
+<div class="view-section">
+    <h2>1. Graph View</h2>
+    <p class="view-desc">Primary project view. DAG canvas with node selected → detail panel open.</p>
+
+    <div class="wf layout-graph">
+        <!-- Sidebar -->
+        <div class="panel span-rows-all" style="grid-column:1">
+            <span class="panel-label">Sidebar</span>
+            <span class="panel-dims">56px</span>
+            <ul class="data-list">
+                <li>Org icon (logo/initials)</li>
+                <li class="heading">Nav icons (icon-only):</li>
+                <li class="sub">Dashboard</li>
+                <li class="sub">Projects (active indicator)</li>
+                <li class="sub">Workflows</li>
+                <li class="sub">Templates</li>
+                <li class="sub">Team</li>
+                <li class="heading">Footer:</li>
+                <li class="sub">Settings icon</li>
+                <li class="sub">User avatar + initials</li>
+            </ul>
+        </div>
+
+        <!-- Chat Panel -->
+        <div class="panel span-rows-all" style="grid-column:2">
+            <span class="panel-label">Chat Panel</span>
+            <span class="panel-dims">320px</span>
+            <ul class="data-list">
+                <li class="heading">Header:</li>
+                <li class="sub">AI status dot (pulsing)</li>
+                <li class="sub">"DeepFlow AI" label</li>
+                <li class="sub">Context badge: current project/task name</li>
+                <li class="heading">Message list (scrollable):</li>
+                <li class="sub">AI messages (left-aligned, grey bg)</li>
+                <li class="sub">User messages (right-aligned, brand blue bg)</li>
+                <li class="sub">System messages (centered, muted — e.g. "Task updated")</li>
+                <li class="sub">Action chips on AI messages: "Apply to task", "Create workflow", "Assign to…"</li>
+                <li class="heading">Input bar (bottom, sticky):</li>
+                <li class="sub">Text input: "Ask about your workflow…"</li>
+                <li class="sub">Send button (brand gradient)</li>
+            </ul>
+        </div>
+
+        <!-- Top Bar -->
+        <div class="panel" style="grid-column:3; grid-row:1">
+            <span class="panel-label">Top Bar</span>
+            <span class="panel-dims">h:44px</span>
+            <ul class="data-list">
+                <li>Breadcrumbs: All Projects › [Project] › [Workflow]</li>
+                <li>View switcher: Graph | Kanban | List (toggle buttons)</li>
+                <li>Filter button</li>
+                <li>Search input: "Search tasks…"</li>
+            </ul>
+        </div>
+
+        <!-- Hub Bar -->
+        <div class="panel" style="grid-column:3; grid-row:2">
+            <span class="panel-label">Hub Bar (collapsed)</span>
+            <span class="panel-dims">h:36px</span>
+            <ul class="data-list">
+                <li>Expand/collapse chevron</li>
+                <li>Workflow name</li>
+                <li>Progress bar + percentage</li>
+                <li>Status counts: ✓ done · ▶ active · ⚠ blocked · ○ pending</li>
+                <li>Health meter (5 segments: green/amber/empty)</li>
+                <li>Due date</li>
+            </ul>
+        </div>
+
+        <!-- Graph Canvas -->
+        <div class="panel" style="grid-column:3; grid-row:3">
+            <span class="panel-label">Graph Canvas</span>
+            <span class="panel-dims">flexible width</span>
+            <ul class="data-list">
+                <li class="heading">Background:</li>
+                <li class="sub">Dot grid pattern</li>
+                <li class="heading">Nodes (draggable):</li>
+                <li class="sub">Status dot (coloured by status)</li>
+                <li class="sub">Task name</li>
+                <li class="sub">Assignee avatar (circle = human, hexagon = AI)</li>
+                <li class="sub">Selected node: blue border + glow</li>
+                <li class="heading">Edges (between nodes):</li>
+                <li class="sub">Dependency lines (solid or dashed)</li>
+                <li class="sub">Coloured by upstream status</li>
+                <li class="heading">Zones (dashed border regions):</li>
+                <li class="sub">Level label (e.g. "L2 — Capital Modelling")</li>
+                <li class="sub">Tinted background per level</li>
+                <li class="heading">Controls:</li>
+                <li class="sub">Zoom +/−/% (bottom-left)</li>
+                <li class="sub">Minimap (bottom-right)</li>
+            </ul>
+        </div>
+
+        <!-- Detail Panel -->
+        <div class="panel span-rows-all" style="grid-column:4">
+            <span class="panel-label">Detail Panel</span>
+            <span class="panel-dims">360px</span>
+            <ul class="data-list">
+                <li class="heading">Header:</li>
+                <li class="sub">Task name</li>
+                <li class="sub">Close (✕) button</li>
+                <li class="heading">Tabs:</li>
+                <li class="sub">Overview | Sub-tasks | Comments | History</li>
+                <li class="heading">Overview tab fields:</li>
+                <li class="sub">Status badge (coloured pill)</li>
+                <li class="sub">Assignee: avatar + name + "AI" tag if agent</li>
+                <li class="sub">Due date</li>
+                <li class="sub">Level (L1/L2/L3)</li>
+                <li class="sub">Description (text block)</li>
+                <li class="sub">Custom properties (coloured pills)</li>
+                <li class="heading">Sub-tasks list:</li>
+                <li class="sub">Checkbox + task name + status label</li>
+                <li class="heading">Dependencies:</li>
+                <li class="sub">Upstream: list with status dots</li>
+                <li class="sub">Downstream: list with status dots</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="notes">
+        <strong>Layout math:</strong> 56 + 320 + canvas + 360 = 1200px → canvas = 464px.<br>
+        <strong>Detail panel hidden:</strong> canvas expands to 824px. Chat always remains.<br>
+        <strong>Hub bar expand:</strong> grows to ~220px, pushes canvas down. Shows donut chart, status breakdown bars, upcoming due dates, top assignees.
+    </div>
+</div>
+
+<!-- ============================================
+     2. LIST VIEW
+     ============================================ -->
+<div class="view-section">
+    <h2>2. List View</h2>
+    <p class="view-desc">Same data as graph, displayed as sortable table. No detail panel by default — row click opens it as overlay.</p>
+
+    <div class="wf layout-list">
+        <!-- Sidebar -->
+        <div class="panel span-rows-all" style="grid-column:1">
+            <span class="panel-label">Sidebar</span>
+            <span class="panel-dims">56px</span>
+            <ul class="data-list">
+                <li>(Same as Graph View)</li>
+            </ul>
+        </div>
+
+        <!-- Chat Panel -->
+        <div class="panel span-rows-all" style="grid-column:2">
+            <span class="panel-label">Chat Panel</span>
+            <span class="panel-dims">320px</span>
+            <ul class="data-list">
+                <li>(Same as Graph View)</li>
+                <li>Context badge updates to current project</li>
+            </ul>
+        </div>
+
+        <!-- Top Bar -->
+        <div class="panel" style="grid-column:3; grid-row:1">
+            <span class="panel-label">Top Bar</span>
+            <span class="panel-dims">h:44px · fills remaining width</span>
+            <ul class="data-list">
+                <li>Breadcrumbs: All Projects › [Project] › [Workflow]</li>
+                <li>View switcher: Graph | Kanban | List (List active)</li>
+                <li>Filter button</li>
+                <li>Sort button</li>
+                <li>Search input</li>
+            </ul>
+        </div>
+
+        <!-- Table -->
+        <div class="panel" style="grid-column:3; grid-row:2">
+            <span class="panel-label">Task Table</span>
+            <span class="panel-dims">824px wide (full remaining)</span>
+            <ul class="data-list">
+                <li class="heading">Column headers (sticky):</li>
+                <li class="sub">Checkbox (select)</li>
+                <li class="sub">Status (coloured dot)</li>
+                <li class="sub">Task Name (with expand/collapse ▸/▾ for parents)</li>
+                <li class="sub">Assignee (avatar)</li>
+                <li class="sub">Due Date</li>
+                <li class="sub">Priority (pill: Critical/High/Med/Low)</li>
+                <li class="heading">Row data per task:</li>
+                <li class="sub">Checkbox (done = filled + tick)</li>
+                <li class="sub">Status dot (coloured by status)</li>
+                <li class="sub">Task name (bold). Inline badges: "Blocked", "Gate"</li>
+                <li class="sub">Assignee avatar (circle/hexagon)</li>
+                <li class="sub">Due date. Red "Overdue" if past</li>
+                <li class="sub">Priority pill (colour-coded)</li>
+                <li class="heading">Row behaviour:</li>
+                <li class="sub">Child rows indented (extra left padding)</li>
+                <li class="sub">Hover: subtle highlight</li>
+                <li class="sub">Selected row: blue tint background</li>
+                <li class="sub">Click row → opens 360px detail panel (overlays table from right)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="notes">
+        <strong>Detail panel overlay:</strong> When a row is clicked, a 360px detail panel slides in from the right, overlaying the table. Table doesn't resize — panel sits on top. Close panel to return to full table.
+    </div>
+</div>
+
+<!-- ============================================
+     3. WORKSPACE (DASHBOARD)
+     ============================================ -->
+<div class="view-section">
+    <h2>3. Workspace (Dashboard)</h2>
+    <p class="view-desc">Landing page / command centre. Project cards, summary stats, attention items.</p>
+
+    <div class="wf layout-workspace">
+        <!-- Sidebar -->
+        <div class="panel span-rows-all" style="grid-column:1">
+            <span class="panel-label">Sidebar</span>
+            <span class="panel-dims">56px</span>
+            <ul class="data-list">
+                <li>(Same — Dashboard icon active)</li>
+            </ul>
+        </div>
+
+        <!-- Chat Panel -->
+        <div class="panel span-rows-all" style="grid-column:2">
+            <span class="panel-label">Chat Panel</span>
+            <span class="panel-dims">320px</span>
+            <ul class="data-list">
+                <li>(Same structure)</li>
+                <li>Context: workspace-level (no specific task)</li>
+                <li>Can ask: "What needs my attention?"</li>
+                <li>Can ask: "Summarise all projects"</li>
+            </ul>
+        </div>
+
+        <!-- Top Bar -->
+        <div class="panel" style="grid-column:3; grid-row:1">
+            <span class="panel-label">Top Bar</span>
+            <span class="panel-dims">h:44px</span>
+            <ul class="data-list">
+                <li>Breadcrumbs: Workspace (or "Home")</li>
+                <li>No view switcher (this IS the workspace)</li>
+                <li>Global search input</li>
+                <li>Notifications bell</li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="panel" style="grid-column:3; grid-row:2">
+            <span class="panel-label">Dashboard Content</span>
+            <span class="panel-dims">824px wide · scrollable vertically</span>
+            <ul class="data-list">
+                <li class="heading">Greeting header:</li>
+                <li class="sub">"Good morning, [Name]"</li>
+                <li class="sub">Date + active project count</li>
+                <li class="heading">Summary stats (horizontal row):</li>
+                <li class="sub">Tasks due today (number, amber)</li>
+                <li class="sub">Blocked (number, red)</li>
+                <li class="sub">Awaiting approval (number, purple)</li>
+                <li class="heading">CTA button:</li>
+                <li class="sub">"+ New Workflow" (brand gradient)</li>
+                <li class="heading">Attention banner (conditional):</li>
+                <li class="sub">Warning icon</li>
+                <li class="sub">"N items need attention" + description of each</li>
+                <li class="heading">Project cards (2-column grid):</li>
+                <li class="sub">Per card:</li>
+                <li class="sub" style="padding-left:28px">Project name</li>
+                <li class="sub" style="padding-left:28px">Client name</li>
+                <li class="sub" style="padding-left:28px">Health meter (5 segments: green/amber/empty)</li>
+                <li class="sub" style="padding-left:28px">Progress bar + percentage</li>
+                <li class="sub" style="padding-left:28px">Due date (red if overdue)</li>
+                <li class="sub" style="padding-left:28px">Status counts: ✓ done · ▶ active · ✕ failed</li>
+                <li class="sub" style="padding-left:28px">Assignee avatar stack (overlapping circles/hexagons)</li>
+                <li class="sub" style="padding-left:28px">Last activity time ("2h ago")</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="notes">
+        <strong>Click project card:</strong> navigates to that project's Graph View (or last-used view). Chat panel context updates to the selected project.
+    </div>
+</div>
+
+<!-- ============================================
+     4. GALLERY VIEW
+     ============================================ -->
+<div class="view-section">
+    <h2>4. Gallery View (Projects Browser)</h2>
+    <p class="view-desc">Browse all projects + templates. Grid of cards with mini graph thumbnails.</p>
+
+    <div class="wf layout-gallery">
+        <!-- Sidebar -->
+        <div class="panel span-rows-all" style="grid-column:1">
+            <span class="panel-label">Sidebar</span>
+            <span class="panel-dims">56px</span>
+            <ul class="data-list">
+                <li>(Same — Projects icon active)</li>
+            </ul>
+        </div>
+
+        <!-- Chat Panel -->
+        <div class="panel span-rows-all" style="grid-column:2">
+            <span class="panel-label">Chat Panel</span>
+            <span class="panel-dims">320px</span>
+            <ul class="data-list">
+                <li>(Same structure)</li>
+                <li>Context: gallery-level</li>
+                <li>Can ask: "Create a new ICAAP project from template"</li>
+            </ul>
+        </div>
+
+        <!-- Top Bar -->
+        <div class="panel" style="grid-column:3; grid-row:1">
+            <span class="panel-label">Top Bar</span>
+            <span class="panel-dims">h:44px</span>
+            <ul class="data-list">
+                <li>"Projects" title</li>
+                <li>Search input: "Search by name, owner, or tag…"</li>
+                <li>Status filter dropdown</li>
+                <li>Team filter dropdown</li>
+                <li>"+ New Project" button (brand gradient)</li>
+            </ul>
+        </div>
+
+        <!-- Gallery Content -->
+        <div class="panel" style="grid-column:3; grid-row:2">
+            <span class="panel-label">Gallery Content</span>
+            <span class="panel-dims">824px wide · scrollable vertically</span>
+            <ul class="data-list">
+                <li class="heading">Templates row (horizontal scroll):</li>
+                <li class="sub">Section label: "⚡ Start from Template"</li>
+                <li class="sub">Per template card:</li>
+                <li class="sub" style="padding-left:28px">Mini graph preview (abstract dots + lines)</li>
+                <li class="sub" style="padding-left:28px">Template name</li>
+                <li class="sub" style="padding-left:28px">Task count + stage count</li>
+                <li class="sub">Last card: "+ Blank Project" (dashed border)</li>
+
+                <li class="heading">Projects grid (3-column):</li>
+                <li class="sub">Section label: "Your Projects"</li>
+                <li class="sub">Per project card:</li>
+                <li class="sub" style="padding-left:28px">Graph thumbnail (coloured dots = nodes, lines = edges)</li>
+                <li class="sub" style="padding-left:28px">Background tint matches project status colour</li>
+                <li class="sub" style="padding-left:28px">Project name</li>
+                <li class="sub" style="padding-left:28px">Owner: avatar + name</li>
+                <li class="sub" style="padding-left:28px">Status badge: Active / At Risk / Complete / Draft</li>
+                <li class="sub" style="padding-left:28px">Last updated + task count</li>
+                <li class="sub">Last card: "+ New Project" (dashed border)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================
+     5. ACTIVE TASK (WORKING STATE)
+     ============================================ -->
+<div class="view-section">
+    <h2>5. Active Task (Working State)</h2>
+    <p class="view-desc">User has selected a specific task. Chat is contextual to that task. Graph shows surrounding context (siblings dimmed). Detail panel is the working area.</p>
+
+    <div class="wf layout-active">
+        <!-- Sidebar -->
+        <div class="panel span-rows-all" style="grid-column:1">
+            <span class="panel-label">Sidebar</span>
+            <span class="panel-dims">56px</span>
+            <ul class="data-list">
+                <li>(Same)</li>
+            </ul>
+        </div>
+
+        <!-- Chat Panel -->
+        <div class="panel span-rows-all" style="grid-column:2">
+            <span class="panel-label">Chat Panel</span>
+            <span class="panel-dims">320px</span>
+            <ul class="data-list">
+                <li class="heading">Header:</li>
+                <li class="sub">"DeepFlow AI" + status dot</li>
+                <li class="heading">Context indicator bar:</li>
+                <li class="sub">⬡ "Chatting about: [Task Name] (L2)"</li>
+                <li class="sub">Updates when user clicks different node</li>
+                <li class="heading">Messages:</li>
+                <li class="sub">Task-scoped conversation</li>
+                <li class="sub">AI responses can include:</li>
+                <li class="sub" style="padding-left:28px">Formatted summaries (bold headings, bullet lists)</li>
+                <li class="sub" style="padding-left:28px">Data tables</li>
+                <li class="sub" style="padding-left:28px">Action chips: "Apply to task", "Create workflow", "Assign to…"</li>
+                <li class="sub">System messages: "✅ Task notes updated"</li>
+                <li class="heading">Input bar:</li>
+                <li class="sub">"Ask about this task…"</li>
+                <li class="sub">Send button</li>
+            </ul>
+        </div>
+
+        <!-- Top Bar -->
+        <div class="panel" style="grid-column:3; grid-row:1">
+            <span class="panel-label">Top Bar</span>
+            <span class="panel-dims">h:44px</span>
+            <ul class="data-list">
+                <li>Breadcrumbs: [Project] › [Workflow] › [Task Name]</li>
+            </ul>
+        </div>
+
+        <!-- Hub Bar -->
+        <div class="panel" style="grid-column:3; grid-row:2">
+            <span class="panel-label">Hub Bar (mini)</span>
+            <span class="panel-dims">h:36px</span>
+            <ul class="data-list">
+                <li>Parent workflow name</li>
+                <li>Progress bar + percentage</li>
+                <li>Status counts (✓ done · ▶ active)</li>
+            </ul>
+        </div>
+
+        <!-- Graph Canvas (context mode) -->
+        <div class="panel" style="grid-column:3; grid-row:3">
+            <span class="panel-label">Graph Canvas (context mode)</span>
+            <span class="panel-dims">flexible</span>
+            <ul class="data-list">
+                <li class="heading">Selected node:</li>
+                <li class="sub">Full opacity, blue border + glow</li>
+                <li class="heading">Sibling nodes:</li>
+                <li class="sub">Dimmed (50% opacity)</li>
+                <li class="sub">Still clickable — clicking switches active task</li>
+                <li class="heading">Zone + edges:</li>
+                <li class="sub">Same as Graph View but muted</li>
+                <li class="heading">Footer label:</li>
+                <li class="sub">"Graph context — click another node to switch task"</li>
+            </ul>
+        </div>
+
+        <!-- Detail Panel (working area) -->
+        <div class="panel span-rows-all" style="grid-column:4">
+            <span class="panel-label">Detail Panel (working)</span>
+            <span class="panel-dims">360px</span>
+            <ul class="data-list">
+                <li class="heading">Header:</li>
+                <li class="sub">Task name</li>
+                <li class="sub">Close (✕) button</li>
+                <li class="heading">Tabs:</li>
+                <li class="sub">Notes | Sub-tasks | Files | Comments | History</li>
+                <li class="heading">Status bar (always visible):</li>
+                <li class="sub">Status badge (pill)</li>
+                <li class="sub">Assignee: avatar + name</li>
+                <li class="sub">Due date</li>
+                <li class="sub">Priority pill</li>
+                <li class="heading">Notes tab:</li>
+                <li class="sub">Rich text editor area</li>
+                <li class="sub">AI-inserted content marked with "🤖 Added by AI" tag</li>
+                <li class="heading">Sub-tasks tab:</li>
+                <li class="sub">Checklist: checkbox + name + status</li>
+                <li class="sub">"+ Add sub-task" at bottom</li>
+                <li class="heading">Files tab:</li>
+                <li class="sub">Attached files list: icon + name + size + date</li>
+                <li class="sub">Upload dropzone</li>
+                <li class="heading">Comments tab:</li>
+                <li class="sub">Thread: avatar + name + time + message</li>
+                <li class="sub">Input: "Add a comment…"</li>
+                <li class="heading">History tab:</li>
+                <li class="sub">Timeline: timestamp + actor + action description</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="notes">
+        <strong>Key interaction:</strong> Chat and detail panel are linked. "Apply to task" in chat → inserts content into detail panel's Notes tab. AI actions surface as system messages in chat AND as history entries in the detail panel.
+    </div>
+</div>
+
+<!-- ============================================
+     6. SETTINGS / ADMIN
+     ============================================ -->
+<div class="view-section">
+    <h2>6. Settings</h2>
+    <p class="view-desc">App configuration. Settings nav on the left of the content area, form on the right.</p>
+
+    <div class="wf layout-settings">
+        <!-- Sidebar -->
+        <div class="panel span-rows-all" style="grid-column:1">
+            <span class="panel-label">Sidebar</span>
+            <span class="panel-dims">56px</span>
+            <ul class="data-list">
+                <li>(Same — Settings icon active)</li>
+            </ul>
+        </div>
+
+        <!-- Chat Panel -->
+        <div class="panel span-rows-all" style="grid-column:2">
+            <span class="panel-label">Chat Panel</span>
+            <span class="panel-dims">320px</span>
+            <ul class="data-list">
+                <li>(Same structure)</li>
+                <li>Context: settings-level</li>
+                <li>Can ask: "Change my notification preferences"</li>
+            </ul>
+        </div>
+
+        <!-- Top Bar -->
+        <div class="panel" style="grid-column: 3 / -1; grid-row:1">
+            <span class="panel-label">Top Bar</span>
+            <ul class="data-list">
+                <li>Breadcrumbs: Settings › [Section]</li>
+            </ul>
+        </div>
+
+        <!-- Settings Nav -->
+        <div class="panel" style="grid-column:3; grid-row:2">
+            <span class="panel-label">Settings Nav</span>
+            <span class="panel-dims">280px</span>
+            <ul class="data-list">
+                <li class="heading">Sections:</li>
+                <li class="sub">Profile</li>
+                <li class="sub">Organisation</li>
+                <li class="sub">Team & Roles</li>
+                <li class="sub">Notifications</li>
+                <li class="sub">Integrations (Slack, API keys)</li>
+                <li class="sub">AI Preferences</li>
+                <li class="sub">Layout (Option A/B toggle)</li>
+                <li class="sub">Billing</li>
+            </ul>
+        </div>
+
+        <!-- Settings Form -->
+        <div class="panel" style="grid-column:4; grid-row:2">
+            <span class="panel-label">Settings Form</span>
+            <span class="panel-dims">fills remaining</span>
+            <ul class="data-list">
+                <li class="heading">Form fields per section:</li>
+                <li class="sub">Label + input / toggle / dropdown</li>
+                <li class="sub">Section heading + description</li>
+                <li class="sub">Save button (primary)</li>
+                <li class="sub">Cancel link</li>
+                <li class="heading">AI Preferences section:</li>
+                <li class="sub">Chat personality (Concise / Balanced / Detailed)</li>
+                <li class="sub">Auto-suggest toggle</li>
+                <li class="sub">Notification style for AI actions</li>
+                <li class="heading">Layout section:</li>
+                <li class="sub">Option A (overlay) / Option B (always on) toggle</li>
+                <li class="sub">Default view per project (Graph/List/Kanban)</li>
+                <li class="sub">Sidebar default (expanded/collapsed)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================
+     LAYOUT SUMMARY
+     ============================================ -->
+<div class="view-section">
+    <h2>Layout Summary — Option B</h2>
+    <div class="notes" style="max-width:1200px">
+        <strong>Fixed panels (always present):</strong><br>
+        — Sidebar: 56px (icon-only, always collapsed in Option B)<br>
+        — Chat Panel: 320px (always visible, contextual to current view/task)<br>
+        <br>
+        <strong>Variable panels:</strong><br>
+        — Top Bar: 44px height, spans remaining width<br>
+        — Hub Bar: 36px collapsed / ~220px expanded, only in Graph + Active Task views<br>
+        — Detail Panel: 360px, present in Graph + Active Task views. Overlay in List view. Absent in Workspace/Gallery/Settings<br>
+        <br>
+        <strong>Content area widths (of 1200px total):</strong><br>
+        — With detail panel: 1200 − 56 − 320 − 360 = <strong>464px canvas</strong><br>
+        — Without detail panel: 1200 − 56 − 320 = <strong>824px content</strong><br>
+        — Detail panel closed in graph: 1200 − 56 − 320 = <strong>824px canvas</strong><br>
+        <br>
+        <strong>Chat context per view:</strong><br>
+        — Workspace: general ("What needs attention?")<br>
+        — Gallery: project-level ("Create from template")<br>
+        — Graph: workflow-level ("Show blocked tasks")<br>
+        — Active Task: task-level ("Summarise stress test results")<br>
+        — Settings: config-level ("Change notification preferences")<br>
+    </div>
+</div>
+
+</body>
+</html>
