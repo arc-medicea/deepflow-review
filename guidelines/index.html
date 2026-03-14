@@ -6202,67 +6202,106 @@
                 <div class="component-demo-label">Demo Dialogs</div>
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6);">
 
-                    <!-- Confirmation Dialog -->
-                    <div style="background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-lg); padding: var(--space-6); box-shadow: var(--shadow-lg);">
-                        <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);">
-                            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--status-error-bg); border: 1.5px solid var(--status-error-border); display: flex; align-items: center; justify-content: center;">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--status-error)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+                    <!-- Destructive Confirmation Dialog -->
+                    <div style="background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-xl); overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);">
+                        <!-- Red accent stripe -->
+                        <div style="height: 3px; background: linear-gradient(90deg, var(--status-error), #FF6B6B);"></div>
+                        <div style="padding: var(--space-6);">
+                            <div style="display: flex; align-items: flex-start; gap: var(--space-4); margin-bottom: var(--space-5);">
+                                <div style="width: 40px; height: 40px; border-radius: var(--radius-lg); background: linear-gradient(135deg, rgba(220,38,38,0.12), rgba(220,38,38,0.04)); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--status-error)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                </div>
+                                <div>
+                                    <div style="font-size: var(--text-lg); font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em;">Delete workflow?</div>
+                                    <div style="font-size: var(--text-xs); color: var(--text-tertiary); margin-top: 2px;">This action cannot be undone</div>
+                                </div>
                             </div>
-                            <div>
-                                <div style="font-size: var(--text-md); font-weight: 600; color: var(--text-primary);">Delete workflow?</div>
-                                <div style="font-size: var(--text-xs); color: var(--text-tertiary);">This action cannot be undone.</div>
+                            <div style="background: rgba(220,38,38,0.04); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); margin-bottom: var(--space-6); font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.6;">
+                                <strong style="color: var(--text-primary);">ICAAP 2026</strong> and all <strong style="color: var(--status-error);">24 tasks</strong> will be permanently deleted. Team members will lose access immediately.
                             </div>
-                        </div>
-                        <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-6); line-height: 1.6;">
-                            "ICAAP 2026" and all 24 tasks will be permanently deleted. Team members will lose access immediately.
-                        </p>
-                        <div style="display: flex; justify-content: flex-end; gap: var(--space-3);">
-                            <button class="df-btn df-btn-ghost df-btn-sm">Cancel</button>
-                            <button class="df-btn df-btn-destructive df-btn-sm">Delete Workflow</button>
+                            <div style="display: flex; justify-content: flex-end; gap: var(--space-3);">
+                                <button class="df-btn df-btn-ghost df-btn-sm" style="border-radius: var(--radius-md);">Cancel</button>
+                                <button class="df-btn df-btn-destructive df-btn-sm" style="border-radius: var(--radius-md); font-weight: 600;">Delete Workflow</button>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Edit Panel -->
-                    <div style="background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-lg); padding: var(--space-6); box-shadow: var(--shadow-lg); display: flex; flex-direction: column;">
-                        <div style="font-size: var(--text-md); font-weight: 600; color: var(--text-primary); margin-bottom: var(--space-4); padding-bottom: var(--space-3); border-bottom: 1px solid var(--surface-card-border);">Edit Task</div>
-                        <div class="df-form-group">
-                            <label class="df-label" style="font-size: var(--text-xs);">Task Name</label>
-                            <input type="text" class="df-input" value="Run Capital Model" style="font-size: var(--text-xs); padding: 6px 10px;">
-                        </div>
-                        <div class="df-form-group">
-                            <label class="df-label" style="font-size: var(--text-xs);">Assignee</label>
-                            <select class="df-select" style="font-size: var(--text-xs); padding: 6px 10px;">
-                                <option>Sarah Chen</option>
-                            </select>
-                        </div>
-                        <div style="flex: 1;"></div>
-                        <div style="display: flex; justify-content: flex-end; gap: var(--space-3); padding-top: var(--space-4); border-top: 1px solid var(--surface-card-border);">
-                            <button class="df-btn df-btn-ghost df-btn-sm">Cancel</button>
-                            <button class="df-btn df-btn-secondary df-btn-sm">Save Changes</button>
+                    <!-- Flow Dialog (AI) -->
+                    <div style="background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-xl); overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);">
+                        <!-- Brand gradient stripe -->
+                        <div style="height: 3px; background: var(--brand-gradient);"></div>
+                        <div style="padding: var(--space-6);">
+                            <div style="display: flex; align-items: flex-start; gap: var(--space-4); margin-bottom: var(--space-5);">
+                                <div style="width: 40px; height: 40px; border-radius: var(--radius-lg); background: linear-gradient(135deg, rgba(0,153,255,0.12), rgba(34,68,255,0.06)); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-solid)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v4"></path><path d="M12 19v4"></path><path d="M4.22 4.22l2.83 2.83"></path><path d="M16.95 16.95l2.83 2.83"></path><path d="M1 12h4"></path><path d="M19 12h4"></path><path d="M4.22 19.78l2.83-2.83"></path><path d="M16.95 7.05l2.83-2.83"></path></svg>
+                                </div>
+                                <div>
+                                    <div style="font-size: var(--text-lg); font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em;">Flow this task</div>
+                                    <div style="font-size: var(--text-xs); color: var(--text-tertiary); margin-top: 2px;">Convert to parent with sub-workflow</div>
+                                </div>
+                            </div>
+                            <div style="font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.6; margin-bottom: var(--space-5);">
+                                Break <strong style="color: var(--text-primary);">"Run Capital Model"</strong> into child tasks. Choose how:
+                            </div>
+                            <!-- Options -->
+                            <div style="display: flex; flex-direction: column; gap: var(--space-3); margin-bottom: var(--space-6);">
+                                <label style="display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); border: 1.5px solid var(--brand-solid); background: rgba(0,119,221,0.04); cursor: pointer;">
+                                    <input type="radio" name="flow-type" checked style="accent-color: var(--brand-solid); margin-top: 3px;">
+                                    <div>
+                                        <div style="font-size: var(--text-sm); font-weight: 600; color: var(--text-primary);">✨ AI-generated sub-flow</div>
+                                        <div style="font-size: var(--text-xs); color: var(--text-tertiary);">AI reads the description and suggests steps</div>
+                                    </div>
+                                </label>
+                                <label style="display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); border: 1.5px solid var(--surface-card-border); cursor: pointer;">
+                                    <input type="radio" name="flow-type" style="accent-color: var(--brand-solid); margin-top: 3px;">
+                                    <div>
+                                        <div style="font-size: var(--text-sm); font-weight: 600; color: var(--text-primary);">Blank sub-flow</div>
+                                        <div style="font-size: var(--text-xs); color: var(--text-tertiary);">Start with an empty parent, add tasks manually</div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div style="display: flex; justify-content: flex-end; gap: var(--space-3);">
+                                <button class="df-btn df-btn-ghost df-btn-sm" style="border-radius: var(--radius-md);">Cancel</button>
+                                <button class="df-btn df-btn-sm" style="border-radius: var(--radius-md); background: var(--brand-gradient); color: white; border: none; font-weight: 600;">Flow Task →</button>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Approval Gate -->
-                    <div style="background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-lg); padding: var(--space-6); box-shadow: var(--shadow-lg);">
-                        <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);">
-                            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--status-warning-bg); border: 1.5px solid var(--status-warning-border); display: flex; align-items: center; justify-content: center;">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--status-warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    <div style="background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-xl); overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);">
+                        <!-- Amber accent stripe -->
+                        <div style="height: 3px; background: linear-gradient(90deg, #F59E0B, #FBBF24);"></div>
+                        <div style="padding: var(--space-6);">
+                            <div style="display: flex; align-items: flex-start; gap: var(--space-4); margin-bottom: var(--space-5);">
+                                <div style="width: 40px; height: 40px; border-radius: var(--radius-lg); background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(245,158,11,0.04)); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                                </div>
+                                <div>
+                                    <div style="font-size: var(--text-lg); font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em;">Approve task?</div>
+                                    <div style="font-size: var(--text-xs); color: var(--text-tertiary); margin-top: 2px;">Approval gate · Requires sign-off</div>
+                                </div>
                             </div>
-                            <div>
-                                <div style="font-size: var(--text-md); font-weight: 600; color: var(--text-primary);">Approve task?</div>
-                                <div style="font-size: var(--text-xs); color: var(--text-tertiary);">Approval gate · Requires sign-off</div>
+                            <!-- Agent context card -->
+                            <div style="display: flex; align-items: center; gap: var(--space-3); background: var(--surface-raised); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); margin-bottom: var(--space-5);">
+                                <div style="width: 28px; height: 28px; clip-path: polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%); background: var(--brand-gradient); display: flex; align-items: center; justify-content: center;">
+                                    <span style="font-size: 9px; font-weight: 700; color: #fff;">DF</span>
+                                </div>
+                                <div>
+                                    <div style="font-size: var(--text-sm); font-weight: 500; color: var(--text-primary);">Capital Model Output</div>
+                                    <div style="font-size: var(--text-xs); color: var(--text-tertiary);">Completed by <strong style="color: var(--text-secondary);">DF Agent</strong> · 2h ago</div>
+                                </div>
                             </div>
-                        </div>
-                        <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-4); line-height: 1.6;">
-                            "Capital Model Output" has been completed by DF Agent and requires your sign-off before dependent tasks can proceed.
-                        </p>
-                        <div class="df-form-group" style="margin-bottom: var(--space-4);">
-                            <label class="df-label" style="font-size: var(--text-xs);">Comment <span class="df-label-optional">(optional)</span></label>
-                            <textarea class="df-textarea" placeholder="Add review notes…" style="font-size: var(--text-xs); min-height: 48px; padding: 6px 10px;"></textarea>
-                        </div>
-                        <div style="display: flex; justify-content: flex-end; gap: var(--space-3);">
-                            <button class="df-btn df-btn-ghost df-btn-sm">Reject</button>
-                            <button class="df-btn df-btn-sm" style="background: var(--status-success); color: white; border: none;">Approve</button>
+                            <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-4); line-height: 1.6;">
+                                Agent work requires your sign-off before downstream tasks can proceed.
+                            </p>
+                            <div class="df-form-group" style="margin-bottom: var(--space-5);">
+                                <label class="df-label">Comment <span class="df-label-optional">(optional)</span></label>
+                                <textarea class="df-textarea" placeholder="Add review notes…" style="font-size: var(--text-xs); min-height: 48px;"></textarea>
+                            </div>
+                            <div style="display: flex; justify-content: flex-end; gap: var(--space-3);">
+                                <button class="df-btn df-btn-ghost df-btn-sm" style="border-radius: var(--radius-md); color: var(--status-error);">✕ Reject</button>
+                                <button class="df-btn df-btn-sm" style="border-radius: var(--radius-md); background: linear-gradient(135deg, #059669, #10B981); color: white; border: none; font-weight: 600;">✓ Approve</button>
+                            </div>
                         </div>
                     </div>
                 </div>
