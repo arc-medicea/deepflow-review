@@ -2531,11 +2531,11 @@
             font-size: var(--text-base);
             color: var(--text-primary);
             background: transparent;
-            border: 1px solid transparent;
-            border-radius: var(--radius-md);
-            padding: var(--space-2) var(--space-3);
+            border: none;
+            border-bottom: 1.5px solid transparent;
+            border-radius: 0;
+            padding: var(--space-2) 2px;
             transition: border-color var(--duration-fast) var(--ease-default),
-                        box-shadow var(--duration-fast) var(--ease-default),
                         background var(--duration-fast) var(--ease-default);
             outline: none;
         }
@@ -2543,8 +2543,7 @@
         .df-input:hover,
         .df-textarea:hover,
         .df-select:hover {
-            border-color: var(--surface-card-border);
-            background: var(--surface-raised);
+            border-bottom-color: var(--surface-card-border);
         }
 
         .df-input::placeholder,
@@ -2556,23 +2555,20 @@
         .df-input:focus,
         .df-textarea:focus,
         .df-select:focus {
-            border-color: var(--brand-solid);
-            background: var(--surface-card);
-            box-shadow: 0 0 0 2px rgba(0, 119, 221, 0.1);
+            border-bottom-color: var(--brand-solid);
+            background: rgba(0, 119, 221, 0.03);
         }
 
         [data-theme="dark"] .df-input:focus,
         [data-theme="dark"] .df-textarea:focus,
         [data-theme="dark"] .df-select:focus {
-            box-shadow: 0 0 0 2px rgba(0, 153, 255, 0.12);
+            background: rgba(0, 153, 255, 0.05);
         }
 
         .df-input.df-input-error,
         .df-textarea.df-input-error,
         .df-select.df-input-error {
-            border-color: var(--status-error);
-            background: var(--surface-card);
-            box-shadow: 0 0 0 2px var(--status-error-bg);
+            border-bottom-color: var(--status-error);
         }
 
         .df-input:disabled,
@@ -2596,30 +2592,44 @@
         .df-textarea {
             min-height: 80px;
             resize: vertical;
+            border: none;
+            border-left: 2px solid transparent;
+            border-bottom: none;
+            border-radius: 0;
+            padding: var(--space-2) var(--space-3);
+        }
+
+        .df-textarea:hover {
+            border-left-color: var(--surface-card-border);
+            border-bottom-color: transparent;
+        }
+
+        .df-textarea:focus {
+            border-left-color: var(--brand-solid);
+            border-bottom-color: transparent;
+            background: rgba(0, 119, 221, 0.03);
+        }
+
+        .df-textarea.df-input-error {
+            border-left-color: var(--status-error);
+            border-bottom-color: transparent;
         }
 
         .df-select {
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 12px center;
+            background-position: right 4px center;
             background-color: transparent;
-            padding-right: 36px;
-        }
-
-        .df-select:hover {
-            background-color: var(--surface-raised);
-        }
-
-        .df-select:focus {
-            background-color: var(--surface-card);
+            padding-right: 24px;
+            cursor: pointer;
         }
 
         .df-input-search {
-            padding-left: 36px;
+            padding-left: 24px;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: 12px center;
+            background-position: 2px center;
         }
 
         .df-form-demo {
@@ -5391,7 +5401,7 @@
                     </div>
                     <div class="df-form-group">
                         <label class="df-label">Focused</label>
-                        <input type="text" class="df-input" value="Capital Modelling" style="border-color: var(--brand-solid); background: var(--surface-card); box-shadow: 0 0 0 2px rgba(0,119,221,0.1);">
+                        <input type="text" class="df-input" value="Capital Modelling" style="border-bottom-color: var(--brand-solid); background: rgba(0,119,221,0.03);">
                     </div>
                     <div class="df-form-group">
                         <label class="df-label">Error</label>
