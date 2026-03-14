@@ -19,15 +19,17 @@ DeepFlow is an AI-powered workflow orchestration platform. Users create hierarch
 5. **Gallery** — Project browser with templates and project cards
 6. **Settings** — App configuration with section-based navigation
 
-### Fixed Layout (Option B)
-| Panel | Width | Behaviour |
-|-------|-------|-----------|
-| Sidebar | 56px | Always collapsed (icons only). Expands to 240px on hover/click in non-Option-B mode |
-| Chat Panel | 320px | Always visible. Context updates per view/task |
-| Top Bar | 44px h | Breadcrumbs + view switcher + search + filters |
-| Hub Bar | 36px / ~220px | Collapsible. Graph + Active Task views only |
-| Detail Panel | 360px | Graph + Active Task views. Overlay in List. Absent in Workspace/Gallery/Settings |
-| Content Area | Remaining | 464px (with detail) / 824px (without detail) of 1200px |
+### Layout (Option B) — All panels resizable
+| Panel | Default | Range | Behaviour |
+|-------|---------|-------|-----------|
+| Sidebar | 56px | Fixed 56px (collapsed) / 240px (expanded) | Click to expand. Auto-expands in Settings only |
+| Chat Panel | 320px | 280–400px, drag handle | Always visible. Context updates per view/task. Double-click handle to collapse |
+| Top Bar | 44px h | Fixed height | Breadcrumbs + view switcher + search + filters |
+| Hub Bar | 36px / ~220px | Collapsible toggle | Graph + Workspace views only |
+| Detail Panel | 360px | 320–480px, drag handle | Graph + Workspace views. Overlay in List. Double-click handle to collapse |
+| Content Area | Flexible | min 320px | Fills remaining space. Adapts as panels resize |
+
+All panel sizes persist to IndexedDB via Zustand. Defaults shown above are starting values — users resize to preference.
 
 ---
 
