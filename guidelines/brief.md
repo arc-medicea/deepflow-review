@@ -1155,15 +1155,33 @@ packages/
 | **Task Detail** | Bottom sheet with all tabs: Description, Resources, Comments, Dependencies, History |
 | **Workspace (viewer)** | Markdown viewer (read-only or basic editing). Resource preview. Agent output log. No Tiptap — use a lighter RN markdown renderer |
 
+### Mobile Graph Canvas
+
+The graph IS the product — it must be on mobile. But the interaction model is different:
+
+**Mobile graph = read + navigate + quick-action. Editing via chat only.**
+
+| Works on mobile touch | Does NOT work on mobile touch |
+|----------------------|-------------------------------|
+| View graph (pan, pinch-to-zoom) | Draw edges (drag port to port) |
+| Tap node → detail bottom sheet | Rubber-band multi-select |
+| Tap parent → drill in | Node repositioning with precision |
+| See status, progress, assignees | Inline container expansion (screen too small) |
+| Quick actions: mark done, start, rerun | Fuse, reparent via drag |
+| Tap+hold → context menu | — |
+
+**Graph editing on mobile happens via chat/voice:** "Mark stress testing as done", "Add a validation step after data collection", "Assign report draft to Sarah." The graph updates in real-time via WebSocket. User sees the change without leaving the graph view.
+
+React Flow renders in a WebView wrapper on RN (not native canvas). Touch gestures (pan, pinch-zoom, tap) work naturally. Performance is acceptable for 50–500 nodes at the zoom levels mobile users need.
+
 ### What Mobile Excludes
 | Feature | Reason |
 |---------|--------|
-| **Graph canvas** | Too complex for mobile. React Flow doesn't render in RN. Users default to List View |
-| **Inline node expansion** | Graph-only feature |
+| **Graph editing (direct manipulation)** | Touch precision insufficient. All graph edits via chat/voice instead |
+| **Inline node expansion** | Screen too small for containers-in-containers. Drill-down is the mobile pattern |
 | **Panel resizing** | Single-panel views on mobile. No side-by-side panels |
 | **Tiptap editor** | Too heavy for RN. Use a simpler markdown editor (e.g. `react-native-markdown-editor`) for basic edits |
 | **Google Docs iframe** | No iframe in RN. Deep-link to Google Docs app instead |
-| **Drag-drop reparenting** | Complex gesture handling. Defer to Phase 2 mobile. Use "Move to…" action menu instead |
 
 ### Push Notifications
 
@@ -1176,13 +1194,61 @@ packages/
 | **Notification types** | Same as web: task assigned, agent completed, approval needed, comment mention, workflow status change |
 | **User preferences** | Shared settings matrix — user configures which notification types go to which channels (in-app, email, Slack, push). Stored server-side, fetched by both web and mobile |
 
+### Voice Interface (Mobile)
+
+Voice is a **first-class input method** on mobile. A persistent voice button is available on every screen — graph, list, task detail, dashboard. The user never needs to switch to the chat view to interact with AI.
+
+**Architecture:**
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│  On-device   │────▶│  Chat API    │────▶│  On-device   │
+│  STT (local) │     │  (backend)   │     │  TTS (local) │
+│              │     │              │     │              │
+│ iOS Dictation│     │ Same endpoint│     │ iOS AVSpeech │
+│ Android SFT  │     │ as text chat │     │ Android TTS  │
+└──────────────┘     └──────────────┘     └──────────────┘
+```
+
+| Component | Implementation | Notes |
+|-----------|---------------|-------|
+| **STT (Speech-to-Text)** | On-device: iOS `SFSpeechRecognizer`, Android `SpeechRecognizer` via `expo-speech` or `@react-native-voice/voice` | Near-zero latency. No server round-trip for transcription. Streaming transcription (words appear as spoken) |
+| **TTS (Text-to-Speech)** | On-device: iOS `AVSpeechSynthesizer`, Android `TextToSpeech` via `expo-speech` | Fast, no network dependency. Default system voice. Upgradeable to server-side provider (ElevenLabs etc.) later |
+| **Voice button** | Floating action button (FAB), always visible in bottom-right on every screen. Microphone icon. Hold to talk or tap to toggle | Standard mobile pattern. Animated ring while listening |
+| **Chat integration** | Voice input → transcribed to text → sent as a chat message (same API endpoint). AI response → displayed in chat AND spoken via TTS | Chat view shows full text transcript. No separate "voice history" |
+
+**Key UX: voice updates the current view without switching to chat.**
+
+```
+User is on Graph View
+  → Holds voice button: "Mark stress testing as done and assign report draft to Sarah"
+  → STT transcribes in real-time (toast shows words appearing)
+  → Sends to chat API as text message
+  → AI processes, returns response + executes actions
+  → Graph nodes update via WebSocket (status changes, reassignment visible immediately)
+  → TTS plays: "Done. Stress testing is marked complete and report draft is assigned to Sarah."
+  → User never left the graph view
+```
+
+**Voice button behaviour per screen:**
+| Screen | Voice context |
+|--------|--------------|
+| Graph View | "Chatting about: [Project] workflow" — can reference visible nodes |
+| List View | Same as graph — project-scoped |
+| Task Detail | "Chatting about: [Task Name]" — task-scoped questions and actions |
+| Dashboard | General — "What needs my attention?", "Open ICAAP project" |
+| Notifications | "Mark all as read", "Open the blocked task" |
+
+**Accessibility:** Voice is also an accessibility feature — users who struggle with small touch targets can operate the entire app by voice. Combine with TTS for a fully audio-driven experience.
+
+**Future upgrade path:** Replace on-device STT/TTS with server-side providers for higher quality. Architecture stays the same — just swap the transcription and synthesis layers. The chat API endpoint doesn't change.
+
 ### Mobile-Specific Features
 | Feature | Details |
 |---------|---------|
 | **Biometric auth** | Face ID / fingerprint → unlocks Keycloak session. `expo-local-authentication`. Token stored in secure keychain |
 | **Deep links** | `deepflow://projects/:id/task/:taskId` → opens directly in mobile app. Universal links for iOS, App Links for Android |
 | **Offline read cache** (Phase 2) | Cache last-viewed project tree in local storage. View tasks offline. Queue edits (status changes, comments) for sync when back online |
-| **Haptic feedback** | Light haptics on task completion (✓), status changes, pull-to-refresh |
+| **Haptic feedback** | Light haptics on task completion (✓), status changes, pull-to-refresh. Subtle vibration on voice button activation |
 | **Pull to refresh** | Standard iOS/Android pattern on all list views |
 
 ### Shared Code Reuse Estimate
