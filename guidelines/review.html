@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepFlow — Design Review</title>
+
+    <!-- Euclid Circular B — Self-hosted -->
+    <style>
+        @font-face {
+            font-family: 'Euclid Circular B';
+            src: url('fonts/EuclidCircularB-Light.ttf') format('truetype');
+            font-weight: 300;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Euclid Circular B';
+            src: url('fonts/EuclidCircularB-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Euclid Circular B';
+            src: url('fonts/EuclidCircularB-Medium.ttf') format('truetype');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Euclid Circular B';
+            src: url('fonts/EuclidCircularB-SemiBold.ttf') format('truetype');
+            font-weight: 600;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Euclid Circular B';
+            src: url('fonts/EuclidCircularB-Bold.ttf') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+    </style>
+
+    <style>
+        :root {
+            --brand-cyan: #00D4F5;
+            --brand-blue: #2244FF;
+            --brand-mid: #0099FF;
+            --brand-gradient: linear-gradient(135deg, #00E5FF 0%, #0099FF 45%, #2244FF 100%);
+            --brand-gradient-horizontal: linear-gradient(90deg, #00E5FF 0%, #0099FF 45%, #2244FF 100%);
+            --brand-gradient-vertical: linear-gradient(180deg, #00E5FF 0%, #0099FF 45%, #2244FF 100%);
+            --brand-solid: #0077DD;
+            --brand-solid-hover: #0066CC;
+
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-tertiary: #6B7280;
+            --text-inverse: #FFFFFF;
+
+            --surface-page: #FFFFFF;
+            --surface-raised: #F8F9FB;
+            --surface-overlay: #FFFFFF;
+            --surface-nav: rgba(255, 255, 255, 0.9);
+            --surface-card: #FFFFFF;
+            --surface-card-border: #E4E7ED;
+            --surface-hover: #F1F3F6;
+
+            --status-success: #059669;
+            --status-success-bg: rgba(5, 150, 105, 0.08);
+            --status-success-border: rgba(5, 150, 105, 0.2);
+            --status-warning: #D97706;
+            --status-warning-bg: rgba(217, 119, 6, 0.08);
+            --status-warning-border: rgba(217, 119, 6, 0.2);
+            --status-error: #DC2626;
+            --status-error-bg: rgba(220, 38, 38, 0.08);
+            --status-error-border: rgba(220, 38, 38, 0.2);
+            --status-info: #2563EB;
+            --status-info-bg: rgba(37, 99, 235, 0.08);
+            --status-info-border: rgba(37, 99, 235, 0.2);
+
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+
+            --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+            --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
+            --space-12: 48px; --space-16: 64px; --space-20: 80px; --space-24: 96px;
+
+            --text-xs: 0.75rem; --text-sm: 0.8125rem; --text-base: 0.875rem;
+            --text-md: 1rem; --text-lg: 1.125rem; --text-xl: 1.25rem;
+            --text-2xl: 1.5rem; --text-3xl: 1.875rem; --text-4xl: 2.25rem;
+
+            --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
+            --radius-xl: 16px; --radius-full: 9999px;
+
+            --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+            --duration-fast: 150ms; --duration-normal: 250ms;
+        }
+
+        [data-theme="dark"] {
+            --brand-solid: #0099FF;
+            --brand-solid-hover: #00AAFF;
+            --text-primary: #E8E8EF;
+            --text-secondary: #ABABBD;
+            --text-tertiary: #8585A0;
+            --text-inverse: #0A0A0F;
+            --surface-page: #0A0A0F;
+            --surface-raised: #111118;
+            --surface-overlay: #1C1C27;
+            --surface-nav: rgba(10, 10, 15, 0.85);
+            --surface-card: #111118;
+            --surface-card-border: #1C1C27;
+            --surface-hover: #16161F;
+            --status-success: #34D399;
+            --status-success-bg: rgba(52, 211, 153, 0.12);
+            --status-success-border: rgba(52, 211, 153, 0.3);
+            --status-warning: #FBBF24;
+            --status-warning-bg: rgba(251, 191, 36, 0.12);
+            --status-warning-border: rgba(251, 191, 36, 0.3);
+            --status-error: #F87171;
+            --status-error-bg: rgba(248, 113, 113, 0.12);
+            --status-error-border: rgba(248, 113, 113, 0.3);
+            --status-info: #60A5FA;
+            --status-info-bg: rgba(96, 165, 250, 0.12);
+            --status-info-border: rgba(96, 165, 250, 0.3);
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.25);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex; align-items: center; gap: var(--space-2);
+            background: var(--surface-raised); border: 1px solid var(--surface-card-border);
+            border-radius: var(--radius-full); padding: 3px; cursor: pointer;
+        }
+        .theme-toggle-option {
+            padding: var(--space-1) var(--space-3); border-radius: var(--radius-full);
+            font-size: var(--text-xs); font-weight: 500; color: var(--text-tertiary);
+            transition: all var(--duration-fast) var(--ease-default);
+            cursor: pointer; border: none; background: none; font-family: inherit;
+        }
+        .theme-toggle-option.active { background: var(--brand-solid); color: white; }
+
+        /* Base */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Euclid Circular B', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+            background: var(--surface-page); color: var(--text-secondary);
+            font-size: var(--text-base); line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            transition: background var(--duration-normal) var(--ease-default),
+                        color var(--duration-normal) var(--ease-default);
+        }
+        ::selection { background: rgba(0, 119, 221, 0.2); color: var(--text-primary); }
+        [data-theme="dark"] ::selection { background: rgba(0, 153, 255, 0.3); }
+
+        /* Nav */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: var(--surface-nav); backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--surface-card-border);
+            transition: background var(--duration-normal) var(--ease-default);
+        }
+        .nav-inner {
+            max-width: 1200px; margin: 0 auto; padding: 0 var(--space-8);
+            display: flex; align-items: center; justify-content: space-between; height: 64px;
+        }
+        .nav-brand {
+            display: flex; align-items: center; gap: var(--space-3);
+            text-decoration: none; color: var(--text-primary);
+        }
+        .nav-brand img { height: 28px; width: auto; }
+        .nav-divider { width: 1px; height: 24px; background: var(--surface-card-border); }
+        .nav-subtitle { font-size: var(--text-sm); font-weight: 500; color: var(--text-tertiary); }
+        .nav-links { display: flex; gap: var(--space-1); list-style: none; }
+        .nav-links a {
+            display: block; padding: var(--space-2) var(--space-3);
+            color: var(--text-tertiary); text-decoration: none;
+            font-size: var(--text-sm); font-weight: 500; border-radius: var(--radius-md);
+            transition: color var(--duration-fast), background var(--duration-fast);
+        }
+        .nav-links a:hover { color: var(--text-primary); background: var(--surface-hover); }
+        .nav-links a.active { color: var(--brand-solid); font-weight: 600; }
+        @media (max-width: 900px) { .nav-links { display: none; } }
+
+        .nav-brand img { filter: brightness(0); }
+        [data-theme="dark"] .nav-brand img { filter: brightness(1); }
+
+        /* Layout */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-8); }
+
+        /* Hero */
+        .hero {
+            padding: 140px var(--space-8) var(--space-16); text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -100px; left: 50%;
+            transform: translateX(-50%); width: 1000px; height: 700px;
+            background: radial-gradient(ellipse, rgba(0,119,221,0.05) 0%, rgba(34,68,255,0.02) 40%, transparent 70%);
+            pointer-events: none;
+        }
+        [data-theme="dark"] .hero::before {
+            background: radial-gradient(ellipse, rgba(0,153,255,0.07) 0%, rgba(34,68,255,0.03) 40%, transparent 70%);
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: var(--space-2);
+            padding: var(--space-2) var(--space-4);
+            background: var(--surface-raised); border: 1px solid var(--surface-card-border);
+            border-radius: var(--radius-full); font-size: var(--text-sm);
+            color: var(--text-tertiary); margin-bottom: var(--space-8);
+        }
+        .hero-badge-dot {
+            width: 6px; height: 6px; background: var(--status-warning);
+            border-radius: 50%; animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .hero h1 {
+            font-size: var(--text-4xl); font-weight: 700; color: var(--text-primary);
+            letter-spacing: -0.03em; line-height: 1.1; margin-bottom: var(--space-6);
+        }
+        .hero h1 .gradient-text {
+            background: var(--brand-gradient); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero-sub {
+            font-size: var(--text-lg); color: var(--text-tertiary);
+            max-width: 700px; margin: 0 auto; line-height: 1.7;
+        }
+
+        /* Sections */
+        .section { padding: var(--space-24) 0; border-top: 1px solid var(--surface-card-border); }
+        .section-header { margin-bottom: var(--space-12); }
+        .section-number {
+            font-size: var(--text-sm); font-weight: 600;
+            background: var(--brand-gradient); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
+            text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: var(--space-3);
+        }
+        .section-title {
+            font-size: var(--text-3xl); font-weight: 700; color: var(--text-primary);
+            letter-spacing: -0.02em; margin-bottom: var(--space-4);
+        }
+        .section-desc {
+            font-size: var(--text-md); color: var(--text-tertiary);
+            max-width: 700px; line-height: 1.7;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--surface-card); border: 1px solid var(--surface-card-border);
+            border-radius: var(--radius-lg); padding: var(--space-8);
+            transition: border-color var(--duration-normal), background var(--duration-normal);
+        }
+        .card:hover { border-color: #D0D4DC; }
+        [data-theme="dark"] .card:hover { border-color: #2A2A3A; }
+        .card-title {
+            font-size: var(--text-lg); font-weight: 600; color: var(--text-primary);
+            margin-bottom: var(--space-3);
+        }
+        .card-text { color: var(--text-secondary); line-height: 1.7; }
+
+        /* Executive Summary */
+        .exec-summary {
+            background: linear-gradient(135deg, rgba(0,229,255,0.04) 0%, rgba(34,68,255,0.04) 100%);
+            border: 1px solid rgba(0,153,255,0.15); border-radius: var(--radius-xl);
+            padding: var(--space-10); margin-bottom: var(--space-12);
+        }
+        [data-theme="dark"] .exec-summary {
+            background: linear-gradient(135deg, rgba(0,229,255,0.06) 0%, rgba(34,68,255,0.06) 100%);
+            border-color: rgba(0,153,255,0.2);
+        }
+        .exec-summary h2 {
+            font-size: var(--text-2xl); font-weight: 700; color: var(--text-primary);
+            margin-bottom: var(--space-6);
+        }
+        .exec-summary p { color: var(--text-secondary); line-height: 1.8; margin-bottom: var(--space-4); }
+        .exec-summary p:last-child { margin-bottom: 0; }
+
+        /* Screen Section */
+        .screen-section { margin-bottom: var(--space-20); }
+        .screen-header {
+            display: flex; align-items: center; gap: var(--space-4);
+            margin-bottom: var(--space-8); padding-bottom: var(--space-4);
+            border-bottom: 2px solid transparent;
+            border-image: var(--brand-gradient-horizontal) 1;
+        }
+        .screen-number {
+            font-size: var(--text-3xl); font-weight: 700;
+            background: var(--brand-gradient); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
+            line-height: 1;
+        }
+        .screen-title { font-size: var(--text-2xl); font-weight: 700; color: var(--text-primary); }
+
+        /* Subsections */
+        .subsection { margin-bottom: var(--space-10); }
+        .subsection-title {
+            font-size: var(--text-lg); font-weight: 600; color: var(--text-primary);
+            margin-bottom: var(--space-4); display: flex; align-items: center; gap: var(--space-2);
+        }
+        .subsection-icon { font-size: var(--text-xl); }
+
+        /* Review panels */
+        .review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); margin-bottom: var(--space-6); }
+        @media (max-width: 768px) { .review-grid { grid-template-columns: 1fr; } }
+
+        .review-panel {
+            border-radius: var(--radius-lg); padding: var(--space-6);
+            border: 1px solid var(--surface-card-border);
+        }
+        .review-panel.works {
+            background: var(--status-success-bg); border-color: var(--status-success-border);
+        }
+        .review-panel.generic {
+            background: var(--status-warning-bg); border-color: var(--status-warning-border);
+        }
+        .review-panel.lost {
+            background: var(--status-error-bg); border-color: var(--status-error-border);
+        }
+        .review-panel.distinctive {
+            background: var(--status-info-bg); border-color: var(--status-info-border);
+        }
+        .review-panel-title {
+            font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space-3);
+            text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .review-panel.works .review-panel-title { color: var(--status-success); }
+        .review-panel.generic .review-panel-title { color: var(--status-warning); }
+        .review-panel.lost .review-panel-title { color: var(--status-error); }
+        .review-panel.distinctive .review-panel-title { color: var(--status-info); }
+
+        .review-panel ul {
+            list-style: none; padding: 0; margin: 0;
+        }
+        .review-panel li {
+            padding: var(--space-2) 0; border-bottom: 1px solid rgba(0,0,0,0.05);
+            font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.6;
+        }
+        [data-theme="dark"] .review-panel li { border-bottom-color: rgba(255,255,255,0.05); }
+        .review-panel li:last-child { border-bottom: none; }
+        .review-panel li::before { margin-right: var(--space-2); }
+        .review-panel.works li::before { content: '✓'; color: var(--status-success); font-weight: 700; }
+        .review-panel.generic li::before { content: '⚠'; }
+        .review-panel.lost li::before { content: '✗'; color: var(--status-error); font-weight: 700; }
+        .review-panel.distinctive li::before { content: '◆'; color: var(--status-info); }
+
+        /* Recommendations */
+        .recommendations {
+            background: var(--surface-card); border: 1px solid var(--surface-card-border);
+            border-left: 3px solid; border-image: var(--brand-gradient-vertical) 1;
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+            padding: var(--space-6); margin-bottom: var(--space-6);
+        }
+        .recommendations h4 {
+            font-size: var(--text-md); font-weight: 600; color: var(--text-primary);
+            margin-bottom: var(--space-4);
+        }
+        .rec-item {
+            padding: var(--space-3) 0;
+            border-bottom: 1px solid var(--surface-card-border);
+            display: grid; grid-template-columns: 28px 1fr; gap: var(--space-3);
+            align-items: start;
+        }
+        .rec-item:last-child { border-bottom: none; }
+        .rec-number {
+            width: 24px; height: 24px; border-radius: 50%;
+            background: var(--brand-gradient); color: white;
+            font-size: 11px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .rec-text { font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.7; }
+        .rec-text strong { color: var(--text-primary); }
+
+        /* Screenshot reference */
+        .screenshot-ref {
+            margin: var(--space-6) 0; border-radius: var(--radius-lg);
+            overflow: hidden; border: 1px solid var(--surface-card-border);
+            background: var(--surface-raised);
+        }
+        .screenshot-ref img {
+            width: 100%; height: auto; display: block;
+        }
+        .screenshot-ref-caption {
+            padding: var(--space-3) var(--space-4);
+            font-size: var(--text-xs); color: var(--text-tertiary);
+            font-weight: 500; text-align: center;
+        }
+        .screenshot-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);
+            margin: var(--space-6) 0;
+        }
+        @media (max-width: 768px) { .screenshot-grid { grid-template-columns: 1fr; } }
+
+        /* Competition callout */
+        .competition-callout {
+            background: var(--surface-raised); border: 1px solid var(--surface-card-border);
+            border-radius: var(--radius-lg); padding: var(--space-6);
+            margin: var(--space-6) 0;
+        }
+        .competition-callout-q {
+            font-size: var(--text-md); font-weight: 600; color: var(--text-primary);
+            font-style: italic; margin-bottom: var(--space-3);
+        }
+        .competition-callout p {
+            font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.7;
+        }
+
+        /* Priority table */
+        .priority-table { width: 100%; border-collapse: collapse; margin: var(--space-6) 0; }
+        .priority-table th {
+            text-align: left; padding: var(--space-3) var(--space-4);
+            font-size: var(--text-xs); font-weight: 600; color: var(--text-tertiary);
+            text-transform: uppercase; letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--surface-card-border);
+            background: var(--surface-raised);
+        }
+        .priority-table td {
+            padding: var(--space-3) var(--space-4); font-size: var(--text-sm);
+            color: var(--text-secondary); border-bottom: 1px solid var(--surface-card-border);
+            vertical-align: top;
+        }
+        .priority-table tr:last-child td { border-bottom: none; }
+        .priority-table td:first-child {
+            font-weight: 700; color: var(--text-tertiary); text-align: center;
+            font-family: 'SF Mono', 'Fira Code', monospace; font-size: var(--text-xs);
+        }
+        .priority-table td strong { color: var(--text-primary); }
+
+        .impact-critical { color: var(--status-error); font-weight: 600; font-size: var(--text-xs); }
+        .impact-high { color: var(--status-warning); font-weight: 600; font-size: var(--text-xs); }
+        .impact-medium { color: var(--status-success); font-weight: 600; font-size: var(--text-xs); }
+
+        /* Checklist */
+        .checklist {
+            background: var(--surface-card); border: 1px solid var(--surface-card-border);
+            border-radius: var(--radius-lg); overflow: hidden;
+        }
+        .checklist-header {
+            padding: var(--space-4) var(--space-6);
+            background: var(--surface-raised);
+            border-bottom: 1px solid var(--surface-card-border);
+            font-size: var(--text-md); font-weight: 600; color: var(--text-primary);
+        }
+        .checklist-item {
+            display: flex; align-items: center; gap: var(--space-3);
+            padding: var(--space-3) var(--space-6);
+            border-bottom: 1px solid var(--surface-card-border);
+            font-size: var(--text-sm); color: var(--text-secondary);
+        }
+        .checklist-item:last-child { border-bottom: none; }
+        .checklist-box {
+            width: 18px; height: 18px; border: 2px solid var(--surface-card-border);
+            border-radius: var(--radius-sm); flex-shrink: 0;
+        }
+        .checklist-label { flex: 1; }
+        .checklist-note {
+            font-size: var(--text-xs); color: var(--text-tertiary); font-style: italic;
+        }
+
+        /* Brand statement */
+        .brand-statement {
+            font-size: var(--text-xl); font-weight: 600; color: var(--text-primary);
+            line-height: 1.5; border-left: 3px solid;
+            border-image: var(--brand-gradient-vertical) 1;
+            padding-left: var(--space-6); margin: var(--space-8) 0;
+            max-width: 800px;
+        }
+        .brand-statement em {
+            background: var(--brand-gradient); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
+            font-style: normal;
+        }
+
+        /* CSS code blocks */
+        .code-block {
+            background: #1E1E2E; color: #CDD6F4; border-radius: var(--radius-md);
+            padding: var(--space-4); overflow-x: auto; margin: var(--space-4) 0;
+            font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px;
+            line-height: 1.6; border: 1px solid #313244;
+        }
+        .code-block .comment { color: #6C7086; }
+        .code-block .prop { color: #89B4FA; }
+        .code-block .val { color: #A6E3A1; }
+        .code-block .sel { color: #F9E2AF; }
+
+        /* Footer */
+        .footer {
+            padding: var(--space-12) 0; border-top: 1px solid var(--surface-card-border);
+            text-align: center;
+        }
+        .footer p { font-size: var(--text-sm); color: var(--text-tertiary); }
+        .footer a { color: var(--brand-solid); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+
+        /* TOC */
+        .toc {
+            background: var(--surface-card); border: 1px solid var(--surface-card-border);
+            border-radius: var(--radius-lg); padding: var(--space-6); margin-bottom: var(--space-12);
+        }
+        .toc-title {
+            font-size: var(--text-xs); font-weight: 600; color: var(--text-tertiary);
+            text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--space-4);
+        }
+        .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+        @media (max-width: 768px) { .toc-grid { grid-template-columns: 1fr; } }
+        .toc a {
+            display: block; padding: 4px var(--space-2); color: var(--text-secondary);
+            text-decoration: none; font-size: var(--text-sm); font-weight: 500;
+            border-radius: var(--radius-sm);
+            transition: background var(--duration-fast), color var(--duration-fast);
+        }
+        .toc a:hover { background: var(--surface-hover); color: var(--text-primary); }
+
+        /* Utility */
+        code {
+            font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.9em;
+            background: var(--surface-raised); padding: 2px 6px;
+            border-radius: var(--radius-sm); color: var(--brand-solid);
+            border: 1px solid var(--surface-card-border);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-brand">
+                <img src="assets/iconmark-white.png" alt="DeepFlow">
+                <span class="nav-divider"></span>
+                <span class="nav-subtitle">Design Review</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">← Guidelines</a></li>
+                <li><a href="#executive-summary">Summary</a></li>
+                <li><a href="#chat">Chat</a></li>
+                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="#graph">Graph</a></li>
+                <li><a href="#workspace">Workspace</a></li>
+                <li><a href="#cross-cutting">Cross-Cutting</a></li>
+                <li><a href="#checklist">Checklist</a></li>
+                <li><a href="#priorities">Priorities</a></li>
+                <li style="color: var(--surface-card-border);">|</li>
+                <li><a href="views.html" style="color: var(--brand-solid);">Views →</a></li>
+                <li><a href="wireframes.html" style="color: var(--brand-solid);">Wireframes</a></li>
+            </ul>
+            <div class="theme-toggle" role="radiogroup" aria-label="Theme switcher">
+                <button class="theme-toggle-option active" data-theme-value="light" aria-checked="true" role="radio">☀️ Light</button>
+                <button class="theme-toggle-option" data-theme-value="dark" aria-checked="false" role="radio">🌙 Dark</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero">
+        <div class="container">
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                Combined UX + Visual Style Critique
+            </div>
+            <h1>Design <span class="gradient-text">Review</span></h1>
+            <p class="hero-sub">
+                A unified critique of DeepFlow's new design guidelines — examining UX patterns and visual identity across all four primary screens. Through the eyes of Ravi Patel, solo CEO.
+            </p>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- EXECUTIVE SUMMARY -->
+        <div class="exec-summary" id="executive-summary">
+            <h2>Executive Summary</h2>
+            <p>
+                The new design guidelines are <strong style="color: var(--text-primary);">structurally excellent</strong> — well-documented tokens, clean wireframes, solid component architecture, and a thoughtful Hub Bar specification. They tell engineers <em>what</em> to build. The problem is they don't tell them <em>how it should feel</em>.
+            </p>
+            <p>
+                The old DeepFlow product had genuine visual personality: concentric-ring avatar nodes, cyan-drenched dependency edges, generative art hero banners, a dark sidebar with the branded ψ mark, 3D isometric minimaps, and a radial action menu that looked like nothing else on the market. <strong style="color: var(--text-primary);">The new guidelines have filed those rough edges smooth</strong> — and produced a tool indistinguishable from Linear, Notion, or any post-2023 SaaS product.
+            </p>
+            <p>
+                This is the central tension: <strong style="color: var(--text-primary);">clarity was gained at the cost of identity.</strong> The fix isn't to go backwards. It's to take the old product's distinctive DNA and embed it into the new guidelines' excellent structural foundation. Restore the circular nodes. Animate the edges. Bring back the gradient. Make the graph bleed into every screen. And for Ravi: make every screen answer one question before he has to ask — <em>"What needs my attention right now?"</em>
+            </p>
+        </div>
+
+        <!-- TABLE OF CONTENTS -->
+        <div class="toc">
+            <div class="toc-title">Contents</div>
+            <div class="toc-grid">
+                <div>
+                    <a href="#chat">01 — Chat Input</a>
+                    <a href="#dashboard">02 — Dashboard</a>
+                    <a href="#graph">03 — Graph View</a>
+                    <a href="#workspace">04 — Workspace</a>
+                </div>
+                <div>
+                    <a href="#cross-cutting">Cross-Cutting Themes</a>
+                    <a href="#checklist">Brand Distinctiveness Checklist</a>
+                    <a href="#priorities">Priority Actions</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- =============================================
+             SCREEN 1: CHAT INPUT
+             ============================================= -->
+        <section id="chat" class="section">
+            <div class="screen-section">
+                <div class="screen-header">
+                    <span class="screen-number">01</span>
+                    <span class="screen-title">Chat Input</span>
+                </div>
+
+                <div class="screenshot-grid">
+                    <div class="screenshot-ref">
+                        <img src="../screenshots/13-new-chat-implementation.jpg" alt="New chat implementation" loading="lazy">
+                        <div class="screenshot-ref-caption">Screenshot 13 — New chat implementation (current direction)</div>
+                    </div>
+                    <div class="screenshot-ref">
+                        <img src="../screenshots/03-task-detail.jpg" alt="Old task detail with chat" loading="lazy">
+                        <div class="screenshot-ref-caption">Screenshot 03 — Old task detail with integrated chat</div>
+                    </div>
+                </div>
+
+                <!-- UX Critique -->
+                <div class="subsection">
+                    <div class="subsection-title"><span class="subsection-icon">🧠</span> UX Critique</div>
+
+                    <div class="review-grid">
+                        <div class="review-panel works">
+                            <div class="review-panel-title">✓ What Works</div>
+                            <ul>
+                                <li>Always-on positioning (Option B) is correct for Ravi — chat is always <em>there</em>, like WhatsApp on his phone</li>
+                                <li>Context badge showing which project/task the chat is scoped to prevents cross-context mistakes</li>
+                                <li>Action chips ("Summarise", "What's blocked?", "Next steps") reduce cognitive load of formulating prompts</li>
+                                <li>Thought process disclosure (6-step expandable section) builds trust — it's a colleague showing their working, not a black box</li>
+                            </ul>
+                        </div>
+                        <div class="review-panel generic">
+                            <div class="review-panel-title">⚠ What Feels Generic</div>
+                            <ul>
+                                <li>The input bar is a grey rectangle with "Message DeepFlow..." placeholder — every chat app since 2015</li>
+                                <li>Message layout (light bg for AI, different bg for user) is the ChatGPT/Claude commodity pattern</li>
+                                <li>No personality in the AI's voice — responses read like reports, not an engaged assistant</li>
+                                <li>Sidebar icons are ultra-thin line icons that could belong to literally any SaaS product</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Critique -->
+                <div class="subsection">
+                    <div class="subsection-title"><span class="subsection-icon">🎨</span> Visual Critique</div>
+
+                    <div class="review-grid">
+                        <div class="review-panel distinctive">
+                            <div class="review-panel-title">◆ What the Old Product Did Better</div>
+                            <ul>
+                                <li>Dark sidebar (<code>#1A1A2E</code>) provided contrast framing — chat felt like a "window" into the workspace</li>
+                                <li>DeepFlow ψ avatar in cyan gradient for AI messages — immediately identifiable</li>
+                                <li>Thought process steps with cyan bullet dots (<code>#22D3EE</code>) and bordered expandable blocks</li>
+                                <li>Chat send button used brand cyan gradient — a small but consistent brand touch</li>
+                                <li>Workspace panel alongside chat made the conversation feel purposeful and integrated</li>
+                            </ul>
+                        </div>
+                        <div class="review-panel lost">
+                            <div class="review-panel-title">✗ What's Been Lost</div>
+                            <ul>
+                                <li>Dark sidebar framing — contrast between dark chrome and light content created visual depth</li>
+                                <li>The ψ brand mark appearing in chat context</li>
+                                <li>Colour temperature shifted from warm/cyan-dominant to cold/neutral-blue</li>
+                                <li>Visual density — old chat existed alongside workspace content; new is a full-screen takeover</li>
+                                <li>Typography appears to be system/Inter — not Euclid Circular B</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Combined Recommendations -->
+                <div class="recommendations">
+                    <h4>📋 Combined Recommendations</h4>
+
+                    <div class="rec-item">
+                        <div class="rec-number">1</div>
+                        <div class="rec-text"><strong>Give the input bar a context-mode toggle.</strong> Add a clickable scope pill: <code>📋 This Task</code> / <code>📂 This Project</code> / <code>🏠 Everything</code>. Ravi flips between projects all day — quick context switching is essential.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">2</div>
+                        <div class="rec-text"><strong>Add a "Morning Brief" auto-prompt.</strong> When Ravi opens DeepFlow at 8am, chat should proactively display: "Good morning. 3 tasks need your attention. The Halogens synthesis is blocked. Want a summary?" Transforms chat from passive input box to active assistant.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">3</div>
+                        <div class="rec-text"><strong>Make action chips dynamic and context-aware.</strong> If something just failed, show "What went wrong?" and "Retry with changes." If a deadline is approaching, show "What's at risk?" Static chips feel scripted.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">4</div>
+                        <div class="rec-text"><strong>Embed mini workflow fragments in chat responses.</strong> When the AI says "The Halogens synthesis task is blocked," render a <strong>mini node card</strong> inline — the circular avatar node, the status indicator, the dependency chain. This is what makes DeepFlow's chat different from ChatGPT.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">5</div>
+                        <div class="rec-text"><strong>Use the gradient ψ avatar for AI messages, and make the sidebar dark.</strong> Even in light mode, the sidebar should be dark (<code>#111118</code>). Active icons should glow cyan with a subtle <code>drop-shadow</code>. The send button should use the brand gradient, not generic blue.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">6</div>
+                        <div class="rec-text"><strong>Brand the message bubbles.</strong> AI bubbles should lean cyan (<code>#E0F7FA</code>, not Tailwind blue <code>#EFF6FF</code>). Use asymmetric border-radius (12px 12px 12px 4px) for distinctiveness. User messages should use the brand gradient.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">7</div>
+                        <div class="rec-text"><strong>Add voice input on desktop.</strong> Ravi is on calls all day. A microphone button lets him interact without switching from phone to keyboard.</div>
+                    </div>
+                </div>
+
+                <div class="competition-callout">
+                    <div class="competition-callout-q">Why would Ravi use DeepFlow's chat instead of WhatsApp?</div>
+                    <p>He wouldn't — for quick coordination. WhatsApp is faster, more familiar, and where his people already are. DeepFlow's chat wins only when it can <strong>do things WhatsApp can't</strong>: execute workflow actions, reference task state, show dependency intelligence, insert content into documents. Every message should be capable of <em>doing</em> something, not just <em>saying</em> something.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+             SCREEN 2: DASHBOARD
+             ============================================= -->
+        <section id="dashboard" class="section">
+            <div class="screen-section">
+                <div class="screen-header">
+                    <span class="screen-number">02</span>
+                    <span class="screen-title">Dashboard</span>
+                </div>
+
+                <div class="screenshot-grid">
+                    <div class="screenshot-ref">
+                        <img src="../screenshots/04-projects-home.jpg" alt="Projects home" loading="lazy">
+                        <div class="screenshot-ref-caption">Screenshot 04 — Projects Home with generative art hero and graph thumbnails</div>
+                    </div>
+                    <div class="screenshot-ref">
+                        <img src="../screenshots/08-level-hub-dashboard.jpg" alt="Level Hub dashboard" loading="lazy">
+                        <div class="screenshot-ref-caption">Screenshot 08 — Level Hub Dashboard with gradient banner and donut chart</div>
+                    </div>
+                </div>
+
+                <!-- UX Critique -->
+                <div class="subsection">
+                    <div class="subsection-title"><span class="subsection-icon">🧠</span> UX Critique</div>
+
+                    <div class="review-grid">
+                        <div class="review-panel works">
+                            <div class="review-panel-title">✓ What Works</div>
+                            <ul>
+                                <li>Right data for Ravi's morning: tasks due today, blocked items, awaiting approval</li>
+                                <li>Project cards with progress bars allow multi-workstream scanning</li>
+                                <li>"What do you want to do today?" CTA positions DeepFlow as a tool that acts, not just displays</li>
+                                <li>"Good morning, [Name]" greeting is warm without being saccharine</li>
+                            </ul>
+                        </div>
+                        <div class="review-panel generic">
+                            <div class="review-panel-title">⚠ What Feels Generic</div>
+                            <ul>
+                                <li>Greeting + stat cards + project grid is the default SaaS dashboard pattern since 2019 — Asana, Monday.com, ClickUp all have this exact layout</li>
+                                <li>Stat cards are passive numbers — Ravi sees "3 blocked" but has to click through to find <em>which</em> and <em>why</em></li>
+                                <li>Graph thumbnails at card size are unreadable visual noise — decorative rather than informative</li>
+                                <li>"My Tasks" empty state with cartoon illustration is the epitome of SaaS-generic</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Critique -->
+                <div class="subsection">
+                    <div class="subsection-title"><span class="subsection-icon">🎨</span> Visual Critique</div>
+
+                    <div class="review-grid">
+                        <div class="review-panel distinctive">
+                            <div class="review-panel-title">◆ What the Old Product Did Better</div>
+                            <ul>
+                                <li><strong>Generative art hero banner</strong> — procedurally-generated teal/cyan/lime/yellow geometric blocks on dark background. No generic SaaS has this. It's DeepFlow's strongest visual signature.</li>
+                                <li>Project cards contain <strong>miniature graph thumbnails</strong> showing actual node-and-edge topology — a killer differentiator</li>
+                                <li>Level Hub's left navigation (L1/L2/L3/L4 tabs) gives structured depth navigation missing from the flat new wireframe</li>
+                                <li>Donut chart + status breakdown is more information-dense than the new wireframe's stat row</li>
+                                <li>3D isometric illustration for empty state — custom rendered asset, not a generic SVG</li>
+                            </ul>
+                        </div>
+                        <div class="review-panel lost">
+                            <div class="review-panel-title">✗ What's Been Lost</div>
+                            <ul>
+                                <li>Generative art banner completely absent from new guidelines</li>
+                                <li>Graph thumbnails in cards — old product shows mini DAG previews</li>
+                                <li>Information density — old dashboard feels like a command centre; new wireframe feels like a greeting card</li>
+                                <li>Dark-background hero area — contrast creates hierarchy; pure white on white flattens everything</li>
+                                <li>The rich visual density of the Level Hub is lost in the minimal new spec</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Combined Recommendations -->
+                <div class="recommendations">
+                    <h4>📋 Combined Recommendations</h4>
+
+                    <div class="rec-item">
+                        <div class="rec-number">1</div>
+                        <div class="rec-text"><strong>Replace static stat cards with a "Live Wire" strip.</strong> Instead of "3 Blocked | 2 Due Today | 1 Needs Approval", show a horizontal timeline of the most urgent items in chronological order: "9:15am — Halogens synthesis blocked → 10:00am — Board approval due → 2pm — Client meeting prep incomplete." Ravi thinks in sequence, not categories.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">2</div>
+                        <div class="rec-text"><strong>Bring back the generative art hero — make it systematic.</strong> Use a deterministic seed (org ID) so each org gets a unique but consistent pattern. The hero should have a dark background (<code>#0A0A0F</code> → <code>#111118</code>) with procedural teal/cyan/lime/yellow accent blocks. Consider a canvas-rendered approach or positioned absolute <code>div</code> elements.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">3</div>
+                        <div class="rec-text"><strong>Use the brand gradient as a living progress indicator.</strong> The hero banner's gradient fill represents overall portfolio health — more cyan = on track, shifting to amber/red as things slip. Decorative AND informative.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">4</div>
+                        <div class="rec-text"><strong>Project cards must include graph thumbnails.</strong> Render miniature DAGs using React Flow's minimap renderer or custom SVG. Nodes as 6px circles in <code>#22D3EE</code>, edges as 1px lines in <code>#7DD3FC</code>. Show real workflow topology, not just text.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">5</div>
+                        <div class="rec-text"><strong>Make project cards show the last meaningful event.</strong> Instead of "Paper Airplane — 1/5 — 4 Feb", show: "Paper Airplane — Step 3 failed 2h ago — 'Build Prototypes' needs attention." Tell Ravi <em>what happened</em>, not just where things stand.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">6</div>
+                        <div class="rec-text"><strong>Add "What changed overnight" section.</strong> Ravi's agents run while he sleeps. The dashboard should show: "While you were away: 2 tasks completed, 1 failed, 1 approval waiting." The equivalent of checking WhatsApp for overnight messages.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">7</div>
+                        <div class="rec-text"><strong>Kill the cartoon empty state.</strong> Replace with: "Nothing needs your attention — your agents are handling it" with a subtle pulse animation on the DeepFlow logo. Ravi wants <em>clean, professional, credible</em>.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">8</div>
+                        <div class="rec-text"><strong>Surface a mini-map of the most active workflow.</strong> Not a static thumbnail — a live, interactive miniature of the graph with pulsing nodes. One click zooms in. Connects the dashboard to DeepFlow's distinctive feature.</div>
+                    </div>
+                </div>
+
+                <div class="competition-callout">
+                    <div class="competition-callout-q">Why would Ravi open DeepFlow's dashboard instead of his email inbox?</div>
+                    <p>Email wins because it shows <strong>what other people need from Ravi</strong>. DeepFlow's dashboard currently shows what <em>Ravi's projects</em> look like — useful but less urgent. To beat email as the first morning check, the dashboard needs to surface <strong>inbound demands</strong>: "Client X is waiting for the ICAAP draft (3 days overdue)", "Agent completed the financial analysis — review before auto-sending." Make it an <strong>inbox of workflow events</strong>, not a gallery of project cards.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+             SCREEN 3: GRAPH VIEW
+             ============================================= -->
+        <section id="graph" class="section">
+            <div class="screen-section">
+                <div class="screen-header">
+                    <span class="screen-number">03</span>
+                    <span class="screen-title">Graph View</span>
+                </div>
+
+                <div class="brand-statement">
+                    The graph IS the product. This is what makes DeepFlow different from everything else. The old product's graph was memorable because it looked like <em>nothing else</em>.
+                </div>
+
+                <div class="screenshot-grid">
+                    <div class="screenshot-ref">
+                        <img src="../screenshots/01-workflow-canvas.jpg" alt="Workflow canvas" loading="lazy">
+                        <div class="screenshot-ref-caption">Screenshot 01 — DAG canvas with circular avatar nodes and cyan edges</div>
+                    </div>
+                    <div class="screenshot-ref">
+                        <img src="../screenshots/02-node-closeup.jpg" alt="Node closeup" loading="lazy">
+                        <div class="screenshot-ref-caption">Screenshot 02 — Concentric ring node with radial action menu</div>
+                    </div>
+                </div>
+
+                <div class="screenshot-grid">
+                    <div class="screenshot-ref">
+                        <img src="../screenshots/10-icaap-complex-graph.jpg" alt="ICAAP complex graph" loading="lazy">
+                        <div class="screenshot-ref-caption">Screenshot 10 — ICAAP complex graph with real photos in nodes</div>
+                    </div>
+                    <div class="screenshot-ref">
+                        <img src="../screenshots/11-depth-colour-nodes.jpg" alt="Depth colour nodes" loading="lazy">
+                        <div class="screenshot-ref-caption">Screenshot 11 — Depth-colour coding with hexagonal and circular nodes</div>
+                    </div>
+                </div>
+
+                <!-- UX Critique -->
+                <div class="subsection">
+                    <div class="subsection-title"><span class="subsection-icon">🧠</span> UX Critique</div>
+
+                    <div class="review-grid">
+                        <div class="review-panel works">
+                            <div class="review-panel-title">✓ What Works</div>
+                            <ul>
+                                <li>The DAG canvas IS the product — when Ravi shows a client his ICAAP workflow, they get it immediately</li>
+                                <li>Inline expansion concept (parent → container showing children) solves navigation without losing context</li>
+                                <li>Hub Bar spec is well-designed: collapsed 36px with progress + status + avatars gives Ravi a glance</li>
+                                <li>Node hover actions (Start / Done / Rerun / Open) eliminate unnecessary detail panel visits</li>
+                            </ul>
+                        </div>
+                        <div class="review-panel generic">
+                            <div class="review-panel-title">⚠ What Feels Generic</div>
+                            <ul>
+                                <li>New node design is a rounded rectangle with left accent border — the Linear/Asana/ClickUp pattern</li>
+                                <li>Nodes specified as ~180×72px white cards with thin borders — safest possible choice, least memorable</li>
+                                <li>Edge styling is standard React Flow out-of-the-box bezier curves</li>
+                                <li>Dot grid background is the default canvas pattern for every graph tool since Miro</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Critique -->
+                <div class="subsection">
+                    <div class="subsection-title"><span class="subsection-icon">🎨</span> Visual Critique — This Is Where the Gap Is Widest</div>
+
+                    <div class="review-grid">
+                        <div class="review-panel distinctive">
+                            <div class="review-panel-title">◆ What Made the Old Graph Distinctive</div>
+                            <ul>
+                                <li><strong>Concentric ring nodes:</strong> ~60px circle with 3-4px outer ring, ~2px gap, filled inner circle. Ring colour encodes status. No other product looks like this.</li>
+                                <li><strong>Avatar integration:</strong> Human tasks show actual photos clipped to the inner circle. You see <em>who</em> before <em>what</em>.</li>
+                                <li><strong>Radial action menu:</strong> Dark arc-shaped menu fans out below clicked nodes — looks like a flight instrument panel. Completely custom, highly memorable.</li>
+                                <li><strong>Cyan dashed edges</strong> with waypoint dots and directional chevrons — consistent visual flow guiding the eye along dependency chains</li>
+                                <li><strong>3D isometric minimap</strong> rendering workflow depth as visual layers — not a flat React Flow minimap</li>
+                                <li><strong>Shape-per-depth coding:</strong> Pink/magenta hexagonal nodes for one level, cyan circular for another — powerful dual-encoding</li>
+                                <li><strong>Satellite status badges:</strong> Small 16px circles at node edge (2 o'clock) with ✓/✕/▶/◯ icons</li>
+                            </ul>
+                        </div>
+                        <div class="review-panel lost">
+                            <div class="review-panel-title">✗ What's Been Lost or At Risk</div>
+                            <ul>
+                                <li>Concentric ring system → replaced with "status dot" on nodes. Flattens "radar/sonar" to "Kanban card with dot"</li>
+                                <li>Radial action menu not mentioned in guidelines at all</li>
+                                <li>Edge waypoint dots and directional chevrons unspecified</li>
+                                <li>Photo avatars clipped into ring — treatment unspecified</li>
+                                <li>3D isometric minimap → standard React Flow MiniMap</li>
+                                <li>Organic curved edge routing → default React Flow straight/step edges</li>
+                                <li>Swimlane colour bands partially preserved but opacity values unspecified</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Combined Recommendations -->
+                <div class="recommendations">
+                    <h4>📋 Combined Recommendations</h4>
+
+                    <div class="rec-item">
+                        <div class="rec-number">1</div>
+                        <div class="rec-text"><strong>Don't abandon the circular avatar node. This is non-negotiable.</strong> The rectangular card is a design regression. Keep the circular node as primary representation at default zoom. Use the concentric ring as a status indicator (colour matches status, thickness indicates progress). Animate the ring subtly when active. At zoomed-out levels, the circle becomes a coloured dot — elegant degradation.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">2</div>
+                        <div class="rec-text"><strong>Preserve the radial action menu.</strong> The hover action bar described in guidelines is generic. The radial fan-out is distinctive AND more ergonomic — your mouse is already on the node, actions arc within short movement radius. Dark arc (<code>#1F2937</code>) with icon actions. Hover state glows cyan.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">3</div>
+                        <div class="rec-text"><strong>Differentiate human and AI nodes beyond shape.</strong> AI-active nodes should have a subtle pulse/shimmer on their ring — suggesting computation. Human nodes feel solid and grounded. Hexagon-for-AI is good; push the distinction to be <em>felt</em>, not just seen.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">4</div>
+                        <div class="rec-text"><strong>Make edges carry meaning beyond topology.</strong> Thicken proportionally to data flow. Animate with particles flowing in dependency direction when active. Change colour based on downstream status (green = met, amber = waiting, red = blocked). Turns static diagram into a <strong>living system</strong>.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">5</div>
+                        <div class="rec-text"><strong>Spec the edges properly:</strong> Confirmed dependencies as solid cyan (<code>#7DD3FC</code>, 2px). Conditional as dashed (<code>stroke-dasharray: 6 4</code>). Waypoint dots (3px, <code>#BAE6FD</code>) along paths. Directional chevrons in 8px circles at midpoints. Use bezier curves (curvature: 0.25), not step/straight.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">6</div>
+                        <div class="rec-text"><strong>Preserve the 3D isometric minimap.</strong> Dark background (<code>#111118</code>), each depth level as a tilted plane (30° isometric angle), nodes as coloured dots on each plane, segmented control "Workflow | My Tasks", level badges in cyan pills. Significant engineering effort — but one of DeepFlow's most distinctive elements.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">7</div>
+                        <div class="rec-text"><strong>Replace the dot grid background.</strong> Options: subtle topographic contour lines clustering around active areas, or very faint radial gradients emanating from active nodes. Minimal, but <em>yours</em>.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">8</div>
+                        <div class="rec-text"><strong>Minimap should show a heat map overlay.</strong> Colour by activity: hot spots where work is happening, cool areas that are dormant. A "thermal view" of workflow in the corner of Ravi's eye.</div>
+                    </div>
+                </div>
+
+                <div class="competition-callout">
+                    <div class="competition-callout-q">What makes DeepFlow's graph memorable instead of forgettable?</div>
+                    <p>The old product's graph was memorable because it looked like <strong>nothing else</strong>. Circular avatar nodes with cyan rings on a dark canvas — that image sticks. Rectangular cards on white canvas with dot grid? That's React Flow's default demo. The graph also needs to feel <strong>alive</strong>. A static diagram is a Visio document. A living system — pulsing nodes, flowing particles, heat-mapped minimaps — is an <strong>operating system for work</strong>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+             SCREEN 4: WORKSPACE
+             ============================================= -->
+        <section id="workspace" class="section">
+            <div class="screen-section">
+                <div class="screen-header">
+                    <span class="screen-number">04</span>
+                    <span class="screen-title">Workspace</span>
+                </div>
+
+                <div class="screenshot-ref">
+                    <img src="../screenshots/12-workspace-full.jpg" alt="Full workspace" loading="lazy">
+                    <div class="screenshot-ref-caption">Screenshot 12 — Full workspace with chat, canvas, and detail panel</div>
+                </div>
+
+                <!-- UX Critique -->
+                <div class="subsection">
+                    <div class="subsection-title"><span class="subsection-icon">🧠</span> UX Critique</div>
+
+                    <div class="review-grid">
+                        <div class="review-panel works">
+                            <div class="review-panel-title">✓ What Works</div>
+                            <ul>
+                                <li>Three-pane layout (Chat + Canvas + Detail) is correct — document, AI assistant, and task metadata simultaneously</li>
+                                <li>Tabbed canvas (multiple resource tabs — editor, PDF, spreadsheet, agent log) solves reference without modal switches</li>
+                                <li>"Execute this task for me" button is the product's magic — one click delegates to AI</li>
+                                <li>AI thought process disclosure in chat pane — Ravi sees exactly what the agent did and why</li>
+                                <li>Version management (V3/3, navigation arrows) is critical for client-facing documents</li>
+                            </ul>
+                        </div>
+                        <div class="review-panel generic">
+                            <div class="review-panel-title">⚠ What Feels Generic</div>
+                            <ul>
+                                <li>Three-panel layout IS the commodity pattern — Linear, Notion, every modern SaaS editor</li>
+                                <li>Rich text editor (Tiptap) with formatting toolbar is every editor you've ever seen</li>
+                                <li>Detail Panel tabs (Info, Resources, Comments, History, Sub-tasks) look exactly like Jira/Asana</li>
+                                <li>The workspace has always been DeepFlow's least distinctive screen</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Critique -->
+                <div class="subsection">
+                    <div class="subsection-title"><span class="subsection-icon">🎨</span> Visual Critique</div>
+
+                    <div class="review-grid">
+                        <div class="review-panel distinctive">
+                            <div class="review-panel-title">◆ Existing Distinctive Elements</div>
+                            <ul>
+                                <li>Version indicator "V3/3 - 11/03/2026 • Current version" — unique document-version-control feel</li>
+                                <li>Status badges use saturated fills (red <code>#DC2626</code>, green <code>#059669</code>) — bold, not washed-out pastels</li>
+                                <li>Panel resize handles visible between columns — professional, functional</li>
+                                <li>Preview toggle with green indicator in the toolbar</li>
+                            </ul>
+                        </div>
+                        <div class="review-panel lost">
+                            <div class="review-panel-title">✗ What's At Risk</div>
+                            <ul>
+                                <li>Panel chrome differentiation — risk of all three becoming identical white rectangles</li>
+                                <li>Status badge boldness — new guidelines define muted <code>rgba</code> backgrounds that don't POP</li>
+                                <li>Visual density — "clean SaaS" risks reducing useful density to empty space</li>
+                                <li>The old dark sidebar provided a strong visual anchor; new 56px light sidebar is weightless</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Combined Recommendations -->
+                <div class="recommendations">
+                    <h4>📋 Combined Recommendations</h4>
+
+                    <div class="rec-item">
+                        <div class="rec-number">1</div>
+                        <div class="rec-text"><strong>Add Focus Mode.</strong> Single keypress (⌘+Shift+F) collapses detail panel, shrinks chat to a 48px input strip, expands canvas, dims sidebar. DeepFlow's "Do Not Disturb" — acknowledging Ravi context-switches all day and needs deep work.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">2</div>
+                        <div class="rec-text"><strong>Make the canvas graph-aware.</strong> A thin breadcrumb: <code>ICAAP 2026 → Capital Modelling → Stress Test → [This Document]</code>. Input dependencies as collapsed cards above the editor: "✅ Risk Assessment (complete) | ⏳ Data Validation (in progress)". Notification banner when inputs change upstream.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">3</div>
+                        <div class="rec-text"><strong>Add workflow-aware blocks to the canvas.</strong> Data insertion blocks (pull upstream output), approval gates (inline sign-off checkpoints), AI suggestion blocks (accept/reject/modify inline). These are what make DeepFlow's editor different from MS Word.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">4</div>
+                        <div class="rec-text"><strong>Unify the three panes visually.</strong> Shared status line spanning all panes (task name + status + heartbeat indicator). Cross-pane interactions: highlighted text in canvas → connecting line to chat message. Brand gradient on chat panel header's <code>::after</code> element (2px top line).</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">5</div>
+                        <div class="rec-text"><strong>Differentiate panels through micro-treatments.</strong> Chat panel gets a gradient accent at top. Detail panel's active tab uses <code>border-image: linear-gradient(90deg, #00E5FF, #2244FF) 1</code>. Panel dividers reveal brand gradient on hover/drag.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">6</div>
+                        <div class="rec-text"><strong>Keep status badges saturated.</strong> Use filled badges (<code>background: #DC2626; color: #FFFFFF</code>) for prominent status, NOT the muted <code>rgba(220, 38, 38, 0.08)</code> default. Saturated fills make it impossible to miss a failed task.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">7</div>
+                        <div class="rec-text"><strong>Add a "Side-by-side" canvas mode.</strong> Split view for comparing agent output vs. input data. Google Docs can't do this easily; DeepFlow should.</div>
+                    </div>
+                    <div class="rec-item">
+                        <div class="rec-number">8</div>
+                        <div class="rec-text"><strong>Show a micro-graph in the status bar.</strong> A tiny inline visualisation: 3-5 connected dots (upstream → this task → downstream) with status colours. Constantly reminds Ravi he's working within a larger system.</div>
+                    </div>
+                </div>
+
+                <div class="competition-callout">
+                    <div class="competition-callout-q">Why would Ravi use DeepFlow's workspace instead of MS Word + email?</div>
+                    <p>MS Word is an island. DeepFlow's workspace should feel like a <strong>node in a living network</strong>. It wins if writing the document automatically progresses the workflow, if the AI drafts sections from upstream outputs, if completing the document triggers downstream actions without Ravi needing to email anyone. The workspace must feel like it has <strong>momentum</strong> — work here ripples outward through the graph.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+             CROSS-CUTTING THEMES
+             ============================================= -->
+        <section id="cross-cutting" class="section">
+            <div class="section-header">
+                <div class="section-number">Cross-Cutting</div>
+                <h2 class="section-title">Themes Across All Screens</h2>
+                <p class="section-desc">Patterns that affect every view — and need system-level solutions.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); margin-bottom: var(--space-8);">
+                <div class="card">
+                    <div class="card-title">1. The "Too Generic" Problem Has a Root Cause</div>
+                    <p class="card-text">
+                        The guidelines optimised for <strong style="color: var(--text-primary);">implementability</strong> (clear specs, standard patterns) at the cost of <strong style="color: var(--text-primary);">distinctiveness</strong> (visual signature, bespoke interactions, emotional resonance). The system became so well-specified it specified the personality right out of the product.
+                    </p>
+                    <p class="card-text" style="margin-top: var(--space-3);">
+                        <strong style="color: var(--brand-solid);">Fix:</strong> Create a "DeepFlow DNA" section defining 4 elements that must appear in EVERY screen: the circular node motif, the brand gradient, the concentric ring pattern, and cross-element connecting lines.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">2. The Graph Must Bleed Into Every Screen</div>
+                    <p class="card-text">
+                        The graph is the product's soul, but currently only appears in one view. Every other screen feels like a different product. The graph's visual language should be a <strong style="color: var(--text-primary);">design vocabulary</strong> used everywhere:
+                    </p>
+                    <p class="card-text" style="margin-top: var(--space-3);">
+                        Dashboard cards should look like <strong style="color: var(--brand-solid);">large graph nodes</strong>. Chat references should render as <strong style="color: var(--brand-solid);">mini nodes</strong>. The workspace should always show its <strong style="color: var(--brand-solid);">graph context</strong>. Even the sidebar could show a vertical dependency chain.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">3. Motion Is Personality — And It's Missing</div>
+                    <p class="card-text">
+                        Every screen in the guidelines is static. But Ravi's workflow is dynamic. The guidelines don't specify: how a node's status change animates, how a new chat message arrives, how the dashboard updates when an agent completes work, how progress bars fill in real-time.
+                    </p>
+                    <p class="card-text" style="margin-top: var(--space-3);">
+                        <strong style="color: var(--brand-solid);">A product that moves thoughtfully feels alive.</strong> Define a motion language: ease curves, duration ranges, what triggers animation vs. instant transition. This is a major gap.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">4. Dark Mode Isn't a Theme — It's the Original Identity</div>
+                    <p class="card-text">
+                        The old product runs on a dark sidebar with dark canvas elements. The new guidelines default to light. The dark treatment made cyan nodes and gradient banners <em>pop</em>. On light backgrounds, they feel washed out.
+                    </p>
+                    <p class="card-text" style="margin-top: var(--space-3);">
+                        <strong style="color: var(--brand-solid);">Recommendation:</strong> Sidebar should be dark in BOTH themes (like Slack, Discord). The graph canvas should have a dark background regardless of app theme. Think of it like a planetarium: light workspace, dark sky with bright constellation nodes.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">5. The "Single Line" System Is Not Enough Alone</div>
+                    <p class="card-text">
+                        The Single Line (2px gradient accent) is a good micro-pattern but can't carry the entire brand. At 2px, it's easily missed. The brand needs to show up in node styling, background treatments, interactive fills, AI identity markers, and motion (cyan glow pulses when agents work). The Single Line should be an <em>accent</em>, not the entire visual vocabulary.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-title">6. Colour Temperature — Cyan, Not Blue</div>
+                    <p class="card-text">
+                        The brand gradient goes cyan → sky blue → blue. The old product leans <strong style="color: var(--brand-cyan);">cyan-dominant</strong>. The new guidelines define <code>--brand-solid: #0077DD</code> which is a cooler, generic blue.
+                    </p>
+                    <p class="card-text" style="margin-top: var(--space-3);">
+                        Primary interactive colour should be <code>#0099FF</code>, with <code>#22D3EE</code> (cyan) used extensively for graph elements and accents. Reserve <code>#2244FF</code> for gradient endpoints only. The product should feel <strong style="color: var(--brand-cyan);">cyan-forward</strong>, not blue-forward.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+             BRAND DISTINCTIVENESS CHECKLIST
+             ============================================= -->
+        <section id="checklist" class="section">
+            <div class="section-header">
+                <div class="section-number">Quality Gate</div>
+                <h2 class="section-title">Brand Distinctiveness Checklist</h2>
+                <p class="section-desc">Before any screen ships, it should pass these 14 checks. If Ravi screenshots it and sends it to a colleague, would they know it's DeepFlow?</p>
+            </div>
+
+            <div class="checklist">
+                <div class="checklist-header">Pre-Ship Checklist — 14 Points</div>
+                <div class="checklist-item">
+                    <div class="checklist-box"></div>
+                    <div class="checklist-label"><strong style="color: var(--text-primary);">Euclid Circular B typography</strong></div>
+                    <div class="checklist-note">Must be loaded and visually confirmed — not Inter or system fonts</div>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-box"></div>
+                    <div class="checklist-label"><strong style="color: var(--text-primary);">Cyan-dominant colour temperature</strong></div>
+                    <div class="checklist-note"><code>#22D3EE</code> / <code>#00D4F5</code> appearing more than <code>#3B82F6</code></div>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-box"></div>
+                    <div class="checklist-label"><strong style="color: var(--text-primary);">Concentric-ring nodes on graph</strong></div>
+                    <div class="checklist-note">Not flat circles with dots — multi-ring with status colour encoding</div>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-box"></div>
+                    <div class="checklist-label"><strong style="color: var(--text-primary);">ψ brand mark visible</strong></div>
+                    <div class="checklist-note">In sidebar logo, AI avatar, or loading states</div>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-box"></div>
+                    <div class="checklist-label"><strong style="color: var(--text-primary);">Organic curved edges</strong></div>
+                    <div class="checklist-note">Bezier curves with waypoint dots — not orthogonal step edges</div>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-box"></div>
+                    <div class="checklist-label"><strong style="color: var(--text-primary);">Dark sidebar frame</strong></div>
+                    <div class="checklist-note">Even in light mode — like Slack, Discord, Linear</div>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-box"></div>
+                    <div class="checklist-label"><strong style="color: var(--text-primary);">Generative art hero (dashboard)</strong></div>
+                    <div class="checklist-note">Procedural teal/cyan/lime/yellow geometric pattern — not a plain gradient</div>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-box"></div>
+                    <div class="checklist-label"><strong style="color: var(--text-primary);">Graph thumbnails on project cards</strong></div>
+                    <div class="checklist-note">Mini DAG previews showing real topology — not generic icons</div>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-box"></div>
+                    <div class="checklist-label"><strong style="color: var(--text-primary);">Monospace accent typography</strong></div>
+                    <div class="checklist-note">SF Mono / Fira Code for counts, dates, percentages</div>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-box"></div>
+                    <div class="checklist-label"><strong style="color: var(--text-primary);">Brand gradient on primary actions</strong></div>
+                    <div class="checklist-note">Send button, CTA buttons, progress fills</div>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-box"></div>
+                    <div class="checklist-label"><strong style="color: var(--text-primary);">3D isometric minimap</strong></div>
+                    <div class="checklist-note">Custom depth rendering — not flat React Flow MiniMap</div>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-box"></div>
+                    <div class="checklist-label"><strong style="color: var(--text-primary);">Radial action menu on nodes</strong></div>
+                    <div class="checklist-note">Dark arc with icon actions — not generic button bar</div>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-box"></div>
+                    <div class="checklist-label"><strong style="color: var(--text-primary);">Version history indicator</strong></div>
+                    <div class="checklist-note">V1/3 pattern visible in workspace top bar</div>
+                </div>
+                <div class="checklist-item">
+                    <div class="checklist-box"></div>
+                    <div class="checklist-label"><strong style="color: var(--text-primary);">Status badge saturation</strong></div>
+                    <div class="checklist-note">Filled solid colours — not washed <code>rgba</code> backgrounds</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================
+             PRIORITY ACTIONS
+             ============================================= -->
+        <section id="priorities" class="section">
+            <div class="section-header">
+                <div class="section-number">Priorities</div>
+                <h2 class="section-title">Priority Actions — Ranked</h2>
+                <p class="section-desc">What to fix first. Ordered by impact-to-effort ratio, combining both UX and visual considerations.</p>
+            </div>
+
+            <div style="background: var(--surface-card); border: 1px solid var(--surface-card-border); border-radius: var(--radius-lg); overflow: hidden;">
+                <table class="priority-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;">#</th>
+                            <th>Action</th>
+                            <th style="width: 130px;">Impact</th>
+                            <th style="width: 100px;">Effort</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><strong>Restore circular avatar nodes</strong> on the graph canvas — concentric rings with status colour encoding</td>
+                            <td><span class="impact-critical">🔴 Critical</span><br><span style="font-size: 11px; color: var(--text-tertiary);">This IS the visual identity</span></td>
+                            <td>Medium</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><strong>Add "Morning Brief" auto-prompt</strong> to chat on dashboard load — transforms passive dashboard into active command centre</td>
+                            <td><span class="impact-critical">🔴 High</span></td>
+                            <td>Low</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><strong>Bring back the generative art hero banner</strong> on dashboard — instant visual identity recovery</td>
+                            <td><span class="impact-critical">🔴 High</span></td>
+                            <td>Low–Med</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><strong>Enforce Euclid Circular B</strong> — font loading with visual verification across all views</td>
+                            <td><span class="impact-critical">🔴 High</span></td>
+                            <td>Low</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td><strong>Animate graph edges</strong> with flowing particles for active tasks — turns static diagram into living system</td>
+                            <td><span class="impact-high">🟡 High</span></td>
+                            <td>Medium</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td><strong>Make sidebar dark by default</strong> in both themes — restore visual anchoring</td>
+                            <td><span class="impact-high">🟡 High</span></td>
+                            <td>Low</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td><strong>Add dynamic context-aware action chips</strong> in chat — make chat feel intelligent, not scripted</td>
+                            <td><span class="impact-high">🟡 High</span></td>
+                            <td>Medium</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td><strong>Spec and preserve the radial action menu</strong> on graph nodes — signature interaction pattern</td>
+                            <td><span class="impact-high">🟡 High</span></td>
+                            <td>Medium</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td><strong>Push colour temperature toward cyan</strong> — <code>#22D3EE</code> as primary graph colour, not generic blue</td>
+                            <td><span class="impact-high">🟡 Medium</span></td>
+                            <td>Low</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td><strong>Add Focus Mode</strong> to workspace — panel state toggle for deep work</td>
+                            <td><span class="impact-medium">🟢 Medium</span></td>
+                            <td>Low</td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td><strong>Show mini-graph context</strong> in workspace status bar — connects workspace to graph identity</td>
+                            <td><span class="impact-medium">🟢 Medium</span></td>
+                            <td>Medium</td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td><strong>Add graph thumbnails</strong> to all project/workflow cards</td>
+                            <td><span class="impact-medium">🟢 Medium</span></td>
+                            <td>Medium</td>
+                        </tr>
+                        <tr>
+                            <td>13</td>
+                            <td><strong>Spec the 3D isometric minimap</strong> — not a standard React Flow component</td>
+                            <td><span class="impact-medium">🟢 Medium</span></td>
+                            <td>High</td>
+                        </tr>
+                        <tr>
+                            <td>14</td>
+                            <td><strong>Design cross-pane visual connections</strong> in workspace — unify the three-panel experience</td>
+                            <td><span class="impact-medium">🟢 Medium</span></td>
+                            <td>High</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Final Statement -->
+            <div class="brand-statement" style="margin-top: var(--space-12);">
+                DeepFlow's redesign needs to stop trying to look like a "modern SaaS product" and start looking like <em>DeepFlow</em>. The old product had a visual signature no competitor could replicate. The new guidelines filed those rough edges smooth. The fix isn't to go backwards — it's to embed the old product's DNA into the new guidelines' excellent structural foundation.
+            </div>
+        </section>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <p>
+                DeepFlow Design Review — Combined UX + Visual Style Critique · 17 March 2026<br>
+                Prepared by <a href="index.html">Enriched Solutions</a> · Brutally honest by request
+            </p>
+        </div>
+    </footer>
+
+    <!-- Theme Toggle Script -->
+    <script>
+        const toggleBtns = document.querySelectorAll('.theme-toggle-option');
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const theme = btn.getAttribute('data-theme-value');
+                document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : '');
+                toggleBtns.forEach(b => {
+                    b.classList.toggle('active', b === btn);
+                    b.setAttribute('aria-checked', b === btn ? 'true' : 'false');
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
