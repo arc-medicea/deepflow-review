@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>DeepFlow — Receipt Chat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :root {
+    --bg-dark: #0e1117;
+    --paper: #161a22;
+    --paper-edge: #1a1f2a;
+    --text-primary: #c8cdd5;
+    --text-dim: #8b919a;
+    --text-muted: #555b65;
+    --cyan: #00D4F5;
+    --cyan-dim: rgba(0, 212, 245, 0.15);
+    --green: #4ade80;
+    --amber: #f59e0b;
+    --font: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+    --paper-width: 460px;
+    --tear-color: #252a35;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg-dark);
+    font-family: var(--font);
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  /* === LAYOUT === */
+  .receipt-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-width: var(--paper-width);
+    margin: 0 auto;
+    background: var(--paper);
+    position: relative;
+    border-left: 1px solid #1e2430;
+    border-right: 1px solid #1e2430;
+  }
+
+  /* Subtle paper texture overlay */
+  .receipt-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.015'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* === SCROLL AREA === */
+  .receipt-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+    position: relative;
+    z-index: 1;
+    scrollbar-width: none;
+  }
+  .receipt-scroll::-webkit-scrollbar { display: none; }
+
+  .receipt-tape {
+    padding: 20px 20px 24px;
+  }
+
+  /* === THREAD HEADER === */
+  .thread-header {
+    text-align: center;
+    padding: 16px 0 4px;
+    position: relative;
+  }
+
+  .thread-brand {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    font-weight: 300;
+  }
+
+  .thread-brand .hex {
+    color: var(--cyan);
+    opacity: 0.6;
+    font-size: 11px;
+  }
+
+  .thread-dateline {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 4px 0 14px;
+    font-weight: 300;
+  }
+
+  .thread-dateline::before,
+  .thread-dateline::after {
+    content: '';
+    flex: 1;
+    max-width: 60px;
+    height: 1px;
+    background: linear-gradient(to var(--dir, right), var(--text-muted), transparent);
+    opacity: 0.3;
+  }
+  .thread-dateline::before { --dir: right; }
+  .thread-dateline::after { --dir: left; }
+
+  /* === MESSAGES === */
+  .msg {
+    padding: 6px 0;
+    animation: printIn 0.3s ease-out both;
+  }
+
+  .msg + .msg { margin-top: 2px; }
+
+  /* Machine messages */
+  .msg.machine {
+    color: var(--text-primary);
+  }
+
+  .msg.machine .msg-text {
+    padding-left: 0;
+  }
+
+  /* User messages — cyan left border */
+  .msg.user {
+    border-left: 3px solid var(--cyan);
+    padding-left: 14px;
+    margin-left: 0;
+    color: var(--text-primary);
+  }
+
+  .msg.user .prompt {
+    color: var(--cyan);
+    opacity: 0.7;
+    margin-right: 6px;
+    font-weight: 500;
+  }
+
+  /* Timestamps */
+  .msg-time {
+    font-size: 9.5px;
+    color: var(--text-muted);
+    text-align: right;
+    opacity: 0.6;
+    margin-top: 1px;
+    font-weight: 300;
+  }
+
+  /* Message content */
+  .msg-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .msg-text .bullet-list {
+    padding-left: 2px;
+  }
+
+  .msg-text .task-item {
+    padding: 1px 0;
+  }
+
+  .msg-text .status-done {
+    color: var(--green);
+  }
+
+  .msg-text .status-running {
+    color: var(--amber);
+  }
+
+  .msg-text .highlight {
+    color: var(--cyan);
+    opacity: 0.85;
+  }
+
+  /* spacing between conversational blocks */
+  .msg-gap {
+    height: 14px;
+  }
+
+  .msg-gap-lg {
+    height: 22px;
+  }
+
+  /* === TORN PAPER EDGE === */
+  .torn-edge {
+    position: relative;
+    height: 32px;
+    margin: 28px -20px 20px;
+    overflow: hidden;
+  }
+
+  /* Top zigzag — torn bottom of old paper */
+  .torn-edge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 16px;
+    background: var(--paper);
+    clip-path: polygon(
+      0% 0%, 100% 0%,
+      100% 40%,
+      97% 80%, 94% 50%, 91% 90%, 88% 55%, 85% 85%,
+      82% 45%, 79% 75%, 76% 50%, 73% 95%, 70% 55%,
+      67% 80%, 64% 40%, 61% 70%, 58% 45%, 55% 90%,
+      52% 50%, 49% 85%, 46% 55%, 43% 75%, 40% 40%,
+      37% 90%, 34% 55%, 31% 80%, 28% 45%, 25% 95%,
+      22% 50%, 19% 75%, 16% 45%, 13% 85%, 10% 50%,
+      7% 70%, 4% 45%, 1% 80%, 0% 50%
+    );
+    z-index: 2;
+  }
+
+  /* Perforated dots in the gap */
+  .torn-edge .perf {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    border: none;
+    border-top: 2px dashed var(--tear-color);
+    z-index: 1;
+  }
+
+  /* Bottom zigzag — torn top of new paper */
+  .torn-edge::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 16px;
+    background: var(--paper);
+    clip-path: polygon(
+      0% 100%, 100% 100%,
+      100% 60%,
+      97% 20%, 94% 50%, 91% 10%, 88% 45%, 85% 15%,
+      82% 55%, 79% 25%, 76% 50%, 73% 5%, 70% 45%,
+      67% 20%, 64% 60%, 61% 30%, 58% 55%, 55% 10%,
+      52% 50%, 49% 15%, 46% 45%, 43% 25%, 40% 60%,
+      37% 10%, 34% 45%, 31% 20%, 28% 55%, 25% 5%,
+      22% 50%, 19% 25%, 16% 55%, 13% 15%, 10% 50%,
+      7% 30%, 4% 55%, 1% 20%, 0% 50%
+    );
+    z-index: 2;
+  }
+
+  /* Dark gap between tears */
+  .torn-edge-gap {
+    position: absolute;
+    top: 14px;
+    bottom: 14px;
+    left: 0;
+    right: 0;
+    background: var(--bg-dark);
+    z-index: 0;
+  }
+
+  /* === INPUT AREA === */
+  .input-area {
+    position: relative;
+    z-index: 2;
+    padding: 12px 20px 16px;
+    border-top: 1px solid #1e2430;
+    background: var(--paper);
+  }
+
+  .input-pills {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .input-pills::-webkit-scrollbar { display: none; }
+
+  .pill {
+    flex-shrink: 0;
+    font-family: var(--font);
+    font-size: 10.5px;
+    padding: 5px 12px;
+    border: 1px solid #2a3040;
+    border-radius: 3px;
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+    letter-spacing: 0.3px;
+  }
+
+  .pill:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+
+  .input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .input-prompt {
+    color: var(--cyan);
+    opacity: 0.5;
+    font-size: 14px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .input-field {
+    flex: 1;
+    font-family: var(--font);
+    font-size: 13px;
+    color: var(--text-primary);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #252a35;
+    padding: 6px 0;
+    outline: none;
+    caret-color: var(--cyan);
+    transition: border-color 0.2s;
+  }
+
+  .input-field::placeholder {
+    color: var(--text-muted);
+    opacity: 0.5;
+  }
+
+  .input-field:focus {
+    border-bottom-color: var(--cyan);
+    border-bottom-width: 1px;
+  }
+
+  .input-send {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    font-size: 16px;
+    opacity: 0.4;
+    transition: opacity 0.15s, color 0.15s;
+  }
+
+  .input-send:hover {
+    opacity: 1;
+    color: var(--cyan);
+  }
+
+  /* Safe area for mobile */
+  .input-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  /* === PRINT ANIMATION === */
+  @keyframes printIn {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .msg:nth-child(1) { animation-delay: 0s; }
+  .msg:nth-child(2) { animation-delay: 0.05s; }
+  .msg:nth-child(3) { animation-delay: 0.1s; }
+  .msg:nth-child(4) { animation-delay: 0.15s; }
+  .msg:nth-child(5) { animation-delay: 0.2s; }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 480px) {
+    :root {
+      --paper-width: 100%;
+    }
+
+    .receipt-container {
+      border-left: none;
+      border-right: none;
+    }
+
+    .receipt-tape {
+      padding: 16px 16px 20px;
+    }
+
+    .torn-edge {
+      margin-left: -16px;
+      margin-right: -16px;
+    }
+
+    .input-area {
+      padding: 10px 16px 14px;
+    }
+
+    body { font-size: 12.5px; }
+  }
+
+  @media (min-width: 481px) and (max-width: 768px) {
+    :root {
+      --paper-width: 100%;
+    }
+
+    .receipt-container {
+      max-width: 520px;
+    }
+  }
+
+  /* === RECEIPT DASHES === */
+  .receipt-dash {
+    color: var(--text-muted);
+    opacity: 0.3;
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 3px;
+    padding: 2px 0;
+    user-select: none;
+  }
+
+  /* numbered list styling */
+  .num-list {
+    padding-left: 4px;
+  }
+
+  .num-list .item {
+    padding: 1px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="receipt-container">
+  <div class="receipt-scroll" id="scroll">
+    <div class="receipt-tape">
+
+      <!-- ═══════ THREAD 1: Morning Greeting ═══════ -->
+      <div class="thread-header">
+        <div class="thread-brand"><span class="hex">⬡</span> DeepFlow</div>
+        <div class="thread-dateline">Mon, 23 Mar · 08:15</div>
+      </div>
+
+      <div class="msg machine">
+        <div class="msg-text">Good morning, Ali.
+
+3 tasks need attention today:
+<span class="task-item">• ICAAP Capital Model — blocked, waiting on risk data</span>
+<span class="task-item">• Board Pack — due Thursday, draft 60% complete</span>
+<span class="task-item">• Supplier Review — Sarah commented overnight</span>
+
+2 meetings:
+<span class="task-item">• 10:00 — ICAAP sync with Sarah (prep doc ready)</span>
+<span class="task-item">• 14:30 — Board pack review</span>
+
+What would you like to focus on?</div>
+        <div class="msg-time">08:15</div>
+      </div>
+
+      <div class="msg-gap-lg"></div>
+
+      <!-- ═══════ THREAD 1: Conversation ═══════ -->
+      <div class="msg user">
+        <div class="msg-text"><span class="prompt">›</span> What's the status on the capital model?</div>
+        <div class="msg-time">08:17</div>
+      </div>
+
+      <div class="msg-gap"></div>
+
+      <div class="msg machine">
+        <div class="msg-text">The capital model is blocked on two inputs:
+
+<span class="num-list"><span class="item">1. Updated risk weightings from Sarah — requested Tuesday, no response yet</span>
+<span class="item">2. Q4 actuals from finance — received yesterday, not yet imported</span></span>
+
+Want me to chase Sarah on the risk weightings?</div>
+        <div class="msg-time">08:17</div>
+      </div>
+
+      <div class="msg-gap"></div>
+
+      <div class="msg user">
+        <div class="msg-text"><span class="prompt">›</span> Yes, and import the Q4 actuals while you're at it</div>
+        <div class="msg-time">08:18</div>
+      </div>
+
+      <div class="msg-gap"></div>
+
+      <div class="msg machine">
+        <div class="msg-text">Done. Two tasks created:
+
+<span class="status-done">✓</span> Chase Sarah re: risk weightings → sent via Slack
+<span class="status-running">⟳</span> Import Q4 actuals into capital model → running now
+
+I'll let you know when the import completes.</div>
+        <div class="msg-time">08:18</div>
+      </div>
+
+      <div class="msg-gap"></div>
+
+      <div class="msg user">
+        <div class="msg-text"><span class="prompt">›</span> How long will that take?</div>
+        <div class="msg-time">08:19</div>
+      </div>
+
+      <div class="msg-gap"></div>
+
+      <div class="msg machine">
+        <div class="msg-text">Based on previous imports, about 4–5 minutes. The Q4 dataset is ~2,400 rows.</div>
+        <div class="msg-time">08:19</div>
+      </div>
+
+      <!-- ═══════ TORN PAPER EDGE ═══════ -->
+      <div class="torn-edge">
+        <div class="torn-edge-gap"></div>
+        <div class="perf"></div>
+      </div>
+
+      <!-- ═══════ THREAD 2: Update ═══════ -->
+      <div class="thread-header">
+        <div class="thread-brand"><span class="hex">⬡</span> DeepFlow</div>
+        <div class="thread-dateline">Mon, 23 Mar · 11:42</div>
+      </div>
+
+      <div class="msg machine">
+        <div class="msg-text">Quick update: Q4 actuals imported successfully.
+Capital model can now proceed.
+
+Sarah responded — risk weightings attached.
+Want me to feed them into the model?</div>
+        <div class="msg-time">11:42</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════ INPUT ═══════ -->
+  <div class="input-area input-safe">
+    <div class="input-pills">
+      <button class="pill">Summarise</button>
+      <button class="pill">What's blocked?</button>
+      <button class="pill">Next steps</button>
+      <button class="pill">Run model</button>
+    </div>
+    <div class="input-row">
+      <span class="input-prompt">›</span>
+      <input type="text" class="input-field" placeholder="Message DeepFlow…" autocomplete="off" spellcheck="false">
+      <button class="input-send" aria-label="Send">↵</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Scroll to bottom on load
+  const scroll = document.getElementById('scroll');
+  scroll.scrollTop = scroll.scrollHeight;
+
+  // Handle Enter key on input
+  const input = document.querySelector('.input-field');
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && input.value.trim()) {
+      addUserMessage(input.value.trim());
+      input.value = '';
+    }
+  });
+
+  document.querySelector('.input-send').addEventListener('click', () => {
+    if (input.value.trim()) {
+      addUserMessage(input.value.trim());
+      input.value = '';
+    }
+  });
+
+  // Pill click
+  document.querySelectorAll('.pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      addUserMessage(pill.textContent);
+    });
+  });
+
+  function addUserMessage(text) {
+    const tape = document.querySelector('.receipt-tape');
+
+    const gap = document.createElement('div');
+    gap.className = 'msg-gap';
+    tape.appendChild(gap);
+
+    const msg = document.createElement('div');
+    msg.className = 'msg user';
+    const now = new Date();
+    const time = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    msg.innerHTML = `
+      <div class="msg-text"><span class="prompt">›</span> ${escapeHtml(text)}</div>
+      <div class="msg-time">${time}</div>
+    `;
+    tape.appendChild(msg);
+    scroll.scrollTop = scroll.scrollHeight;
+
+    // Simulate typing response
+    setTimeout(() => {
+      addMachineMessage('Processing…', time);
+    }, 800);
+  }
+
+  function addMachineMessage(text, time) {
+    const tape = document.querySelector('.receipt-tape');
+
+    const gap = document.createElement('div');
+    gap.className = 'msg-gap';
+    tape.appendChild(gap);
+
+    const msg = document.createElement('div');
+    msg.className = 'msg machine';
+    const now = new Date();
+    const t = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    msg.innerHTML = `
+      <div class="msg-text">${escapeHtml(text)}</div>
+      <div class="msg-time">${t}</div>
+    `;
+    tape.appendChild(msg);
+    scroll.scrollTop = scroll.scrollHeight;
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+</script>
+
+</body>
+</html>
