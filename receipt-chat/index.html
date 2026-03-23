@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DeepFlow — Receipt Chat</title>
+<title>DeepFlow — Receipt Chat v2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after {
     margin: 0;
@@ -24,8 +24,11 @@
     --cyan-dim: rgba(0, 212, 245, 0.15);
     --green: #4ade80;
     --amber: #f59e0b;
-    --font: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
-    --paper-width: 460px;
+    --red: #f87171;
+    --red-dim: rgba(248, 113, 113, 0.08);
+    --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+    --font-sans: 'Euclid Circular B', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font: var(--font-mono);
     --tear-color: #252a35;
   }
 
@@ -40,17 +43,27 @@
     overflow: hidden;
   }
 
-  /* === LAYOUT === */
+  body.font-sans {
+    --font: var(--font-sans);
+    font-family: var(--font-sans);
+  }
+
+  body.font-sans .receipt-container,
+  body.font-sans .input-field,
+  body.font-sans .chip,
+  body.font-sans .disclosure-label,
+  body.font-sans .msg-text {
+    font-family: var(--font-sans);
+  }
+
+  /* === LAYOUT — FULL WIDTH === */
   .receipt-container {
     display: flex;
     flex-direction: column;
     height: 100%;
-    max-width: var(--paper-width);
-    margin: 0 auto;
+    width: 100%;
     background: var(--paper);
     position: relative;
-    border-left: 1px solid #1e2430;
-    border-right: 1px solid #1e2430;
   }
 
   /* Subtle paper texture overlay */
@@ -61,6 +74,53 @@
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.015'/%3E%3C/svg%3E");
     pointer-events: none;
     z-index: 0;
+  }
+
+  /* === FONT TOGGLE === */
+  .font-toggle-bar {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 20px;
+    background: var(--bg-dark);
+    border-bottom: 1px solid #1e2430;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+
+  .font-toggle-label {
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    margin-right: 6px;
+  }
+
+  .font-toggle-btn {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 4px 12px;
+    border: 1px solid #2a3040;
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+    border-radius: 2px;
+  }
+
+  .font-toggle-btn:hover {
+    border-color: var(--text-dim);
+    color: var(--text-primary);
+  }
+
+  .font-toggle-btn.active {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: rgba(0, 212, 245, 0.06);
   }
 
   /* === SCROLL AREA === */
@@ -77,6 +137,7 @@
 
   .receipt-tape {
     padding: 20px 20px 24px;
+    max-width: 720px;
   }
 
   /* === THREAD HEADER === */
@@ -93,6 +154,7 @@
     color: var(--text-muted);
     margin-bottom: 10px;
     font-weight: 300;
+    font-family: var(--font-mono);
   }
 
   .thread-brand .hex {
@@ -111,6 +173,7 @@
     gap: 10px;
     padding: 4px 0 14px;
     font-weight: 300;
+    font-family: var(--font-mono);
   }
 
   .thread-dateline::before,
@@ -133,7 +196,7 @@
 
   .msg + .msg { margin-top: 2px; }
 
-  /* Machine messages */
+  /* Machine messages — plain, no decoration */
   .msg.machine {
     color: var(--text-primary);
   }
@@ -142,7 +205,7 @@
     padding-left: 0;
   }
 
-  /* User messages — cyan left border */
+  /* User messages — cyan left border + prompt */
   .msg.user {
     border-left: 3px solid var(--cyan);
     padding-left: 14px;
@@ -157,6 +220,42 @@
     font-weight: 500;
   }
 
+  /* Error/warning messages — red left border */
+  .msg.machine.error {
+    border-left: 3px solid var(--red);
+    padding-left: 14px;
+    background: var(--red-dim);
+    border-radius: 0 3px 3px 0;
+  }
+
+  .msg.machine.error .error-icon {
+    color: var(--red);
+    margin-right: 6px;
+  }
+
+  /* Success confirmation */
+  .msg.machine .task-confirm {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .msg.machine .task-confirm .check-icon {
+    color: var(--green);
+  }
+
+  .msg.machine .task-confirm a {
+    color: var(--cyan);
+    text-decoration: underline;
+    text-decoration-color: rgba(0, 212, 245, 0.3);
+    text-underline-offset: 2px;
+    transition: text-decoration-color 0.15s;
+  }
+
+  .msg.machine .task-confirm a:hover {
+    text-decoration-color: var(--cyan);
+  }
+
   /* Timestamps */
   .msg-time {
     font-size: 9.5px;
@@ -165,6 +264,7 @@
     opacity: 0.6;
     margin-top: 1px;
     font-weight: 300;
+    font-family: var(--font-mono);
   }
 
   /* Message content */
@@ -194,6 +294,26 @@
     opacity: 0.85;
   }
 
+  /* Task card / link inline */
+  .task-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--cyan);
+    text-decoration: underline;
+    text-decoration-color: rgba(0, 212, 245, 0.3);
+    text-underline-offset: 2px;
+  }
+
+  .task-link:hover {
+    text-decoration-color: var(--cyan);
+  }
+
+  .task-link .link-icon {
+    font-size: 11px;
+    opacity: 0.7;
+  }
+
   /* spacing between conversational blocks */
   .msg-gap {
     height: 14px;
@@ -203,16 +323,94 @@
     height: 22px;
   }
 
-  /* === TORN PAPER EDGE === */
-  .torn-edge {
+  /* === DISCLOSURE / COLLAPSIBLE BLOCKS === */
+  .disclosure {
+    margin: 4px 0;
+    border-radius: 3px;
+  }
+
+  .disclosure-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 5px 8px;
+    border-radius: 3px;
+    background: rgba(255,255,255, 0.02);
+    border: none;
+    font-family: inherit;
+    font-size: 11.5px;
+    color: var(--text-dim);
+    transition: background 0.15s;
+    width: 100%;
+    text-align: left;
+  }
+
+  .disclosure-toggle:hover {
+    background: rgba(255,255,255, 0.04);
+  }
+
+  .disclosure-chevron {
+    font-size: 9px;
+    transition: transform 0.2s;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  .disclosure.open .disclosure-chevron {
+    transform: rotate(90deg);
+  }
+
+  .disclosure-label {
+    font-size: 11.5px;
+    color: var(--text-dim);
+    letter-spacing: 0.3px;
+  }
+
+  .disclosure-label .tool-icon {
+    opacity: 0.6;
+    margin-right: 3px;
+  }
+
+  .disclosure-content {
+    display: none;
+    padding: 6px 8px 8px 22px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    border-left: 1px solid #252a35;
+    margin-left: 12px;
+    margin-top: 2px;
+  }
+
+  .disclosure.open .disclosure-content {
+    display: block;
+  }
+
+  /* ═══════════════════════════════════════
+     THREAD BREAK OPTIONS
+     ═══════════════════════════════════════ */
+
+  .thread-break-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    opacity: 0.5;
+    text-align: center;
+    margin: 10px 0 4px;
+  }
+
+  /* --- Option A: Zigzag tear --- */
+  .break-zigzag {
     position: relative;
     height: 32px;
-    margin: 28px -20px 20px;
+    margin: 28px 0 20px;
     overflow: hidden;
   }
 
-  /* Top zigzag — torn bottom of old paper */
-  .torn-edge::before {
+  .break-zigzag::before {
     content: '';
     position: absolute;
     top: 0;
@@ -234,8 +432,7 @@
     z-index: 2;
   }
 
-  /* Perforated dots in the gap */
-  .torn-edge .perf {
+  .break-zigzag .perf {
     position: absolute;
     top: 50%;
     left: 0;
@@ -246,8 +443,7 @@
     z-index: 1;
   }
 
-  /* Bottom zigzag — torn top of new paper */
-  .torn-edge::after {
+  .break-zigzag::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -269,8 +465,7 @@
     z-index: 2;
   }
 
-  /* Dark gap between tears */
-  .torn-edge-gap {
+  .break-zigzag .break-gap {
     position: absolute;
     top: 14px;
     bottom: 14px;
@@ -278,6 +473,118 @@
     right: 0;
     background: var(--bg-dark);
     z-index: 0;
+  }
+
+  /* --- Option B: Perforated line --- */
+  .break-perforation {
+    margin: 32px 0;
+    text-align: center;
+    position: relative;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .break-perforation::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 0;
+    border-top: 2px dashed #2a3040;
+  }
+
+  /* --- Option C: Scissors cut --- */
+  .break-scissors {
+    margin: 32px 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .break-scissors::before {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: repeating-linear-gradient(
+      to right,
+      #2a3040 0px, #2a3040 6px,
+      transparent 6px, transparent 10px
+    );
+  }
+
+  .break-scissors .scissors-icon {
+    color: var(--text-muted);
+    font-size: 14px;
+    opacity: 0.5;
+    flex-shrink: 0;
+  }
+
+  .break-scissors::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: repeating-linear-gradient(
+      to right,
+      #2a3040 0px, #2a3040 6px,
+      transparent 6px, transparent 10px
+    );
+  }
+
+  /* --- Option D: Fade to black --- */
+  .break-fade {
+    margin: 8px 0;
+    position: relative;
+  }
+
+  .break-fade .fade-out {
+    height: 28px;
+    background: linear-gradient(to bottom, var(--paper), var(--bg-dark));
+  }
+
+  .break-fade .fade-gap {
+    height: 18px;
+    background: var(--bg-dark);
+  }
+
+  .break-fade .fade-in {
+    height: 28px;
+    background: linear-gradient(to bottom, var(--bg-dark), var(--paper));
+  }
+
+  /* --- Option E: Horizontal rule with timestamp --- */
+  .break-timestamp {
+    margin: 36px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .break-timestamp::before,
+  .break-timestamp::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #252a35;
+  }
+
+  .break-timestamp .ts-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    white-space: nowrap;
+    opacity: 0.7;
+  }
+
+  /* --- Option F: Receipt header repeat --- */
+  .break-receipt-header {
+    margin: 28px 0 8px;
+    padding-top: 16px;
+    border-top: 1px solid #1e2430;
   }
 
   /* === INPUT AREA === */
@@ -289,34 +596,47 @@
     background: var(--paper);
   }
 
-  .input-pills {
+  /* === FLAT SHORTCUT CHIPS === */
+  .input-chips {
     display: flex;
-    gap: 8px;
+    flex-wrap: wrap;
+    gap: 6px 10px;
     margin-bottom: 10px;
-    overflow-x: auto;
-    scrollbar-width: none;
     padding-bottom: 2px;
   }
-  .input-pills::-webkit-scrollbar { display: none; }
 
-  .pill {
-    flex-shrink: 0;
+  .chip {
     font-family: var(--font);
-    font-size: 10.5px;
-    padding: 5px 12px;
-    border: 1px solid #2a3040;
-    border-radius: 3px;
+    font-size: 11px;
+    padding: 4px 0 4px 10px;
+    border: none;
+    border-left: 2.5px solid var(--text-muted);
     background: transparent;
     color: var(--text-dim);
     cursor: pointer;
-    transition: border-color 0.15s, color 0.15s;
+    transition: background 0.15s, color 0.15s;
     white-space: nowrap;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
+    text-align: left;
   }
 
-  .pill:hover {
-    border-color: var(--cyan);
-    color: var(--cyan);
+  .chip:hover {
+    background: rgba(255,255,255, 0.03);
+    color: var(--text-primary);
+  }
+
+  .chip.chip-cyan {
+    border-left-color: var(--cyan);
+  }
+  .chip.chip-cyan:hover { color: var(--cyan); }
+
+  .chip.chip-amber {
+    border-left-color: var(--amber);
+  }
+  .chip.chip-amber:hover { color: var(--amber); }
+
+  .chip.chip-grey {
+    border-left-color: #555b65;
   }
 
   .input-row {
@@ -331,6 +651,7 @@
     font-size: 14px;
     font-weight: 500;
     flex-shrink: 0;
+    font-family: var(--font-mono);
   }
 
   .input-field {
@@ -354,7 +675,6 @@
 
   .input-field:focus {
     border-bottom-color: var(--cyan);
-    border-bottom-width: 1px;
   }
 
   .input-send {
@@ -366,6 +686,7 @@
     font-size: 16px;
     opacity: 0.4;
     transition: opacity 0.15s, color 0.15s;
+    font-family: var(--font-mono);
   }
 
   .input-send:hover {
@@ -373,21 +694,14 @@
     color: var(--cyan);
   }
 
-  /* Safe area for mobile */
   .input-safe {
     padding-bottom: env(safe-area-inset-bottom, 0);
   }
 
   /* === PRINT ANIMATION === */
   @keyframes printIn {
-    from {
-      opacity: 0;
-      transform: translateY(-6px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .msg:nth-child(1) { animation-delay: 0s; }
@@ -396,24 +710,24 @@
   .msg:nth-child(4) { animation-delay: 0.15s; }
   .msg:nth-child(5) { animation-delay: 0.2s; }
 
+  /* === SECTION DIVIDER === */
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    opacity: 0.4;
+    text-align: center;
+    margin: 40px 0 8px;
+    padding-top: 16px;
+    border-top: 1px dashed #1e2430;
+  }
+
   /* === RESPONSIVE === */
   @media (max-width: 480px) {
-    :root {
-      --paper-width: 100%;
-    }
-
-    .receipt-container {
-      border-left: none;
-      border-right: none;
-    }
-
     .receipt-tape {
       padding: 16px 16px 20px;
-    }
-
-    .torn-edge {
-      margin-left: -16px;
-      margin-right: -16px;
     }
 
     .input-area {
@@ -421,46 +735,30 @@
     }
 
     body { font-size: 12.5px; }
-  }
 
-  @media (min-width: 481px) and (max-width: 768px) {
-    :root {
-      --paper-width: 100%;
+    .font-toggle-bar {
+      padding: 8px 16px;
     }
-
-    .receipt-container {
-      max-width: 520px;
-    }
-  }
-
-  /* === RECEIPT DASHES === */
-  .receipt-dash {
-    color: var(--text-muted);
-    opacity: 0.3;
-    text-align: center;
-    font-size: 10px;
-    letter-spacing: 3px;
-    padding: 2px 0;
-    user-select: none;
-  }
-
-  /* numbered list styling */
-  .num-list {
-    padding-left: 4px;
-  }
-
-  .num-list .item {
-    padding: 1px 0;
   }
 </style>
 </head>
 <body>
 
+<!-- ═══════ FONT TOGGLE ═══════ -->
+<div class="font-toggle-bar">
+  <span class="font-toggle-label">Font:</span>
+  <button class="font-toggle-btn active" id="btn-mono" onclick="setFont('mono')">Mono</button>
+  <button class="font-toggle-btn" id="btn-sans" onclick="setFont('sans')">Sans</button>
+</div>
+
 <div class="receipt-container">
   <div class="receipt-scroll" id="scroll">
     <div class="receipt-tape">
 
-      <!-- ═══════ THREAD 1: Morning Greeting ═══════ -->
+      <!-- ═══════════════════════════════════════
+           SECTION 1: GREETING + CONVERSATION
+           ═══════════════════════════════════════ -->
+
       <div class="thread-header">
         <div class="thread-brand"><span class="hex">⬡</span> DeepFlow</div>
         <div class="thread-dateline">Mon, 23 Mar · 08:15</div>
@@ -484,7 +782,6 @@ What would you like to focus on?</div>
 
       <div class="msg-gap-lg"></div>
 
-      <!-- ═══════ THREAD 1: Conversation ═══════ -->
       <div class="msg user">
         <div class="msg-text"><span class="prompt">›</span> What's the status on the capital model?</div>
         <div class="msg-time">08:17</div>
@@ -492,8 +789,27 @@ What would you like to focus on?</div>
 
       <div class="msg-gap"></div>
 
+      <!-- Machine response with thinking disclosure -->
       <div class="msg machine">
-        <div class="msg-text">The capital model is blocked on two inputs:
+        <div class="disclosure" id="disc-think">
+          <button class="disclosure-toggle" onclick="toggleDisclosure('disc-think')">
+            <span class="disclosure-chevron">▶</span>
+            <span class="disclosure-label">Thinking…</span>
+          </button>
+          <div class="disclosure-content">The user is asking about the ICAAP capital model status. Let me check the task board and recent activity. The model was blocked on two inputs — risk weightings from Sarah and Q4 actuals from finance. I should check if either has been resolved.</div>
+        </div>
+        <div class="disclosure" id="disc-tool1">
+          <button class="disclosure-toggle" onclick="toggleDisclosure('disc-tool1')">
+            <span class="disclosure-chevron">▶</span>
+            <span class="disclosure-label"><span class="tool-icon">⚙</span> Searched tasks</span>
+          </button>
+          <div class="disclosure-content">Query: project:ICAAP status:blocked
+Found 1 task: "ICAAP Capital Model v3"
+  Status: Blocked
+  Blockers: 2 (risk weightings, Q4 actuals)
+  Last updated: 21 Mar</div>
+        </div>
+        <div class="msg-text" style="margin-top: 4px;">The capital model is blocked on two inputs:
 
 <span class="num-list"><span class="item">1. Updated risk weightings from Sarah — requested Tuesday, no response yet</span>
 <span class="item">2. Q4 actuals from finance — received yesterday, not yet imported</span></span>
@@ -511,8 +827,29 @@ Want me to chase Sarah on the risk weightings?</div>
 
       <div class="msg-gap"></div>
 
+      <!-- Machine response with tool call disclosure -->
       <div class="msg machine">
-        <div class="msg-text">Done. Two tasks created:
+        <div class="disclosure" id="disc-tool2">
+          <button class="disclosure-toggle" onclick="toggleDisclosure('disc-tool2')">
+            <span class="disclosure-chevron">▶</span>
+            <span class="disclosure-label"><span class="tool-icon">⚙</span> Sent message to Sarah</span>
+          </button>
+          <div class="disclosure-content">Channel: #icaap-team (Slack)
+To: @Sarah
+Message: "Hi Sarah — Ali's asking about the risk weightings for the capital model. Could you share the updated file today? We're blocked on it. Thanks!"</div>
+        </div>
+        <div class="disclosure" id="disc-tool3">
+          <button class="disclosure-toggle" onclick="toggleDisclosure('disc-tool3')">
+            <span class="disclosure-chevron">▶</span>
+            <span class="disclosure-label"><span class="tool-icon">⚙</span> Created task: Import Q4 actuals</span>
+          </button>
+          <div class="disclosure-content">Task: Import Q4 actuals into capital model
+Project: ICAAP
+Priority: High
+Source: finance-q4-actuals-2024.xlsx (2,412 rows)
+Status: Running…</div>
+        </div>
+        <div class="msg-text" style="margin-top: 4px;">Done. Two tasks created:
 
 <span class="status-done">✓</span> Chase Sarah re: risk weightings → sent via Slack
 <span class="status-running">⟳</span> Import Q4 actuals into capital model → running now
@@ -535,17 +872,60 @@ I'll let you know when the import completes.</div>
         <div class="msg-time">08:19</div>
       </div>
 
-      <!-- ═══════ TORN PAPER EDGE ═══════ -->
-      <div class="torn-edge">
-        <div class="torn-edge-gap"></div>
+
+      <!-- ═══════════════════════════════════════
+           SECTION 2: THREAD BREAK OPTIONS
+           ═══════════════════════════════════════ -->
+
+      <div class="section-label">Thread Break Options</div>
+
+      <!-- Option A: Zigzag tear -->
+      <div class="thread-break-label">Option A — Zigzag Tear</div>
+      <div class="break-zigzag">
+        <div class="break-gap"></div>
         <div class="perf"></div>
       </div>
 
-      <!-- ═══════ THREAD 2: Update ═══════ -->
-      <div class="thread-header">
-        <div class="thread-brand"><span class="hex">⬡</span> DeepFlow</div>
-        <div class="thread-dateline">Mon, 23 Mar · 11:42</div>
+      <!-- Option B: Perforated line -->
+      <div class="thread-break-label">Option B — Perforated Line</div>
+      <div class="break-perforation"></div>
+
+      <!-- Option C: Scissors cut -->
+      <div class="thread-break-label">Option C — Scissors Cut</div>
+      <div class="break-scissors">
+        <span class="scissors-icon">✂</span>
       </div>
+
+      <!-- Option D: Fade to black -->
+      <div class="thread-break-label">Option D — Fade to Black</div>
+      <div class="break-fade">
+        <div class="fade-out"></div>
+        <div class="fade-gap"></div>
+        <div class="fade-in"></div>
+      </div>
+
+      <!-- Option E: Horizontal rule with timestamp -->
+      <div class="thread-break-label">Option E — Rule + Timestamp</div>
+      <div class="break-timestamp">
+        <span class="ts-label">Mon, 23 Mar · 11:42</span>
+      </div>
+
+      <!-- Option F: Receipt header repeat -->
+      <div class="thread-break-label">Option F — Receipt Header Repeat</div>
+      <div class="break-receipt-header">
+        <div class="thread-header">
+          <div class="thread-brand"><span class="hex">⬡</span> DeepFlow</div>
+          <div class="thread-dateline">Mon, 23 Mar · 11:42</div>
+        </div>
+      </div>
+
+
+      <!-- ═══════════════════════════════════════
+           SECTION 3: MORE CONVERSATION
+           (longer response, task card, error)
+           ═══════════════════════════════════════ -->
+
+      <div class="section-label">More Examples</div>
 
       <div class="msg machine">
         <div class="msg-text">Quick update: Q4 actuals imported successfully.
@@ -556,16 +936,104 @@ Want me to feed them into the model?</div>
         <div class="msg-time">11:42</div>
       </div>
 
+      <div class="msg-gap"></div>
+
+      <div class="msg user">
+        <div class="msg-text"><span class="prompt">›</span> Yes, run the model. Also give me a summary of the board pack status</div>
+        <div class="msg-time">11:43</div>
+      </div>
+
+      <div class="msg-gap"></div>
+
+      <!-- Longer machine response with bullet list -->
+      <div class="msg machine">
+        <div class="disclosure" id="disc-tool4">
+          <button class="disclosure-toggle" onclick="toggleDisclosure('disc-tool4')">
+            <span class="disclosure-chevron">▶</span>
+            <span class="disclosure-label"><span class="tool-icon">⚙</span> Running capital model</span>
+          </button>
+          <div class="disclosure-content">Model: ICAAP Capital Model v3
+Inputs: Q4 actuals (2,412 rows) + risk weightings (Sarah, 23 Mar)
+Config: Standard Basel III parameters
+Status: Running… ETA ~3 min</div>
+        </div>
+        <div class="msg-text" style="margin-top: 4px;">Model is running now. Here's the board pack summary:
+
+<strong>Board Pack — Q4 Review</strong>
+Due: Thursday, 26 Mar · Draft: 60% complete
+
+Sections complete:
+  • Executive summary — <span class="status-done">done</span>
+  • Financial overview — <span class="status-done">done</span>
+  • Risk & compliance — <span class="status-running">in progress</span> (waiting on capital model output)
+  • Operational metrics — <span class="status-done">done</span>
+  • Strategic initiatives — <span class="status-running">in progress</span> (Ali to review)
+  • Appendices — not started
+
+Key blockers:
+  • Risk section depends on capital model (running now)
+  • Strategic initiatives need your sign-off on the 3 new proposals
+  • Appendix data from finance due tomorrow
+
+Estimated time to complete after blockers clear: ~4 hours of focused work.
+
+Want me to schedule a drafting block in your calendar?</div>
+        <div class="msg-time">11:44</div>
+      </div>
+
+      <div class="msg-gap"></div>
+
+      <!-- Task created confirmation -->
+      <div class="msg machine">
+        <div class="msg-text"><span class="task-confirm"><span class="check-icon">✓</span> Task created: <a href="#">Review strategic initiative proposals</a></span>
+
+Added to your focus list for this afternoon.</div>
+        <div class="msg-time">11:44</div>
+      </div>
+
+      <div class="msg-gap"></div>
+
+      <!-- Machine response with a link/task card -->
+      <div class="msg machine">
+        <div class="msg-text">Capital model completed. Results look reasonable — Tier 1 ratio at 14.2% (up from 13.8%).
+
+Full report: <a class="task-link" href="#"><span class="link-icon">↗</span> ICAAP Capital Model v3 — Results</a>
+
+Want me to drop these numbers into the board pack risk section?</div>
+        <div class="msg-time">11:48</div>
+      </div>
+
+      <div class="msg-gap"></div>
+
+      <div class="msg user">
+        <div class="msg-text"><span class="prompt">›</span> Yes, update the board pack. Also send the results to Sarah</div>
+        <div class="msg-time">11:49</div>
+      </div>
+
+      <div class="msg-gap"></div>
+
+      <!-- Error / warning message -->
+      <div class="msg machine error">
+        <div class="msg-text"><span class="error-icon">⚠</span> Couldn't update the board pack — the Google Doc is locked by another editor (James, since 11:30).
+
+I've queued the update and will retry in 5 minutes. Sarah has been sent the results via Slack.</div>
+        <div class="msg-time">11:49</div>
+      </div>
+
+      <div class="msg-gap-lg"></div>
+
     </div>
   </div>
 
   <!-- ═══════ INPUT ═══════ -->
   <div class="input-area input-safe">
-    <div class="input-pills">
-      <button class="pill">Summarise</button>
-      <button class="pill">What's blocked?</button>
-      <button class="pill">Next steps</button>
-      <button class="pill">Run model</button>
+    <div class="input-chips">
+      <button class="chip chip-cyan">What's blocked?</button>
+      <button class="chip chip-cyan">Summarise</button>
+      <button class="chip chip-amber">Run model</button>
+      <button class="chip chip-amber">Create task</button>
+      <button class="chip chip-grey">Board pack</button>
+      <button class="chip chip-grey">Next meeting</button>
     </div>
     <div class="input-row">
       <span class="input-prompt">›</span>
@@ -576,9 +1044,29 @@ Want me to feed them into the model?</div>
 </div>
 
 <script>
-  // Scroll to bottom on load
+  // Font toggle
+  function setFont(type) {
+    if (type === 'sans') {
+      document.body.classList.add('font-sans');
+      document.body.classList.remove('font-mono');
+      document.getElementById('btn-sans').classList.add('active');
+      document.getElementById('btn-mono').classList.remove('active');
+    } else {
+      document.body.classList.remove('font-sans');
+      document.body.classList.add('font-mono');
+      document.getElementById('btn-mono').classList.add('active');
+      document.getElementById('btn-sans').classList.remove('active');
+    }
+  }
+
+  // Disclosure toggle
+  function toggleDisclosure(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+
+  // Scroll to top on load (it's a showcase)
   const scroll = document.getElementById('scroll');
-  scroll.scrollTop = scroll.scrollHeight;
+  scroll.scrollTop = 0;
 
   // Handle Enter key on input
   const input = document.querySelector('.input-field');
@@ -596,10 +1084,10 @@ Want me to feed them into the model?</div>
     }
   });
 
-  // Pill click
-  document.querySelectorAll('.pill').forEach(pill => {
-    pill.addEventListener('click', () => {
-      addUserMessage(pill.textContent);
+  // Chip click
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      addUserMessage(chip.textContent);
     });
   });
 
@@ -621,13 +1109,12 @@ Want me to feed them into the model?</div>
     tape.appendChild(msg);
     scroll.scrollTop = scroll.scrollHeight;
 
-    // Simulate typing response
     setTimeout(() => {
-      addMachineMessage('Processing…', time);
+      addMachineMessage('Processing…');
     }, 800);
   }
 
-  function addMachineMessage(text, time) {
+  function addMachineMessage(text) {
     const tape = document.querySelector('.receipt-tape');
 
     const gap = document.createElement('div');
